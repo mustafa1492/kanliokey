@@ -104,6 +104,14 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Animasyon ve ses (taş sesi, ceza anında "kanlı" efekt). Kapatılabilir.
 - [ ] PWA: telefon ana ekranına uygulama gibi eklenebilsin
 
+## İlk izlenim (cepte, Mustafa onaylayınca)
+- [ ] Bekleme ekranı: sunucu uyanırken boş sayfa yerine "Masa hazırlanıyor" (taşlar karılıyor) açılışı
+- [ ] WhatsApp paylaşım kartı: görselli önizleme ("… seni masaya çağırıyor, oda kodu …")
+- [ ] Uygulama gibi açılma (PWA): ana ekrana ekle, kendi simgesi, tarayıcı çubuğu olmadan tam ekran
+- [ ] Logo ve sade, etkileyici ana ekran (taslak gösterilip onay alınacak)
+- [ ] El sonu ekranı: ceza kalemleri satır satır + kazanana kutlama (taslak gösterilip onay alınacak)
+- [ ] Kurallar sayfası oyunla aynı görünüm ve adreste, aramada bulunur
+
 ## Aşama 5.5: Oyunu öğreten rehber (UNUTMA)
 Hedef: kuralı hiç bilmeyen biri 10 dakikada oyunu oynayabilsin.
 - [ ] "Nasıl oynanır" rehberi oyunun içinde, adım adım ve oynayarak
