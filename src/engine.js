@@ -648,7 +648,7 @@ function timeoutMove(s){
   }
   return r;
 }
-const SL=28,COLS=14;
+const SL=24,COLS=12; /* ıstaka: 2 sıra × 12 yuva (v43: taşlar büyüdü) */
 function autoOpen(ord,O,must,mode){
   const rows=[];for(let i=0;i<ord.length;i+=COLS)rows.push(ord.slice(i,i+COLS));
   const run=kind=>{

@@ -143,7 +143,7 @@ button:disabled{opacity:.38;cursor:default}
 /* ıstaka */
 .rackbox{background:repeating-linear-gradient(92deg,#ffffff0a 0 3px,transparent 3px 9px),linear-gradient(180deg,var(--wood) 0%,var(--wood-deep) 100%);border:1px solid var(--wood-line);border-top:3px solid #b98a5b;border-radius:12px;padding:14px 8px 14px;display:grid;gap:12px;color:#f3e8d8;box-shadow:0 5px 0 #2a190e,0 12px 16px -6px #000b,inset 0 1px 0 #ffffff22}
 .rackbox .lab{color:#f3e8d8}
-.rack{--tw:min(38px,calc((100vw - 84px)/14));--th:calc(var(--tw)*1.389);display:grid;grid-template-columns:repeat(14,var(--tw));justify-content:center;gap:13px 2px;padding:14px 4px 14px;margin-top:6px;border-radius:8px;background:#00000040;box-shadow:inset 0 6px 10px #000a,inset 0 -2px 0 #ffffff14}
+.rack{--tw:min(44px,calc((100vw - 72px)/12));--th:calc(var(--tw)*1.389);display:grid;grid-template-columns:repeat(12,var(--tw));justify-content:center;gap:13px 2px;padding:14px 4px 14px;margin-top:6px;border-radius:8px;background:#00000040;box-shadow:inset 0 6px 10px #000a,inset 0 -2px 0 #ffffff14}
 .rs{position:relative;width:var(--tw);height:calc(var(--th) + 4px);border-radius:4px;background:linear-gradient(180deg,#0000005c,#0000001a);box-shadow:inset 0 2px 3px #000b,0 3px 0 #d1a06a,0 5px 0 #6b4528,0 7px 0 #2a190e}
 .rackbox.hot{outline:3px solid var(--gold);outline-offset:2px}
 .mini.tgt{outline:2px solid var(--gold);outline-offset:1px;background:#e8b93a33;border-radius:6px}
@@ -433,7 +433,7 @@ body{background:radial-gradient(130% 70% at 50% -8%,#33100f 0%,#150b0a 46%,#0805
   #app.gm>.sec:nth-child(5){grid-column:2;grid-row:4}
   .board{max-width:540px}
   .rackbox{margin-top:0}
-  .rack{--tw:clamp(26px,calc((min(100vw,1180px) - 32px - 540px - 26px - 62px)/14),38px)}
+  .rack{--tw:clamp(28px,calc((min(100vw,1180px) - 32px - 540px - 26px - 62px)/12),44px)}
 }
 
 /* ===== v39: lobide bot kartı okunur ===== */
@@ -480,8 +480,8 @@ body.gmode .a-top .pers:not(:empty){margin-top:4px;padding-top:4px}
 body.gmode .a-left .dpile{margin-top:4px}
 body.gmode .a-right .pers,body.gmode .a-me .pers{margin:2px 0}
 body.gmode .pers .mini{padding:1px;gap:1px}
-body.gmode .pers .mini .t,body.gmode .a-top .pers .mini .t,body.gmode .a-me .pers .mini .t{width:17px;height:24px;font-size:12.5px;margin-bottom:2px;border-radius:3px;box-shadow:0 1px 0 #b5a97f,0 2px 2px #0006}
-body.gmode .a-left .pers .mini .t,body.gmode .a-right .pers .mini .t{width:14px;height:20px;font-size:10.5px}
+body.gmode .pers .mini .t,body.gmode .a-top .pers .mini .t,body.gmode .a-me .pers .mini .t{width:20px;height:28px;font-size:14.5px;margin-bottom:2px;border-radius:3px;box-shadow:0 1px 0 #b5a97f,0 2px 2px #0006}
+body.gmode .a-left .pers .mini .t,body.gmode .a-right .pers .mini .t{width:17px;height:24px;font-size:12.5px}
 body.gmode .pers .mini .t i{width:3px;height:3px;margin-top:1px}
 body.gmode .plate{padding:3px 8px 3px 3px;gap:5px}
 body.gmode .av{width:22px;height:22px;font-size:13px;line-height:22px}
@@ -519,15 +519,15 @@ body.gmode .acts3 button{min-height:38px;font-size:14px}
 body.gmode .rackbox{padding:5px 6px 6px;gap:5px}
 body.gmode .rack{--rp:6px;--rg:7px}
 body.gmode .felt3d{padding:4px 3px;border-width:6px}
-body.gmode .pers .mini .t,body.gmode .a-top .pers .mini .t,body.gmode .a-me .pers .mini .t{width:15px;height:21px;font-size:11px}
-body.gmode .a-left .pers .mini .t,body.gmode .a-right .pers .mini .t{width:13px;height:18px;font-size:10px}
+body.gmode .pers .mini .t,body.gmode .a-top .pers .mini .t,body.gmode .a-me .pers .mini .t{width:18px;height:25px;font-size:13px}
+body.gmode .a-left .pers .mini .t,body.gmode .a-right .pers .mini .t{width:15px;height:21px;font-size:11px}
 body.gmode .orack.v{transform:scaleY(.8);transform-origin:top}
 }
 body.gmode .rackbox{margin:0;padding:6px 6px 8px;gap:6px;border-top-width:2px}
 body.gmode .rlabel .lab{font-size:10px}
 body.gmode .rlabel{min-width:0}
 body.gmode .pbadge{font-size:11px;padding:3px 8px}
-body.gmode .rack{--tw:min(38px,calc((100vw - 72px)/14),calc(100dvh*.05));margin-top:4px}
+body.gmode .rack{--tw:min(44px,calc((100vw - 62px)/12),calc(100dvh*.057));margin-top:4px}
 body.gmode .acts3{grid-template-columns:1.4fr 1fr 1fr 1fr}
 body.gmode .acts3 button{min-height:42px;font-size:15px}
 body.gmode .sgroups{max-height:20dvh;overflow:auto}
@@ -726,6 +726,9 @@ body.home .wrap{position:relative;z-index:1;max-width:560px}
 .rc-tiles .c0{color:#d3241b}.rc-tiles .c1{color:#1b54d6}.rc-tiles .c2{color:#c27600}.rc-tiles .c3{color:#1b1b1b}
 .rulecard:active{transform:scale(.99)}
 
+/* v43: sürüklenen taş işlenebilen perler parlar */
+.mini.can{box-shadow:0 0 0 2px #ffd36a,0 0 12px #ffd36a99!important;border-radius:5px}
+.mini.can.tgt{box-shadow:0 0 0 3px #7bd88f,0 0 16px #7bd88fbb!important}
 /* ===== v42: oyun içi: karakterler, büyük anlar, bitiriş, okey parıltısı, gösterge, son 10 saniye ===== */
 .avsprite{position:absolute;width:0;height:0;overflow:hidden}
 .av.has{display:grid;place-items:center;background:radial-gradient(circle at 50% 32%,#4f392c,#1c130f 78%)!important;box-shadow:0 0 0 2px var(--sc,var(--gold))!important}
@@ -1732,7 +1735,7 @@ ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></d
   if(typeof paintRing==='function')paintRing();
 }
 /* sürükle-bırak: ıstakada yer değiştirme, masaya bırakıp atma, perlere işleme, desteden / yandan taş alma */
-let drag=null,pend=false,lastDrag=0,flip=null;
+let drag=null,pend=false,lastDrag=0,flip=null,warnI={id:-1,t:0};
 const snapRects=()=>{const m={};document.querySelectorAll('#rack .t[data-id]').forEach(t=>{const r=t.getBoundingClientRect();m[t.dataset.id]=[r.left,r.top]});return m};
 function runFlip(){
   const m=flip;flip=null;
@@ -1889,11 +1892,14 @@ function dragMoveNow(e){
   if(!d.zc){
     const inter=(a,b)=>({left:Math.max(a.left,b.left),top:Math.max(a.top,b.top),right:Math.min(a.right,b.right),bottom:Math.min(a.bottom,b.bottom)});
     const sc0=$('#scene');
-    d.zc={sc:sc0?sc0.getBoundingClientRect():null,m:[...document.querySelectorAll('.mini.grow')].map(el=>{const ar=el.closest('.area');let r=el.getBoundingClientRect();if(ar)r=inter(r,ar.getBoundingClientRect());return {el,r,j:[...el.querySelectorAll('.t[data-x]')].map(t=>({t,r:t.getBoundingClientRect()}))}}).filter(o=>o.r.right>o.r.left&&o.r.bottom>o.r.top)};
+    const okI=canDiscard()&&S.opn['s'+S.seats.indexOf(uid)]>0;B=S.B;
+    const fits=el=>{if(!okI)return false;const o=+el.dataset.o,gi=+el.dataset.gi,r=(S.tbl['t'+o]||[])[gi];if(!r)return false;
+      if(canAdd(r,d.id,S.okey).some(e=>!(S.ik||[]).includes(o+':'+gi+':'+e)))return true;return r.g.some((y,k)=>isJ(y,S.okey)&&canSwap(r,k,d.id,S.okey))};
+    d.zc={sc:sc0?sc0.getBoundingClientRect():null,m:[...document.querySelectorAll('.mini.grow')].map(el=>{const ar=el.closest('.area');let r=el.getBoundingClientRect();if(ar)r=inter(r,ar.getBoundingClientRect());const c=fits(el);if(c)el.classList.add('can');return {el,r,c,j:[...el.querySelectorAll('.t[data-x]')].map(t=>({t,r:t.getBoundingClientRect()}))}}).filter(o=>o.r.right>o.r.left&&o.r.bottom>o.r.top).sort((a,b)=>b.c-a.c)};
   }
   const X=e.clientX,inR=(r,p)=>r&&X>=r.left-p&&X<=r.right+p&&hy>=r.top-p&&hy<=r.bottom+p;
   let mo=null;
-  if(!near)for(const o of d.zc.m)if(inR(o.r,3)){mo=o;break}
+  if(!near)for(const o of d.zc.m)if(inR(o.r,o.c?20:3)){mo=o;break}
   const mini=mo?mo.el:null;
   if(d.tgtM&&d.tgtM!==mini)d.tgtM.classList.remove('tgt');
   if(mini){
@@ -1912,7 +1918,7 @@ function dragEnd(e){
   const app=$('#app');app.classList.remove('dragging','candrop');
   const sc=$('#scene');if(sc)sc.classList.remove('hot');
   document.querySelectorAll('.rs.over,.rs.ibl,.rs.ibr').forEach(x=>x.classList.remove('over','ibl','ibr'));
-  document.querySelectorAll('.mini.tgt').forEach(x=>x.classList.remove('tgt'));
+  document.querySelectorAll('.mini.tgt,.mini.can').forEach(x=>x.classList.remove('tgt','can'));
   const rb=$('.rackbox');if(rb)rb.classList.remove('hot');
   if(d.ghost)d.ghost.remove();
   document.querySelectorAll('.pile.pulled').forEach(x=>x.classList.remove('pulled'));
@@ -1929,7 +1935,14 @@ function dragEnd(e){
     }else if(ok){
       if(d.ins){pend=false;dropOnPer(d.ins.o,d.ins.gi,d.id,e.clientX,d.ins.jx);return}
       if(d.disc){
-        if(canDiscard()){sel=[d.id];pend=false;discard();return}
+        if(canDiscard()){
+          B=S.B;const me=S.seats.indexOf(uid),h=(S.hands[hk(me)]||[]).filter(x=>x!==d.id),ends=S.ot!==me&&canEnd(S,me,h);
+          if(!ends&&ishler(S,d.id,S.okey)&&!(warnI.id===d.id&&Date.now()-warnI.t<8000)){
+            warnI={id:d.id,t:Date.now()};
+            msg=S.opn['s'+me]>0?'Bu taş işler! Atarsan 500 ceza yazılır. İşlemek için parlayan perin üstüne bırak; yine de atmak için tekrar masaya bırak.':'Bu taş işler! Atarsan 500 ceza yazılır. Yine de atmak için tekrar masaya bırak.';
+            SFX.play('drop');render();return;
+          }
+          warnI={id:-1,t:0};sel=[d.id];pend=false;discard();return}
         msg='Taşı atmak için sıranın sende olması ve önce taş çekmiş olman gerekir.';
       }else if(d.tgt){flip=snapRects();placeTile(d.id,d.tgt);SFX.play('drop')}
     }
