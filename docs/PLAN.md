@@ -113,6 +113,9 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] El sonu ekranı: ceza kalemleri satır satır + kazanana kutlama (taslak gösterilip onay alınacak)
 - [x] Kurallar sayfası oyunla aynı görünüm ve adreste (/kurallar). Arama motoruna açmak için sunucuda INDEX=1 (alan adı alınınca)
 
+## Çözülecek konular (Mustafa ile konuşulacak)
+- [ ] Elindeki perlerin hepsini açmak istemeyince ne olacak? Şu an "Per aç" ıstakada yan yana dizili (yeşil çerçeveli) bütün geçerli perleri birlikte açıyor; sadece bazılarını açmanın kolay bir yolu yok (şimdilik açmak istemediğin peri dağıtmak gerekiyor). Çözüm birlikte bulunacak (örneğin: açılacak perlere dokunarak seçme, ya da ıstakada açılacakları ayrı bir bölgeye koyma). Kural tarafı da sorulacak: açarken elindeki her peri açmak zorunlu mu?
+
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
 Giriş ekranı
 - [ ] Botlarla hızlı oyun: tek dokunuşla 3 botlu masa açılır, hemen başlar (yalnızken deneme ve öğrenme)
