@@ -118,6 +118,10 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 
 - [ ] Açılış puanında fazlalık (Mustafa fark etti, sonra bakılacak): dörtlü erkek perde 4. taş 3'e bölünerek puana katılıyor. Dört 11 açınca 4. 11 → 11/3 = 3 tam + 2/3 artık; dört 12 açınca 4. 12 → 12/3 = 4 puan ekleniyor. Şu anki hesap: bütün açılan taşların toplamı / 3, aşağı yuvarlanır (üç 11 = 33/3 = 11, dört 11 = 44/3 = 14). Doğrusunun nasıl olacağını Mustafa söyleyecek; tahminle değiştirilmeyecek.
 
+- [ ] Kan efektlerine tekrar bakılacak (Mustafa söyledi; ne değişecek birlikte konuşulacak)
+- [ ] Ana ekran (ilk masa kurma ekranı) çok sade kaldı: oraya neler ekleneceği birlikte düşünülecek
+- [ ] Ana ekrandaki "Kurallar" bağlantısı çok sade: kurallar sayfası güzel, daha dikkat çekici olsun (örneğin küçük bir tanıtım kartı: başlık, birkaç taş, "Kuralları oku" düğmesi)
+
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
 Giriş ekranı
 - [ ] Botlarla hızlı oyun: tek dokunuşla 3 botlu masa açılır, hemen başlar (yalnızken deneme ve öğrenme)
