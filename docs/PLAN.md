@@ -78,6 +78,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] v22: Açılan perler sahibinin önünde (alt: önünde, üst: rafının altında, yanlar: rafın yanında). Istaka kutusunda yalnızca dizdiğin (ayrı ve düzgün sıralı) perlerin puanı görünür, elindeki en yüksek puan gösterilmez. Normal elde yerde yalnızca gösterge görünür. Desteden/yandan taş sürükleme: parmağın üstünde yükselen taş, hedef yuva parlıyor, gelen taş yuvaya "pop" animasyonuyla oturuyor
 - [x] v23: Istakada taşı iki taşın arasına sürükleyip sokma (komşular kayar, boşluk kapanır); yuvalar arası boşluğa bırakınca en yakın yuva seçiliyor, araya sokma yeri altın çizgiyle gösteriliyor. El bitince taşlar masanın ortasında karışıp uçuşuyor (36 taş), rakip ıstakaları, perler ve atılan taşlar da ortaya çöküyor
 - [x] v24: Taşlara daha gerçekçi görünüm (cilalı yüz, iç çerçeve, altında renkli nokta); araya sokunca komşu taşlar kayarak yerine oturuyor. "Açma alanı" masadan kaldırıldı, "Per aç" (çift dizdiyse "Çift aç") ıstakanın altındaki düğme sırasında. Açılamama sebebi uyarı olarak çıkıyor
+- [x] v41: GÖRÜNÜM: koltuk renkleri (herkes aynı oyuncuyu aynı renkte görür; isim, avatar, masadaki perler), isim kutusunda toplam ceza, ince durum şeridi, tahta raflı ıstaka, deste göbeğinde sıra ibresi, ceza anında isim üstünde +N, taşlar uçarak gider (desteden ıstakaya, ıstakadan masaya, rakip ıstakasından masaya/atılanlara), el sonu kartı (ceza kalemleri satır satır, çarpanlar, kalan taşlar, kazanana taç, "Masayı gör"), logo ve yeni ana ekran, koyu lobi, "Masa hazırlanıyor" açılışı, telefona uygulama gibi ekleme (simge, tam ekran, sunucu uyurken kayıtlı sayfa), WhatsApp önizlemesi (davette kuranın adı ve oda kodu), yeni sürümde sayfa kendini yeniler, kurallar sayfası oyunla aynı koyu görünüm (site v13), Türkçe büyük harf düzeltmesi (İ)
 - [x] v40: ALTYAPI: kural motoru ayrı dosya (src/engine.js), kendi sunucumuz (server/server.js: odalar, oyun kuralları sunucuda, başkasının eli ve deste sırası gizli, botlar ve süre sunucuda, durum diske kaydediliyor, yönetici şifresi sunucuda, hız sınırı), aynı oyun dosyası hem claude.ai'de hem sunucuda çalışıyor (claude.ai'de değilse sunucuya bağlanır), davet bağlantısı, bağlantı koptu uyarısı; Dockerfile + render.yaml; testler: test/engine.test.js, test/sim.test.js, test/server.test.js, test/e2e.py
 - [x] v39: Telefonda tek ekran: sayfa kaydırması yok, masa ekrana sığıyor (üst çubuk + durum + masa + ıstaka + 4 düğme). Ses, Titreşim, Kurallar, Nasıl kullanılır ve Ana ekran "Menü"de. Lobide bot kartı okunur (yeşil zemin açık yazı). Sürüklemede kasma azaltıldı (yuva konumları önbellekte, her karede sayfa ölçümü yok, sınıflar sadece değişince; masa ayrı katmanda). iPhone'da (iOS 18+) titreşim yerine anahtar dokunuşu denenir. Yatay ekranda eski kaydırmalı düzen
 - [x] v38: Sayfanın kendiliğinden en üste kayması için kaydırma yeri korunuyor
@@ -105,12 +106,33 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] PWA: telefon ana ekranına uygulama gibi eklenebilsin
 
 ## İlk izlenim (cepte, Mustafa onaylayınca)
-- [ ] Bekleme ekranı: sunucu uyanırken boş sayfa yerine "Masa hazırlanıyor" (taşlar karılıyor) açılışı
-- [ ] WhatsApp paylaşım kartı: görselli önizleme ("… seni masaya çağırıyor, oda kodu …")
-- [ ] Uygulama gibi açılma (PWA): ana ekrana ekle, kendi simgesi, tarayıcı çubuğu olmadan tam ekran
-- [ ] Logo ve sade, etkileyici ana ekran (taslak gösterilip onay alınacak)
-- [ ] El sonu ekranı: ceza kalemleri satır satır + kazanana kutlama (taslak gösterilip onay alınacak)
-- [ ] Kurallar sayfası oyunla aynı görünüm ve adreste, aramada bulunur
+- [x] Bekleme ekranı: sunucu uyanırken boş sayfa yerine "Masa hazırlanıyor" (taşlar karılıyor) açılışı
+- [x] WhatsApp paylaşım kartı: görselli önizleme ("… seni masaya çağırıyor, oda kodu …")
+- [x] Uygulama gibi açılma (PWA): ana ekrana ekle, kendi simgesi, tarayıcı çubuğu olmadan tam ekran
+- [x] Logo ve sade, etkileyici ana ekran (taslak gösterilip onay alınacak)
+- [x] El sonu ekranı: ceza kalemleri satır satır + kazanana kutlama (taslak gösterilip onay alınacak)
+- [x] Kurallar sayfası oyunla aynı görünüm ve adreste (/kurallar). Arama motoruna açmak için sunucuda INDEX=1 (alan adı alınınca)
+
+## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
+Giriş ekranı
+- [ ] Botlarla hızlı oyun: tek dokunuşla 3 botlu masa açılır, hemen başlar (yalnızken deneme ve öğrenme)
+- [ ] İlk kez gelene "3 dakikada öğren" kartı → Aşama 5.5 rehberi
+- [ ] Masa ekranında WhatsApp'a doğrudan gönder düğmesi (davet bağlantısıyla)
+- [ ] Kimliği başka telefona taşıma kodu (hesap açmadan: telefon değişince koltuk ve geçmiş kaybolmasın)
+- [ ] Son oyunlarım: son 5 oyun, kendi cezan, sonuncu kim
+- [ ] Bekleme odasında: "Hazırım", kuranın oyuncu çıkarması, oda başına bot seviyesi
+- [ ] Ayarlar: büyük yazı, renk körü işaretleri, sol el düzeni
+- [ ] (Sonra) Açık masalar: yabancılarla oynama. Hile ve küfür önlemi gerektirir
+Yönetim paneli
+- [ ] Hata / "kural yanlış" bildirim kutusu: oyuncu menüden yazar, oyunun o anki durumu otomatik eklenir, panelde listelenir
+- [ ] Canlı durum: bağlı oyuncu, açık oda, sunucu sürümü, ne zamandır açık
+- [ ] Bakım duyurusu: "5 dakika sonra güncelleme" şeridi ve yeni oyun başlatmayı geçici kapatma (ücretsiz planda güncelleme oyunları siliyor)
+- [ ] Yedek indir / geri yükle: oyunlar ve istatistik tek dosya
+- [ ] Hamle kaydı: her oyunun hamleleri sırayla; anlaşmazlıkta "ne oldu" bakılır, hata bildirimine eklenir
+- [ ] Oyuncular: takma ad, son görülme, oyun sayısı, engelleme
+- [ ] İstatistik: günlük oyun, ortalama el süresi, okeyle bitirme ve deste biten el oranı
+- [ ] Kural ayarları (ev kuralları): sadece Mustafa'nın onayladığı değerler (açılış eşiği, cezalar)
+- [ ] İşlem kaydı: hangi yönetici neyi sildi / değiştirdi
 
 ## Aşama 5.5: Oyunu öğreten rehber (UNUTMA)
 Hedef: kuralı hiç bilmeyen biri 10 dakikada oyunu oynayabilsin.
