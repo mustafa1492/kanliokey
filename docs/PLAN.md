@@ -124,6 +124,16 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 
 - [x] Titreşim iPhone'da çalışmıyor (Apple web sayfalarına izin vermiyor). Mustafa: gerek yok, bu konu kapandı. Android'de titreşim çalışmaya devam ediyor.
 
+Estetik kararları (Mustafa seçti, toplu güncellemede yapılacak)
+- [ ] Ana ekran: masa sözleri logonun altında sırayla değişir (sözleri Mustafa seçecek, örnekler gönderildi; seçmeden eklenmeyecek)
+- [ ] Ana ekran: arka planda bulanık, yukarıdan okey masası ve dağınık taşlar, üstünde hafifçe titreyen kahvehane lambası ışığı
+- [ ] Oyun içi: büyük anlar için ortada kısa duyuru ("Ali 24 ile açtı!", "İşler taş! +500", "Okeyle bitirdi!")
+- [ ] Oyun içi: avatar seçimi (kahvehane karakterleri: çay bardağı, tespih, bıyıklı amca, kasket…; kendi çizimlerimiz)
+- [ ] Oyun içi: eli bitirince taşlar masaya vurulur, ekran hafif sarsılır; açamayıp tam ceza yiyenin isminde kan sıçraması
+- [ ] Oyun içi: ıstakadaki okey taşında arada altın parıltı, gösterge el başında dönerek açılır
+- [ ] Oyun içi: sıranın son 10 saniyesinde ekran kenarları kırmızı nabız atar
+Cepte (sonra): ana ekranda canlı şerit (şu an kaç masa / bugün kaç el), "son oyunun" kartı, masa teması (keçe rengi), kahvehane uğultusu sesi
+
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
 Giriş ekranı
 - [ ] Botlarla hızlı oyun: tek dokunuşla 3 botlu masa açılır, hemen başlar (yalnızken deneme ve öğrenme)
