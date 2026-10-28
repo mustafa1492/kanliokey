@@ -109,16 +109,22 @@ function solve(cnt,jk){
 }
 const hk=i=>'h'+i,dk=i=>'d'+i;
 function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
-/* yeni el dağıtımı: prev = önceki elin durumu (yoksa ilk el), ps = [{u,n}] 4 oyuncu */
-function deal(prev,R,ps,now){
+/* eşli oyun: eşler karşılıklı oturur (0-2, 1-3). Kurallar: docs/KURALLAR.md "Eşli oyun" */
+const isMate=(s,a,b)=>!!(s&&s.pair)&&a!==b&&(a+2)%4===b;
+/* eşli masada oturma sırası: ps = masaya giriş sırasıyla 4 oyuncu, pr = eşleşme (0: 1.+2. / 3.+4., 1: 1.+3. / 2.+4., 2: 1.+4. / 2.+3.)
+   eşler karşılıklı (0-2, 1-3) oturacak şekilde dizer */
+function pairOrder(ps,pr){const [a,b,c,d]=ps;return pr===2?[a,b,d,c]:pr===1?[a,b,c,d]:[a,c,b,d]}
+/* yeni el dağıtımı: prev = önceki elin durumu (yoksa ilk el), ps = [{u,n}] 4 oyuncu, opt.pair = eşli */
+function deal(prev,R,ps,now,opt){
   now=now||Date.now();
+  const pair=prev?!!prev.pair:!!(opt&&opt.pair);
   const round=prev?prev.round+1:0,big=round%4===0,d0=prev&&prev.d0!=null?prev.d0:(Math.random()*4|0),dl=(d0+round)%4,st=(dl+1)%4;
   const t=shuf([...Array(106).keys()]);
   let ind=-1,O={c:-1,n:-1};
   if(!big){ind=t.splice(t.findIndex(x=>x<104),1)[0];const n0=ind%13+1;O={c:ind/26|0,n:n0===13?1:n0+1}}
   const hands={},disc={},tbl={},opn={};
   for(let i=0;i<4;i++){hands[hk(i)]=t.splice(0,i===st?15:14);disc[dk(i)]=[];tbl['t'+i]=[];opn['s'+i]=0}
-  return{seats:ps.map(x=>x.u),names:ps.map(x=>x.n),scores:prev?prev.scores:{},hands,disc,tbl,opn,mx:0,must:-1,d0,dl,ik:[],ex:{s0:0,s1:0,s2:0,s3:0},opm:{s0:'',s1:'',s2:'',s3:''},trn:0,ot:-1,deck:t,ind,okey:O,B:big,round,R:prev?prev.R:R,turn:st,start:st,ph:'discard',win:-1,last:[0,0,0,0],tt:now,gid:now};
+  return{seats:ps.map(x=>x.u),names:ps.map(x=>x.n),scores:prev?prev.scores:{},hands,disc,tbl,opn,mx:0,must:-1,d0,dl,ik:[],ex:{s0:0,s1:0,s2:0,s3:0},opm:{s0:'',s1:'',s2:'',s3:''},trn:0,ot:-1,deck:t,ind,okey:O,B:big,round,R:prev?prev.R:R,turn:st,start:st,ph:'discard',win:-1,last:[0,0,0,0],tt:now,gid:now,pair};
 }
 function canEnd(s,me,rest){
   if(!(s.opn['s'+me]>0)||s.ot===me)return false;
@@ -129,7 +135,7 @@ function fin(s,f,okeyEnd){
   B=s.B;const d=[],ex=s.ex||{};
   const solo=f>=0&&s.opn['s'+f]>0&&[0,1,2,3].every(i=>i===f||!(s.opn['s'+i]>0));
   const m=f>=0?(okeyEnd?2:1)*(solo?2:1):1;
-  for(let i=0;i<4;i++)d[i]=m*(f===i?(B?-200:-100):s.opn['s'+i]>0?s.hands[hk(i)].reduce((a,x)=>a+(isJ(x,s.okey)?(B?500:250):val(x,s.okey)*(B?10:5)),0):(B?1000:500));
+  for(let i=0;i<4;i++)d[i]=f>=0&&isMate(s,f,i)?0:m*(f===i?(B?-200:-100):s.opn['s'+i]>0?s.hands[hk(i)].reduce((a,x)=>a+(isJ(x,s.okey)?(B?500:250):val(x,s.okey)*(B?10:5)),0):(B?1000:500));
   const sc={...s.scores};d.forEach((x,i)=>sc['s'+i]=(sc['s'+i]||0)+x);
   return{scores:sc,last:d.map((x,i)=>x+(ex['s'+i]||0)),win:f<0?99:f,ph:'end'};
 }
@@ -192,7 +198,7 @@ MOVES.insert=(s,me,a)=>{
   if(!r||!canAdd(r,t,O).includes(e)){emsg='Bu taş bu pere işlenmiyor.';return}
   const key=o+':'+gi+':'+e,ik=s.ik||[];
   if(ik.includes(key)){emsg='Bu uca bu turda zaten taş işledin. Sıran tekrar gelince işleyebilirsin.';return}
-  const v=addVal(r,t,e,O),pen=o===me?0:v*10;
+  const v=addVal(r,t,e,O),pen=o===me||isMate(s,o,me)?0:v*10;
   const nr={...r,g:e==='l'?[t,...r.g]:[...r.g,t]};
   if(e==='l')nr.lo=r.lo-1;
   grs[gi]=nr;
@@ -217,7 +223,7 @@ MOVES.swap=(s,me,a)=>{
   const jk=r.g[idx],g2=[...r.g];
   g2[idx]=t;grs[gi]={...r,g:g2};
   h.splice(ti,1);h.push(jk);
-  const pen=o===me?0:tv(t,O).n*10,r2={hands:{[hk(me)]:h},tbl:{...s.tbl,['t'+o]:grs}};
+  const pen=o===me||isMate(s,o,me)?0:tv(t,O).n*10,r2={hands:{[hk(me)]:h},tbl:{...s.tbl,['t'+o]:grs}};
   if(pen){
     r2.scores={...s.scores,['s'+o]:(s.scores['s'+o]||0)+pen};
     r2.ex={...(s.ex||{}),['s'+o]:((s.ex||{})['s'+o]||0)+pen};
@@ -237,7 +243,7 @@ MOVES.pair=(s,me,a)=>{
   const grs=[...(s.tbl['t'+o]||[])],r=grs[gi];
   if(!r||r.k!=='p'||r.n!==n){emsg='Çift işlemek için aynı sayılı açılmış bir çift olmalı.';return}
   grs.push({g:[...sel],k:'p',n});
-  const nh=h.filter(x=>!sel.includes(x)),pen=o===me?0:n*2*10,r2={hands:{[hk(me)]:nh},tbl:{...s.tbl,['t'+o]:grs}};
+  const nh=h.filter(x=>!sel.includes(x)),pen=o===me||isMate(s,o,me)?0:n*2*10,r2={hands:{[hk(me)]:nh},tbl:{...s.tbl,['t'+o]:grs}};
   if(pen){
     r2.scores={...s.scores,['s'+o]:(s.scores['s'+o]||0)+pen};
     r2.ex={...(s.ex||{}),['s'+o]:((s.ex||{})['s'+o]||0)+pen};
@@ -477,7 +483,7 @@ function botSwapPlan(s,me,h,O){
         if(!isJ(r.g[idx],O))continue;
         for(const t of h){
           if(t===s.must||isJ(t,O)||!canSwap(r,idx,t,O))continue;
-          const sc=(o===me?0:tv(t,O).n*10)+1;
+          const sc=(o===me||isMate(s,o,me)?0:tv(t,O).n*10)+1;
           if(sc>bs){bs=sc;best={o,gi,idx,t}}
         }
       }
@@ -487,7 +493,7 @@ function botSwapPlan(s,me,h,O){
   const{o,gi,idx,t}=best,grs=[...(s.tbl['t'+o]||[])],r=grs[gi],jk=r.g[idx],g2=[...r.g];
   g2[idx]=t;grs[gi]={...r,g:g2};
   const nh=h.filter(x=>x!==t);nh.push(jk);
-  const pen=o===me?0:tv(t,O).n*10,out={hands:{[hk(me)]:nh},tbl:{...s.tbl,['t'+o]:grs}};
+  const pen=o===me||isMate(s,o,me)?0:tv(t,O).n*10,out={hands:{[hk(me)]:nh},tbl:{...s.tbl,['t'+o]:grs}};
   if(pen){out.scores={...s.scores,['s'+o]:(s.scores['s'+o]||0)+pen};out.ex={...(s.ex||{}),['s'+o]:((s.ex||{})['s'+o]||0)+pen}}
   return out;
 }
@@ -502,8 +508,8 @@ function botInsertPlan(s,me,h,O,lvl){
         const r=grs[gi];if(!r||!r.g)continue;
         for(const e of canAdd(r,t,O)){
           const key=o+':'+gi+':'+e;if(ik.includes(key))continue;
-          const v=addVal(r,t,e,O),pen=o===me?0:v*10;
-          let sc=pen+(o===me?20:0)+tv(t,O).n*.1;
+          const mine=o===me||isMate(s,o,me),v=addVal(r,t,e,O),pen=mine?0:v*10;
+          let sc=pen+(mine?20:0)+tv(t,O).n*.1;
           if(lvl>=2&&pen<60&&near(t,h,O)>=3)continue;
           if(sc>bs){bs=sc;best={o,gi,e,t,key,pen,v}}
         }
@@ -684,6 +690,7 @@ function runMove(name,s,me,a){
 /* bot hamlesi (seviye 0-2); hata olursa basit bota düşer */
 function botMove(s,me,lvl){
   B=!!s.B;
+  if(s.pair)lvl=2; /* eşli oyunda botlar en zeki seviyede */
   const c=JSON.parse(JSON.stringify(s));
   try{return botPlan(c,me,lvl|0)}catch(e){try{return botPlan0(JSON.parse(JSON.stringify(s)),me)}catch(e2){return null}}
 }
@@ -701,5 +708,5 @@ function viewFor(s,me){
 function tileCount(s){let n=s.deck.length+(s.ind>=0?1:0);for(let i=0;i<4;i++){n+=s.hands[hk(i)].length+s.disc[dk(i)].length;for(const r of s.tbl['t'+i]||[])n+=r.g.length}return n}
 /* uzun süre çalışan sunucuda bellek şişmesin */
 function resetCaches(){badSide.clear();hpKey='';hpVal=0}
-var ENG={resetCaches,run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
+var ENG={pairOrder,isMate,resetCaches,run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
 if(typeof module!=='undefined'&&module.exports)module.exports=ENG;

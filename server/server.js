@@ -126,8 +126,8 @@ function onHandEnd(c,g){
     d.done=(d.done||0)+1;store.set('settings/stats',d);dirty=true;notify('settings/stats');
   }
 }
-function dealHand(c,prev,R,ps){
-  const g=ENG.deal(prev,R,ps,now());
+function dealHand(c,prev,R,ps,opt){
+  const g=ENG.deal(prev,R,ps,now(),opt);
   put(gamePath(c),g);touch(c);
   const r=store.get('rooms/'+c);
   if(r)put('rooms/'+c,{...r,st:'playing',rd:g.round,R:g.R,pl:g.names,tg:now()});
@@ -220,6 +220,8 @@ function hUpdate(conn,m){
     const n={...r};
     if(d.bots!=null)n.bots=Math.max(0,Math.min(4,+d.bots|0));
     if(d.R!=null)n.R=+d.R===13?13:9;
+    if(d.pair!=null&&r.st!=='playing')n.pair=!!d.pair;
+    if(d.pr!=null&&r.st!=='playing')n.pr=Math.max(0,Math.min(2,+d.pr|0));
     put(p,n);touch(c);return reply(conn,m.id,{ok:true});
   }
   if(p==='settings/stats')return reply(conn,m.id,{ok:true});
@@ -252,8 +254,9 @@ function hStart(conn,m,next){
   if(g&&g.ph!=='end')return deny(conn,m.id,'playing','Oyun zaten sürüyor.');
   const ms=membersOf(c).sort((a,b)=>a.t-b.t).slice(0,4),nb=Math.max(0,Math.min(r.bots||0,4-ms.length));
   if(ms.length+nb<4)return deny(conn,m.id,'few','Başlamak için 4 kişi ya da bot gerekli.');
-  const ps=ENG.fillBots(ms.map(x=>({u:x.id,n:cleanName(x.name)})));
-  dealHand(c,null,+m.R===13?13:(r.R===13?13:9),ps);
+  let ps=ENG.fillBots(ms.map(x=>({u:x.id,n:cleanName(x.name)})));
+  if(r.pair)ps=ENG.pairOrder(ps,r.pr|0);
+  dealHand(c,null,+m.R===13?13:(r.R===13?13:9),ps,{pair:!!r.pair});
   log('oyun başladı',c,ps.map(x=>x.n).join(','));
   return reply(conn,m.id,{ok:true});
 }

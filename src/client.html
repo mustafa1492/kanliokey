@@ -663,6 +663,26 @@ body.home .top .chips{justify-content:flex-end}
 .hlinks{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 18px}
 .hlinks a,.lnk{color:#e8d9c2;font:600 14px/1 var(--body);text-decoration:underline;text-underline-offset:3px;background:none;border:0;padding:10px 4px;min-height:44px;cursor:pointer}
 body.lobby .agate{color:var(--mut)}
+
+/* eşli oyun */
+.pairT{width:100%;margin:0 0 8px;justify-content:space-between;display:flex;align-items:center}
+.pairT.on{border-color:#e8b93a;box-shadow:inset 0 0 0 1px #e8b93a55}
+.pairs{display:grid;gap:6px;margin-bottom:12px}
+.pairo{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center;padding:10px;font-size:14px}
+.pairo span,.pairinfo span{color:var(--mut);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:0 6px}
+.pairo.on{border-color:#e8b93a;background:#e8b93a1a;box-shadow:inset 0 0 0 1px #e8b93a88}
+.pairinfo{margin:0 0 12px;color:var(--fg)}
+.teams{display:grid;gap:6px;margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #ffffff22}
+.teams .tm{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.teams .tm span{display:grid;font-weight:700}.teams .tm small{font-weight:400;opacity:.75;font-size:11px}
+.teams .tm b{font:700 18px/1 var(--display)}.teams .tm.mine b{color:#7ee2a0}
+.endteams{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.et2{border-radius:9px;padding:7px 9px;background:#ffffff0a;display:grid;gap:2px;text-align:center}
+.et2 small{color:var(--mut);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.et2 b{font:700 14px/1.15 var(--display);letter-spacing:.03em;text-transform:uppercase}
+.et2 span{font-size:12px;color:#d8c9b4}
+.et2.mine{box-shadow:inset 0 0 0 1px #7ee2a055}
+.et2.lose{background:#c1121f26;box-shadow:inset 0 0 0 1px #ff6b6b88}.et2 em{font-style:normal;color:#ff6b6b;font-weight:700;font-size:12px}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -903,9 +923,11 @@ async function start(prev,R){
     try{const res=await SRV.call({op:prev?'next':'start',code,R});if(res&&res.msg)msg=res.msg}catch(e){msg='Bağlantı hatası, tekrar dene.'}
     render();return;
   }
-  const ps=prev?prev.seats.map((u,i)=>({u,n:prev.names[i]})):fillBots([...L].sort((a,b)=>a.t-b.t).slice(0,4).map(x=>({u:x.id,n:x.name})));
+  let ps=prev?prev.seats.map((u,i)=>({u,n:prev.names[i]})):fillBots([...L].sort((a,b)=>a.t-b.t).slice(0,4).map(x=>({u:x.id,n:x.name})));
   if(ps.length<4)return;
-  const g=deal(prev,R,ps);
+  const pairOn=!prev&&!!(ROOM&&ROOM.pair);
+  if(pairOn)ps=pairOrder(ps,ROOM.pr|0);
+  const g=deal(prev,R,ps,undefined,{pair:pairOn});
   try{await G().set(g)}catch(e){msg='Başlatılamadı: '+(e.code||'')}
   try{await db.doc('rooms/'+code).update({st:'playing',rd:g.round,R:g.R,pl:ps.map(x=>x.n),tg:Date.now()})}catch(e){}
   statBump(prev?['rounds']:['rounds','games']);
@@ -1004,6 +1026,12 @@ function roomH(){
   const q=[...L].sort((a,b)=>a.t-b.t),hq=Math.min(q.length,4),nb=Math.max(0,Math.min(bots,4-hq)),inL=q.slice(0,4).some(x=>x.id===uid);
   const host=ROOM.host===uid,playing=ROOM.st==='playing';
   const slots=[0,1,2,3].map(i=>q[i]?`<div class="slot sc${i}"><small class="mut">${q[i].id===ROOM.host?'KURAN':'OYUNCU '+(i+1)}</small>${esc(q[i].name)}</div>`:i<hq+nb?`<div class="slot bot sc${i}"><small class="mut">BOT</small>Bot ${i-hq+1}</div>`:`<div class="slot empty"><small>OYUNCU ${i+1}</small>Boş</div>`).join('');
+  /* eşli: kuran eşleri seçer (masaya giriş sırasına göre 3 eşleşme) */
+  const pn=[...q.slice(0,4).map(x=>x.name),...Array.from({length:4},(_,k)=>'Bot '+(k+1))].slice(0,Math.max(hq,0)).concat(Array.from({length:nb},(_,k)=>'Bot '+(k+1)));
+  while(pn.length<4)pn.push('Oyuncu '+(pn.length+1));
+  const teamTxt=k=>{const o=pairOrder(pn,k);return `<b>${esc(o[0])} + ${esc(o[2])}</b><span>karşı</span><b>${esc(o[1])} + ${esc(o[3])}</b>`};
+  const pairH=ROOM.pair?(host&&!playing?`<div class="pairs" role="radiogroup" aria-label="Eşleri seç">${[0,1,2].map(k=>`<button class="pairo ${(ROOM.pr|0)===k?'on':''}" data-pr="${k}" role="radio" aria-checked="${(ROOM.pr|0)===k}">${teamTxt(k)}</button>`).join('')}</div>`:`<p class="pairinfo">Eşli oyun · ${teamTxt(ROOM.pr|0)}</p>`):'';
+  const pairT=host&&!playing?`<button class="pairT ${ROOM.pair?'on':''}" id="pairT" aria-pressed="${!!ROOM.pair}">Eşli oyun: <b>${ROOM.pair?'Açık':'Kapalı'}</b></button>`:'';
   let ctl='';
   if(playing)ctl='<p class="mut" style="margin:0">Oyun başlamış ama bu oyunda koltuğun yok.</p>';
   else if(host)ctl=`<div class="row"><button id="botadd" ${hq+nb>=4?'disabled':''}>Bot ekle</button><button id="botdel" ${nb>0?'':'disabled'}>Bot çıkar</button><button id="botfill" ${hq>=4?'disabled':''}>Botlarla doldur</button></div>
@@ -1012,7 +1040,7 @@ ${hq+nb<4?'<small>Başlamak için 4 kişi ya da bot gerekli. Arkadaşların kodl
   else ctl=`<p class="mut" style="margin:0">${esc(ROOM.hostName||'Kuran')} oyunu başlatınca masa açılır. ${ROOM.R} tur oynanacak.</p>`;
   return `<div class="panel"><h2>Masa</h2><small class="mut">ODA KODU</small><div class="code">${esc(code)}</div>
 <div class="row" style="margin-bottom:14px"><button id="cp">Kodu paylaş</button></div>
-<div class="slots">${slots}</div><div class="form">${ctl}
+<div class="slots">${slots}</div>${pairT}${pairH}<div class="form">${ctl}
 <div class="row">${host?`<button class="${admC==='cls'?'danger':''}" id="cls">${admC==='cls'?'Emin misin? Odayı kapat':'Odayı kapat'}</button>`:`<button id="lv">Odadan çık</button>`}<button id="home">Ana ekran</button></div></div>
 ${msg?`<div class="warn">${esc(msg)}</div>`:''}</div>`;
 }
@@ -1250,7 +1278,9 @@ const orack=(r,cnt)=>{
 let showPen=false;
 function penPanel(){
   const idx=[0,1,2,3].sort((a,b)=>(S.scores['s'+b]||0)-(S.scores['s'+a]||0)),ended=S.ph==='end';
-  return `<div class="penpanel" role="dialog" aria-label="Ceza puanları"><h3>Ceza puanları</h3>${idx.map((i,k)=>`<div class="pr sc${i} ${k===0&&(S.scores['s'+i]||0)>0?'top':''}"><span><i class="dot"></i>${esc(S.names[i])}<small>bu tur ${ended?(S.last[i]>0?'+':'')+S.last[i]:'+'+((S.ex||{})['s'+i]||0)}</small></span><b>${S.scores['s'+i]||0}</b></div>`).join('')}<small style="margin-top:6px">En yüksek ceza alan sonuncu olur.</small></div>`;
+  const me0=S.seats.indexOf(uid),tsum=t=>(S.scores['s'+t]||0)+(S.scores['s'+(t+2)]||0);
+  const teams=S.pair?`<div class="teams">${[0,1].map(t=>{const mine=me0>=0&&(me0%2)===t;return `<div class="tm ${mine?'mine':''}"><span>${mine?'Takımın':'Rakip takım'}<small>${esc(S.names[t])} + ${esc(S.names[t+2])}</small></span><b>${tsum(t)}</b></div>`}).join('')}</div>`:'';
+  return `<div class="penpanel" role="dialog" aria-label="Ceza puanları"><h3>Ceza puanları</h3>${teams}${idx.map((i,k)=>`<div class="pr sc${i} ${k===0&&(S.scores['s'+i]||0)>0?'top':''}"><span><i class="dot"></i>${esc(S.names[i])}<small>bu tur ${ended?(S.last[i]>0?'+':'')+S.last[i]:'+'+((S.ex||{})['s'+i]||0)}</small></span><b>${S.scores['s'+i]||0}</b></div>`).join('')}<small style="margin-top:6px">En yüksek ceza alan sonuncu olur.</small></div>`;
 }
 /* sıra ibresi: hep aynı yönde (sıranın döndüğü yönde) döner */
 let needleA=null,needleF=0,needleT=0,needleK='';
@@ -1270,7 +1300,8 @@ const CROWN='<svg class="crown" viewBox="0 0 46 30" aria-hidden="true"><path fil
 function endBreak(i,f,m,mr){
   const B=S.B,O=S.okey,h=S.hands['h'+i]||[],ex=(S.ex||{})['s'+i]||0,per=B?10:5,okv=B?500:250;
   let base=0;const L=[];
-  if(i===f){base=B?-200:-100;L.push(`Eli bitirdi <b>${base}</b>`)}
+  if(S.pair&&f>=0&&isMate(S,f,i)){base=0;L.push((i===S.seats.indexOf(uid)?'Eşin':'Eşi')+' eli bitirdi: <b>ceza yok</b>')}
+  else if(i===f){base=B?-200:-100;L.push(`Eli bitirdi <b>${base}</b>`)}
   else if(S.opn['s'+i]>0){
     const jk=h.filter(x=>isJ(x,O)).length,n=h.filter(x=>!isJ(x,O)).reduce((a,x)=>a+tv(x,O).n,0);
     base=n*per+jk*okv;
@@ -1298,12 +1329,15 @@ function endH(me,elE,finalEnd){
     return `<div class="er sc${i} ${i===f?'win':''}"><div class="erh"><i class="dot"></i><b>${esc(S.names[i])}${i===me?' · sen':''}</b><span class="et ${v<0?'neg':v>0?'pos':''}">${v>0?'+':''}${v}</span></div>
 <div class="erd">${r.ok?r.L.join('<br>'):'Bu el: <b>'+(v>0?'+':'')+v+'</b>'}</div>${tiles}<div class="ers ${finalEnd&&i===lastP?'lastp':''}">Toplam ceza: <b>${S.scores['s'+i]||0}</b>${finalEnd&&i===lastP?' · sonuncu':''}</div></div>`;
   }).join('');
+  const tl=t=>((S.last||[])[t]||0)+((S.last||[])[t+2]||0),ts=t=>(S.scores['s'+t]||0)+(S.scores['s'+(t+2)]||0);
+  const loseT=ts(0)>=ts(1)?0:1;
+  const teamH=S.pair?`<div class="endteams">${[0,1].map(t=>`<div class="et2 ${me>=0&&me%2===t?'mine':''} ${finalEnd&&t===loseT?'lose':''}"><small>${me>=0&&me%2===t?'Takımın':'Rakip takım'}</small><b>${esc(S.names[t])} + ${esc(S.names[t+2])}</b><span>Bu el ${tl(t)>0?'+':''}${tl(t)} · toplam ${ts(t)}</span>${finalEnd&&t===loseT?'<em>Kaybeden takım</em>':''}</div>`).join('')}</div>`:'';
   let ft='';
-  if(finalEnd)ft=`<div class="row"><button class="p" id="home">Ana ekrana dön</button></div><small>En yüksek ceza alan sonuncu olur.</small>`;
+  if(finalEnd)ft=`<div class="row"><button class="p" id="home">Ana ekrana dön</button></div><small>${S.pair?'En çok ceza yiyen takım kaybeder.':'En yüksek ceza alan sonuncu olur.'}</small>`;
   else if(elE>9500)ft=`<div class="row"><button class="p" id="again">Sonraki el</button></div>`;
   else ft=`<div class="bar"><i></i></div><small>Taşlar karılıyor, yeni el birazdan başlıyor…</small>`;
   const hid=endHide===S.gid;
-  return `<div class="endov ${hid?'hid':''}" style="--el:${Math.min(elE,60000)}ms"><button class="endo" id="endo">Sonuçları göster</button><div class="endcard" role="dialog" aria-label="El sonu"><button class="endx" id="endx">Masayı gör</button><div class="endhd ${f===me?'me':''}">${f>=0?CROWN:''}<b>${title}</b><small>${sub2}</small></div><div class="endrows">${rows}</div><div class="endft">${ft}</div></div></div>`;
+  return `<div class="endov ${hid?'hid':''}" style="--el:${Math.min(elE,60000)}ms"><button class="endo" id="endo">Sonuçları göster</button><div class="endcard" role="dialog" aria-label="El sonu"><button class="endx" id="endx">Masayı gör</button><div class="endhd ${f===me?'me':''}">${f>=0?CROWN:''}<b>${title}</b><small>${sub2}</small></div>${teamH}<div class="endrows">${rows}</div><div class="endft">${ft}</div></div></div>`;
 }
 let dealGid=-1,dealT=0,endGid=-1,endT=0,nextFor=-1,nextTimer=null,dealTimer=null;
 function scheduleNext(){
@@ -1446,7 +1480,7 @@ function render0(){
       if(hid>0)tiles=`<span class="more">+${hid}</span>`+tiles;
       const pz=S.scores['s'+i]||0;
       return `<div class="seat sc${i} ${S.turn===i&&!ended?'turn':''}" data-seat="${i}">
-<div class="plate"><span class="av">${esc(S.names[i].slice(0,1).toUpperCase())}</span><div class="pn"><b>${esc(S.names[i])}${i===me?'<em>sen</em>':''}</b><small>${cnt} taş${o>0?' · açtı '+o:''}${pz?`<span class="pb" title="Toplam ceza">${pz}</span>`:''}</small></div></div>
+<div class="plate"><span class="av">${esc(S.names[i].slice(0,1).toUpperCase())}</span><div class="pn"><b>${esc(S.names[i])}${i===me?'<em>sen</em>':S.pair&&isMate(S,me,i)?'<em>eşin</em>':''}</b><small>${cnt} taş${o>0?' · açtı '+o:''}${pz?`<span class="pb" title="Toplam ceza">${pz}</span>`:''}</small></div></div>
 ${i===me?'':orack(r,cnt)}
 <div class="dpile" aria-label="${esc(S.names[i])} attığı taşlar">${tiles?`<div class="dstack" style="--pe:${S.tt?Math.max(0,Date.now()-S.tt):0}ms">${tiles}</div>`:''}</div>${persH(i)}</div>`;
     };
@@ -1751,6 +1785,7 @@ $('#app').addEventListener('click',async e=>{
   if(b&&b.dataset.adm){await admAct(b.dataset.adm);return}
   if(b&&b.dataset.watch){watchRoom(b.dataset.watch);return}
   if(b&&b.dataset.wa){await admRoomAct(b.dataset.wa);return}
+  if(b&&b.dataset.pr!=null){try{await db.doc('rooms/'+code).update({pr:+b.dataset.pr})}catch(e){}return}
   if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:+v});return}
   if(b&&b.dataset.ins){
     const [o,gi,en]=b.dataset.ins.split(':');
@@ -1776,6 +1811,7 @@ $('#app').addEventListener('click',async e=>{
     else if(id==='lv')await leaveLobby();
     else if(id==='cls'){if(admC!=='cls'){admC='cls';render();return}admC='';const c=code;leaveLocal('');await wipeRoom(c)}
     else if(id==='cp')await shareCode();
+    else if(id==='pairT'){try{await db.doc('rooms/'+code).update({pair:!(ROOM&&ROOM.pair)})}catch(e){}}
     else if(id==='botadd')await setBots(Math.min(bots+1,3));
     else if(id==='botdel')await setBots(Math.max(0,bots-1));
     else if(id==='botfill'){const hq=Math.min(L.length,4);await setBots(Math.max(0,4-hq))}

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node tools/build.js",
     "start": "node tools/build.js && node server/server.js",
-    "test": "node tools/build.js && node test/engine.test.js && node test/sim.test.js && node test/server.test.js && node test/stress.test.js"
+    "test": "node tools/build.js && node test/engine.test.js && node test/sim.test.js && node test/server.test.js && node test/pair.test.js && node test/stress.test.js"
   },
   "engines": { "node": ">=18" },
   "dependencies": { "ws": "^8.18.0" }

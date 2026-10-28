@@ -81,6 +81,41 @@ s=base([id(1,8),id(2,2),id(2,3)],{opn:{s0:0,s1:20,s2:0,s3:0},tbl:{t0:[],t1:[per5
 r=run(s,'discard',{t:id(1,8)});ok(r.r&&r.r.scores.s0===500,'işler taş atana 500 ceza');
 r=run(s,'insert',{o:1,gi:0,e:'h',t:id(1,8)});ok(!r.r,'açmamış oyuncu işleyemez');
 r=run(s,'insert',{o:1,gi:0,e:'zz',t:id(1,8)});ok(!r.r,'bozuk uç reddedilir');
+console.log('--- eşli oyun (K-eşli)');
+{
+  const P=(h0,extra)=>base(h0,Object.assign({pair:true},extra||{}));
+  // 0 ile 2 eş. 0 bitirir: 2'ye hiç ceza yok (açmamış da olsa), 1 ve 3 normal
+  let s=P([red(1),red(2),red(3),id(3,3)],{opn:{s0:20,s1:22,s2:0,s3:0},opm:{s0:'p',s1:'p',s2:'',s3:''}});
+  let r=run(s,'discard',{t:id(3,3)});
+  ok(r.r&&r.r.ph==='end'&&r.r.last[2]===0&&r.r.last[3]===500&&r.r.last[0]===-100,'eşin bitirince açmamış eşe ceza yok, bitirme puanı sadece bitirene: '+JSON.stringify(r.r&&r.r.last));
+  s=P([red(1),red(2),red(3),id(3,3)],{opn:{s0:20,s1:0,s2:21,s3:0},opm:{s0:'p',s1:'',s2:'p',s3:''}});
+  r=run(s,'discard',{t:id(3,3)});
+  ok(r.r&&r.r.last[2]===0,'eşin bitirince açmış eşin elindeki taşlara da ceza yok');
+  ok(r.r&&r.r.last[0]===-100&&r.r.last[1]===500,'eşi açtıysa tek başına bitirme sayılmaz (çarpan yok): '+JSON.stringify(r.r&&r.r.last));
+  s=P([red(1),red(2),red(3),id(3,3)],{opn:{s0:20,s1:0,s2:0,s3:0},opm:{s0:'p',s1:'',s2:'',s3:''}});
+  r=run(s,'discard',{t:id(3,3)});
+  ok(r.r&&r.r.last[0]===-200&&r.r.last[1]===1000&&r.r.last[2]===0,'kimse açmamışsa tek başına ×2, eşe yine ceza yok: '+JSON.stringify(r.r&&r.r.last));
+  // eşin perine işleme ve okey değiştirme: ceza yok; rakibe: var
+  const p567={g:[id(1,5),id(1,6),id(1,7)],k:'q',lo:5};
+  s=P([id(1,8),id(2,2),id(2,3)],{opn:{s0:20,s1:20,s2:20,s3:0},opm:{s0:'p',s1:'p',s2:'p',s3:''},tbl:{t0:[],t1:[p567],t2:[p567],t3:[]}});
+  r=run(s,'insert',{o:2,gi:0,e:'h',t:id(1,8)});ok(r.r&&!r.r.scores,'eşin perine işlemede ceza yok');
+  r=run(s,'insert',{o:1,gi:0,e:'h',t:id(1,8)});ok(r.r&&r.r.scores&&r.r.scores.s1===80,'rakibin perine işlemede ceza var');
+  const jk=id(O.c,O.n);  // okey taşı
+  const pj={g:[id(1,5),id(1,6),jk],k:'q',lo:5};
+  s=P([id(1,7),id(2,2),id(2,3)],{opn:{s0:20,s1:20,s2:20,s3:0},opm:{s0:'p',s1:'p',s2:'p',s3:''},tbl:{t0:[],t1:[],t2:[pj],t3:[]}});
+  r=run(s,'swap',{o:2,gi:0,idx:2,t:id(1,7)});ok(r.r&&!r.r.scores,'eşin perindeki okeyi değiştirmede ceza yok');
+  // işler taş her zaman işler
+  s=P([id(1,8),id(2,2),id(2,3)],{opn:{s0:0,s1:0,s2:20,s3:0},tbl:{t0:[],t1:[],t2:[p567],t3:[]}});
+  r=run(s,'discard',{t:id(1,8)});ok(r.r&&r.r.scores.s0===500,'sadece eşin perine uyan taşı atmak da işler taş: 500');
+  // katlamalı eşin açılışına da geçerli
+  s=P([red(8),red(9),red(10),red(11),red(12),red(13),id(1,2),id(2,5)],{mx:21,opn:{s0:0,s1:0,s2:21,s3:0}});
+  r=run(s,'open',{groups:[[red(8),red(9),red(10)],[red(11),red(12),red(13)]]});
+  ok(!r.r&&/en az 22/.test(r.msg),'katlamalı eşin açılışına da geçerli');
+  // deste biterse herkes normal
+  s=P([red(1),red(2)],{ph:'draw',deck:[],opn:{s0:20,s1:0,s2:0,s3:0}});s.hands.h1.push(...s.deck.splice(0));
+  const f=E.fin(JSON.parse(JSON.stringify(s)),-1);ok(f.win===99&&f.last[1]===500&&f.last[2]===500,'eşlide deste bitince normal cezalar');
+  ok(E.deal(null,9,[0,1,2,3].map(i=>({u:'u'+i,n:'n'+i})),1,{pair:true}).pair===true,'eşli masa dağıtımda işaretlenir');
+}
 console.log('--- görünüm ve sayım');
 s=base([red(1),red(2)]);
 const v=E.view(s,0);ok(v.hands.h1.every(x=>x===null)&&v.hands.h0[0]===red(1)&&v.deck.every(x=>x===null),'görünüm: başkasının eli ve deste gizli');

@@ -6,7 +6,8 @@ let fails=0,ended=0,nowin=0,steps=0,wins=0,okeyEnd=0;
 const t0=Date.now();
 for(let g=0;g<N;g++){
   const lv=[g%3,(g+1)%3,2,1];
-  let S=E.deal(g%2?{round:g%4,d0:g%4,R:9,scores:{}}:null,9,[0,1,2,3].map(i=>({u:'bot'+i,n:'B'+i})));
+  const pair=g%3===2;
+  let S=E.deal(g%2?{round:g%4,d0:g%4,R:9,scores:{},pair}:null,9,[0,1,2,3].map(i=>({u:'bot'+i,n:'B'+i})),0,{pair});
   let k=0,err='';
   while(S.ph!=='end'&&k<3000){
     const me=S.turn,r=E.botMove(S,me,lv[me]);
@@ -18,6 +19,7 @@ for(let g=0;g<N;g++){
     for(let i=0;i<4;i++)for(const gr of n.tbl['t'+i]){if(gr.k==='q'&&gr.g.length<3){err='kısa per';break}}
     S=n;k++;
   }
+  if(!err&&S.ph==='end'&&S.pair&&S.win<4&&S.last[(S.win+2)%4]!==((S.ex||{})['s'+(S.win+2)%4]||0))err='eşli: bitirenin eşine ceza yazılmış';
   if(err||S.ph!=='end'){fails++;if(fails<5)console.log('HATA el',g,err||'bitmedi',k);continue}
   ended++;steps+=k;if(S.win===99)nowin++;else wins++;
 }
