@@ -122,7 +122,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Ana ekran (ilk masa kurma ekranı) çok sade kaldı: oraya neler ekleneceği birlikte düşünülecek
 - [ ] Ana ekrandaki "Kurallar" bağlantısı çok sade: kurallar sayfası güzel, daha dikkat çekici olsun (örneğin küçük bir tanıtım kartı: başlık, birkaç taş, "Kuralları oku" düğmesi)
 
-- [ ] Titreşim iPhone'da çalışmıyor (Mustafa denedi). Sebep: Apple web sayfalarının titreştirmesine izin vermiyor; iOS 18'deki dokunuş yöntemi sadece parmağın dokunduğu anda çalışıyor, sıra gelmesi/ceza gibi olaylarda çalışmıyor. Seçenekler: (1) kendi dokunuşlarında (taş tutma, bırakma, atma) dokunuş anında deneme, (2) titreşim yerine ekranda görsel uyarı (kenar nabzı) ve ses, (3) gerçek titreşim için ileride uygulama mağazası sürümü
+- [x] Titreşim iPhone'da çalışmıyor (Apple web sayfalarına izin vermiyor). Mustafa: gerek yok, bu konu kapandı. Android'de titreşim çalışmaya devam ediyor.
 
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
 Giriş ekranı
