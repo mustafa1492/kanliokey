@@ -796,6 +796,41 @@ body.tlow .tpulse{visibility:visible;animation:tpulse 1s ease-in-out infinite}
 @keyframes tpulse{0%,100%{opacity:.2}50%{opacity:.95}}
 @media (prefers-reduced-motion:reduce){body.tlow .tpulse{animation:none;opacity:.6}.rack .t.ok::before{display:none}.dealing .gf,.dealing .gf .t::before{animation:none}.dealing .gf .t::before{display:none}.bigann{animation-name:bigfade}}
 @keyframes bigfade{0%,100%{opacity:0}10%,85%{opacity:1}}
+
+/* ===== v46: ıstakalar: gerçek ahşap ıstaka (iki raf, taşlar rafın üstünde), rakiplerin ıstakası küçük ahşap ıstaka + taş sırtları ===== */
+:root{--woodtex:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='160'%3E%3Cfilter id='w' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004 0.11' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.24  0 0 0 0 0.12  0 0 0 0 0.04  0 0 -3 0 1.55'/%3E%3C/filter%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23a26a39'/%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E")}
+body.gmode .rackbox,.rackbox{background:linear-gradient(180deg,#22150e,#140b07);border:1px solid #3a2517;border-top:1px solid #6a4528;box-shadow:0 -8px 18px #0009,inset 0 1px 0 #ffffff12}
+.rack{position:relative;isolation:isolate;background:none!important;box-shadow:none!important;border-radius:12px;column-gap:1px}
+body.gmode .rack{padding:var(--rp) 9px calc(var(--rp) + 4px)}
+.rack::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;transform:translateZ(0);pointer-events:none;
+  background:
+   linear-gradient(180deg,#00000000 0,#0000004d 100%) no-repeat 0 calc(var(--rp) + var(--th) - 14px)/100% 15px,
+   linear-gradient(180deg,#ffe6bb 0,#f0b874 1.5px,#d39557 3px,#b0733d 5px,#8a5226 9px,#5a3315 12px,#2a160800 12px) no-repeat 0 calc(var(--rp) + var(--th) + 1px)/100% 13px,
+   linear-gradient(180deg,#00000073,#0000) no-repeat 0 calc(var(--rp) + var(--th) + 13px)/100% 9px,
+   linear-gradient(180deg,#00000000 0,#0000004d 100%) no-repeat 0 calc(var(--rp) + 2*var(--th) + var(--rg) - 10px)/100% 15px,
+   linear-gradient(180deg,#ffe6bb 0,#f0b874 1.5px,#d39557 3px,#b0733d 5px,#8a5226 9px,#5a3315 12px,#2a160800 12px) no-repeat 0 calc(var(--rp) + 2*var(--th) + 5px + var(--rg))/100% 13px,
+   linear-gradient(180deg,#00000033 0,#0000 30%,#0000 70%,#00000059 100%),
+   linear-gradient(90deg,#00000059 0,#0000 4%,#0000 96%,#00000059 100%),
+   var(--woodtex) center/480px 160px;
+  box-shadow:inset 0 1.5px 0 #ffd6a080,inset 0 -3px 0 #2e1909,0 0 0 1px #2a1709,0 8px 14px #000c}
+.rs,body.gmode .rs{background:none!important;box-shadow:none!important}
+.rs.over{background:#ffd36a33!important;box-shadow:inset 0 0 0 2px #ffd36a!important;outline:none}
+.rack .t{box-shadow:0 1px 0 #fff inset,0 2px 0 #c9bb93,0 3px 0 #9f9068,0 5px 6px #0000008c}
+.rack .t.sel{box-shadow:0 0 0 2px var(--blood),0 2px 0 #c9bb93,0 8px 10px #0009}
+.rack .t.ok,.rack .t.ag{box-shadow:0 0 0 2px var(--gold),0 2px 0 #c9bb93,0 3px 0 #9f9068,0 5px 6px #0000008c}
+.rack .t.ag{box-shadow:0 0 0 2px #7bd88f,0 2px 0 #c9bb93,0 3px 0 #9f9068,0 5px 6px #0000008c}
+.rlabel .lab{color:#d9c3a3!important;letter-spacing:.14em}
+/* rakiplerin ıstakası */
+.orack .base{border-radius:5px;background:linear-gradient(180deg,#ffffff1f,#0000 40%,#00000040),var(--woodtex) center/240px 80px;box-shadow:inset 0 1px 0 #ffd29a88,inset 0 -2px 0 #3a1f0b,0 0 0 1px #2a1709,0 4px 7px #000b}
+.orack i{border-radius:2px;background:linear-gradient(180deg,#fffcf4 0,#f1e8cf 55%,#d9cba3 100%);box-shadow:inset 0 0 0 .5px #b9a77a,0 1.5px 0 #a8956a,0 2.5px 3px #0007}
+.orack.h{height:21px!important}
+.orack.h i{top:2px;width:8px;height:12px}
+.orack.h .base{background:linear-gradient(180deg,#0000 0,#0000 15px,#ffd6a0aa 15px,#c0824a 16.5px,#7a4520 20px,#3a1f0b 21px),linear-gradient(180deg,#ffffff1a,#0000 40%,#00000040),var(--woodtex) center/240px 80px}
+.orack.v{width:21px!important}
+.orack.v i{left:2px;width:12px;height:5px;background:linear-gradient(90deg,#fffcf4 0,#f1e8cf 55%,#d9cba3 100%)}
+.orack.v .base{background:linear-gradient(90deg,#0000 0,#0000 15px,#ffd6a0aa 15px,#c0824a 16.5px,#7a4520 20px,#3a1f0b 21px),linear-gradient(90deg,#ffffff1a,#0000 40%,#00000040),var(--woodtex) center/80px 240px}
+.a-right .orack.v i{left:auto;right:2px;background:linear-gradient(270deg,#fffcf4 0,#f1e8cf 55%,#d9cba3 100%)}
+.a-right .orack.v .base{background:linear-gradient(270deg,#0000 0,#0000 15px,#ffd6a0aa 15px,#c0824a 16.5px,#7a4520 20px,#3a1f0b 21px),linear-gradient(270deg,#ffffff1a,#0000 40%,#00000040),var(--woodtex) center/80px 240px}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
