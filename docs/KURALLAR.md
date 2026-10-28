@@ -89,20 +89,15 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 ## Eşli oyun (Mustafa anlattı; henüz oyunda yok)
 - Masa kurulurken "eşli" seçilebilir. Masayı kuran eşleri belirler.
 - Eşler karşılıklı oturur.
-- Sen açamamışsan ve eşin eli bitirirse sana açamama cezası yazılmaz.
+- Eşin eli bitirirse sana hiç ceza yazılmaz: açamamışsan açamama cezası da, açmışsan elinde kalan taşların cezası da yazılmaz.
+- Bitirme puanı (−100, büyük elde −200) sadece bitiren eşe yazılır.
+- Takımın cezası iki eşin cezalarının toplamıdır. Oyun sonunda en çok ceza yiyen takım kaybeder.
 - Katlamalı kural eşin açılışına da geçerlidir (eşin 21 açtıysa sen en az 22 ile açarsın).
-- Eşinin perine işlersen ceza yazılmaz.
+- Tek başına bitirme (×2): eşin de açmışsa sayılmaz (o elde senden başka kimse açmamış olmalı).
+- Eşinin perine işlersen ceza yazılmaz. Eşinin perindeki okeyi değiştirirsen de ceza yazılmaz.
+- İşler taş her zaman işlerdir: sadece eşinin perine işlenebilen taşı atsan da 500 ceza yazılır.
 - Eşinin perlerini ve taşlarını kullanamazsın.
-- Oyun sonunda en çok ceza yiyen takım kaybeder.
 - Bot eş olabilir. Eşli oyunda botlar en zeki seviyede (Usta) oynar.
-
-Eşli oyunda açık sorular (cevaplanmadan eşli mod yapılmaz):
-1. Eşin bitirince sen açmışsan elinde kalan taşların cezası yazılır mı?
-2. Takımın cezası iki eşin cezasının toplamı mı?
-3. Eşin bitirince bitirme puanı (−100 / −200) sadece bitirene mi yazılır?
-4. Tek başına bitirme (×2) eşlide nasıl: eşin de açmışsa "tek başına" sayılır mı?
-5. Eşinin perindeki okeyi değiştirirsen (okey değiştirme) ceza yazılır mı?
-6. Sadece eşinin perine işlenebilen taşı atarsan işler taş cezası (500) yazılır mı?
 
 ## Benim koyduğum varsayımlar
 Hepsi onaylandı. Şu an açık varsayım yok.

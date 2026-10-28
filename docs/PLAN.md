@@ -124,7 +124,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 
 - [x] Titreşim iPhone'da çalışmıyor (Apple web sayfalarına izin vermiyor). Mustafa: gerek yok, bu konu kapandı. Android'de titreşim çalışmaya devam ediyor.
 
-- [ ] EŞLİ OYNAMA: masa kurarken "eşli" seçeneği, kuran eşleri belirler, bot eş olabilir (eşlide botlar Usta). Mustafa'nın anlattığı kurallar ve kalan 6 açık soru: docs/KURALLAR.md "Eşli oyun". Açık sorular cevaplanınca yapılacak.
+- [ ] EŞLİ OYNAMA: kuralları tamam (docs/KURALLAR.md "Eşli oyun"). Yapılacaklar: masa kurma ekranında eşli seçeneği ve kuranın eşleri belirlemesi, karşılıklı oturma, takım cezası (iki eşin toplamı) her yerde (Cezalar paneli, el sonu kartı, oyun sonu: kaybeden takım), eşin bitirince eşe ceza yok, eşin perine işleme ve okey değiştirmede ceza yok, botlar eşli oyunda Usta ve eşini cezalandırmayan işlemeyi bilir, sunucu ve claude.ai sürümü, testler.
 
 Estetik kararları (Mustafa seçti, toplu güncellemede yapılacak)
 - [ ] Ana ekran: masa sözleri logonun altında sırayla değişir. Mustafa'nın seçtiği sözler (aynen):
