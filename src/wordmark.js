@@ -66,9 +66,11 @@ const KW=(()=>{
     {
       const short=feet(M.ek,128,1,40),W=Math.ceil(Math.max(M.wk,M.wo)+24);
       const long=[[1,.13,150],[2,.88,120],[3,.5,95]].map(([i,fx,L])=>{const e=M.ek[i];return{x:e.x+e.w*fx,y:128,w:e.w*.1,L}});
-      const falls=long.slice(0,2).map((d,k)=>`<circle class="kwfall" cx="${f1(d.x)}" cy="${f1(d.y+d.L+d.w*.7)}" r="${f1(d.w*.55)}" fill="url(#kwdr)" style="animation-delay:${k?-3.6:-.8}s"/>`).join('');
-      cache.stack=`<svg class="kw kw-stack %C" viewBox="0 0 ${W} 330" role="img" aria-label="Kanlı Okey"><g filter="url(#kwsh)"><g filter="url(#kwwet)" fill="url(#kwbl)">${T(10,130,'KANLI','url(#kwbl)')}${short.map(d=>`<path d="${drip(d.x,d.y,d.w,d.L)}"/>`).join('')}</g>${T(10,130,'KANLI','url(#kwgl)')}</g>`+
-        `<g filter="url(#kwsh)">${T(10,285,'OKEY','url(#kwiv)','filter="url(#kwivf)"')}</g><g filter="url(#kwwet)" fill="url(#kwbl)">${long.map(d=>`<path d="${drip(d.x,d.y,d.w,d.L)}"/>`).join('')}</g><g class="kwfx">${falls}</g></svg>`;
+      /* düşen damlalar SVG'nin dışında, ayrı katmanda: süzgeçli yazı her karede yeniden çizilmesin (telefonda akıcılık) */
+      const pc=(v,t)=>(v/t*100).toFixed(2)+'%';
+      const falls=long.slice(0,2).map((d,k)=>`<i class="kwfall" style="left:${pc(d.x-d.w*.55,W)};top:${pc(d.y+d.L+d.w*.15,330)};width:${pc(d.w*1.1,W)};animation-delay:${k?-3.6:-.8}s"></i>`).join('');
+      cache.stack=`<span class="kw kwbox %C">${falls}<svg class="kwsvg" viewBox="0 0 ${W} 330" role="img" aria-label="Kanlı Okey"><g filter="url(#kwsh)"><g filter="url(#kwwet)" fill="url(#kwbl)">${T(10,130,'KANLI','url(#kwbl)')}${short.map(d=>`<path d="${drip(d.x,d.y,d.w,d.L)}"/>`).join('')}</g>${T(10,130,'KANLI','url(#kwgl)')}</g>`+
+        `<g filter="url(#kwsh)">${T(10,285,'OKEY','url(#kwiv)','filter="url(#kwivf)"')}</g><g filter="url(#kwwet)" fill="url(#kwbl)">${long.map(d=>`<path d="${drip(d.x,d.y,d.w,d.L)}"/>`).join('')}</g></svg></span>`;
     }
     /* tek satır: KANLI OKEY yan yana, kısa damlalar */
     {
