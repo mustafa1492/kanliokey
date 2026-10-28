@@ -699,5 +699,7 @@ function viewFor(s,me){
 }
 /* oyundaki taş sayısı tutuyor mu (hile/hata denetimi) */
 function tileCount(s){let n=s.deck.length+(s.ind>=0?1:0);for(let i=0;i<4;i++){n+=s.hands[hk(i)].length+s.disc[dk(i)].length;for(const r of s.tbl['t'+i]||[])n+=r.g.length}return n}
-var ENG={run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
+/* uzun süre çalışan sunucuda bellek şişmesin */
+function resetCaches(){badSide.clear();hpKey='';hpVal=0}
+var ENG={resetCaches,run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
 if(typeof module!=='undefined'&&module.exports)module.exports=ENG;

@@ -27,7 +27,7 @@ Tarayıcıda `http://localhost:8080` aç. Aynı ağdaki telefondan `http://BILGI
 npm test                 # kurallar + 300 el bot simülasyonu + sunucu testleri
 node test/sim.test.js 3000
 ```
-Uçtan uca (iki telefon) deneme için Playwright gerekir: sunucuyu başlat, sonra `python3 test/e2e.py 8080`.
+Uçtan uca denemeler için Playwright gerekir: sunucuyu başlat, sonra `python3 test/e2e.py 8080` (iki telefon). `test/reconnect.py` (sunucu kapanıp açılınca sayfa toparlanıyor mu) ve `test/admin.py` (yönetici paneli) kendi sunucularını açar.
 
 ## İnternete yükleme (arkadaşlarla deneme)
 En kolay yol Render.com (ücretsiz plan yeterli):

@@ -468,6 +468,7 @@ body.gmode .felt3d{flex:1 1 0;min-height:0!important;aspect-ratio:auto!important
 body.gmode .area{min-height:0;max-height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 body.gmode .area::-webkit-scrollbar{display:none}
 body.gmode .a-mid{overflow:visible}
+body.gmode .a-top{padding-top:6px}
 body.gmode .felt3d{grid-template-rows:fit-content(38%) minmax(0,1fr) fit-content(32%)}
 body.gmode .a-top .pers{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:3px 5px}
 body.gmode .a-top .pers:not(:empty){margin-top:4px;padding-top:4px}
@@ -839,7 +840,7 @@ function homeH(){
 <div class="panel opt"><span class="ob">2</span><h2>Odaya katıl</h2><p class="mut">Arkadaşından aldığın kodu yaz, doğrudan masaya otur.</p><div class="row"><input id="cd" placeholder="KOD" maxlength="5" value="${esc(INVITE)}" autocapitalize="characters" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em;text-align:center;flex:1;min-width:0" aria-label="Oda kodu"><button class="p" id="jn">Katıl</button></div></div></div>
 ${saved?`<button id="resume" class="resume">Son odaya dön · ${esc(saved)}</button>`:''}
 <ol class="lsteps"><li><b>Kur</b><span>Oda kodunu al</span></li><li><b>Paylaş</b><span>Arkadaşlar kodla girer</span></li><li><b>Oyna</b><span>Dört koltuk dolunca başla</span></li></ol>
-<details class="agate"><summary>Yönetici girişi</summary><div class="row"><input id="ap" type="password" inputmode="numeric" placeholder="Şifre" autocomplete="off" aria-label="Yönetici şifresi" style="flex:1;min-width:0"><button id="adm">Gir</button></div></details>
+<details class="agate" ${agOpen?'open':''}><summary>Yönetici girişi</summary><div class="row"><input id="ap" type="password" inputmode="numeric" placeholder="Şifre" autocomplete="off" aria-label="Yönetici şifresi" style="flex:1;min-width:0"><button id="adm">Gir</button></div></details>
 ${msg?`<div class="warn">${esc(msg)}</div>`:''}`;
 }
 function roomH(){
@@ -1314,8 +1315,8 @@ $('#app').addEventListener('pointerdown',e=>{
   const b=e.target.closest('#deck,#tk');
   if(b&&!b.disabled)drag={kind:b.id,el:b,x:e.clientX,y:e.clientY,pid:e.pointerId,on:false,over:null,hot:false};
 });
-let hintOpen=false;
-if(typeof document!=='undefined'&&document.addEventListener)document.addEventListener('toggle',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('hint'))hintOpen=t.open},true);
+let hintOpen=false,agOpen=false;
+if(typeof document!=='undefined'&&document.addEventListener)document.addEventListener('toggle',e=>{const t=e.target;if(t&&t.classList){if(t.classList.contains('hint'))hintOpen=t.open;if(t.classList.contains('agate'))agOpen=t.open}},true);
 let slotCache=null;
 if(typeof window!=='undefined'&&window.addEventListener){window.addEventListener('scroll',()=>{slotCache=null},{passive:true,capture:true});window.addEventListener('resize',()=>{slotCache=null},{passive:true})}
 function slotAt(x,y){

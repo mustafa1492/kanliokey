@@ -300,12 +300,12 @@ function hAdminAct(conn,m){
 function handle(conn,m){
   const id=m.id|0,op=m.op;
   if(op==='hello'){
+    if(conn.uid)return deny(conn,id,'again'); /* bir bağlantı bir kimlik */
     let e=typeof m.token==='string'&&m.token.length===48?tokens.get(m.token):null,tok=m.token;
     if(!e){
       if(!allow('new:'+conn.ip,40,3600e3))return deny(conn,id,'rate');
       tok=crypto.randomBytes(24).toString('hex');e={uid:'u'+crypto.randomBytes(8).toString('hex'),t:now()};tokens.set(tok,e);dirty=true;
     }
-    if(conn.uid)online.set(conn.uid,Math.max(0,(online.get(conn.uid)||1)-1));
     conn.uid=e.uid;online.set(conn.uid,(online.get(conn.uid)||0)+1);
     const cn=+m.now;conn.skew=Number.isFinite(cn)&&Math.abs(cn-now())<864e5?cn-now():0;
     for(const [k,g] of store)if(/\/game\/main$/.test(k)&&g.seats&&g.seats.includes(conn.uid))kick(roomOf(k));
@@ -385,10 +385,10 @@ wss.on('connection',(ws,req)=>{
   ws.on('pong',()=>{conn.alive=true});
   ws.on('message',(buf,isBin)=>{
     if(isBin)return;
-    const t=now();conn.bucket=Math.min(60,conn.bucket+(t-conn.bt)*0.02);conn.bt=t; /* saniyede 20 mesaj, 60'lık tampon */
-    if(--conn.bucket<0){if(conn.bucket<-200)ws.close(1008,'rate');return}
     let m;try{m=JSON.parse(buf.toString('utf8'))}catch(e){return}
     if(!m||typeof m!=='object')return;
+    const t=now();conn.bucket=Math.min(60,conn.bucket+(t-conn.bt)*0.02);conn.bt=t; /* saniyede 20 mesaj, 60'lık tampon */
+    if(--conn.bucket<0){if(conn.bucket<-200){ws.close(1008,'rate');return}if(m.id)deny(conn,m.id|0,'rate','Çok hızlı istek gönderiliyor, biraz bekle.');return}
     try{handle(conn,m)}catch(e){log('istek hatası',e&&e.stack);if(m.id)deny(conn,m.id|0,'error')}
   });
   ws.on('close',()=>{
@@ -409,6 +409,7 @@ const sweep=setInterval(()=>{
     if((!anyOn&&idle>6*3600e3)||idle>48*3600e3||(g&&g.ph==='end'&&g.round+1>=g.R&&idle>3600e3&&!anyOn)){log('eski oda silindi',c);wipeRoom(c)}
   }
   for(const [tk,e] of tokens)if(t-e.t>180*864e5&&!(online.get(e.uid)>0))tokens.delete(tk);
+  ENG.resetCaches();
 },10*60e3);
 /* açılışta bekleyen oyunlar için son hareketi şimdi say */
 for(const k of store.keys()){const m=/^rooms\/([A-Z0-9]{5})$/.exec(k);if(m)lastAct.set(m[1],now())}
