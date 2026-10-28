@@ -1,6 +1,11 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kanlı Okey</title>
+<meta name="description" content="Kanlı Okey: arkadaşlarınla telefondan oynanan dört kişilik yöresel okey. Oda kur, kodu paylaş, masaya otur.">
+<meta name="theme-color" content="#150b0a">
 <meta name="claude:viewport-fit-sides" content="cover">
+<!--@HEAD@-->
+<style>:root{color-scheme:dark}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
 /* Layout: üstte afiş başlığı, ortada yeşil çuha masa (gösterge, deste, yan taşı), rakipler iki sütun, altta ahşap ıstaka ve eylem düğmeleri. */
@@ -497,6 +502,13 @@ body.gmode .a-top .plate{grid-column:1;grid-row:1}
 body.gmode .a-top .dpile{grid-column:2;grid-row:1}
 body.gmode .a-top .orack{grid-column:3;grid-row:1;transform:scale(.8);transform-origin:left center;margin-right:-28px}
 body.gmode .a-top .pers{grid-column:1/-1;grid-row:2}
+
+body.gmode .gstat{padding:6px 8px 8px}
+body.gmode .gstat .status{min-height:30px}
+body.gmode .gstat .status b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.gmode .tmr{position:absolute;left:8px;right:8px;bottom:3px;height:3px;margin:0;border-radius:2px;background:#ffffff14}
+body.gmode .tmr span{display:none}
+body.gmode .rack{--rp:8px;--rg:9px}
 @media (max-height:720px){
 body.gmode .top h1{font-size:19px}
 body.gmode .gstat{padding:5px 8px}
@@ -505,7 +517,7 @@ body.gmode .tmr{height:5px;margin-top:4px}
 body.gmode .tmr span{display:none}
 body.gmode .acts3 button{min-height:38px;font-size:14px}
 body.gmode .rackbox{padding:5px 6px 6px;gap:5px}
-body.gmode .rack{padding:6px 4px;gap:6px 2px}
+body.gmode .rack{--rp:6px;--rg:7px}
 body.gmode .felt3d{padding:4px 3px;border-width:6px}
 body.gmode .pers .mini .t,body.gmode .a-top .pers .mini .t,body.gmode .a-me .pers .mini .t{width:15px;height:21px;font-size:11px}
 body.gmode .a-left .pers .mini .t,body.gmode .a-right .pers .mini .t{width:13px;height:18px;font-size:10px}
@@ -515,7 +527,7 @@ body.gmode .rackbox{margin:0;padding:6px 6px 8px;gap:6px;border-top-width:2px}
 body.gmode .rlabel .lab{font-size:10px}
 body.gmode .rlabel{min-width:0}
 body.gmode .pbadge{font-size:11px;padding:3px 8px}
-body.gmode .rack{--tw:min(38px,calc((100vw - 72px)/14),calc(100dvh*.05));gap:8px 2px;padding:8px 4px;margin-top:4px}
+body.gmode .rack{--tw:min(38px,calc((100vw - 72px)/14),calc(100dvh*.05));margin-top:4px}
 body.gmode .acts3{grid-template-columns:1.4fr 1fr 1fr 1fr}
 body.gmode .acts3 button{min-height:42px;font-size:15px}
 body.gmode .sgroups{max-height:20dvh;overflow:auto}
@@ -530,12 +542,89 @@ body.gmode .xtra .hint{margin:0}
 }
 .xtg .tg[aria-pressed="false"]{opacity:.55;text-decoration:line-through}
 .xtg a{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid var(--wood-line);border-radius:6px;color:#f3e8d8;text-decoration:none;font-weight:600}
+
+/* ===== v41: koltuk renkleri (herkes aynı kişiyi aynı renkte görür), ceza rozeti, ince durum şeridi, ıstaka rafı ===== */
+.sc0{--sc:#d63a3a;--sca:#d63a3a30;--sct:#fff}
+.sc1{--sc:#3f7cf0;--sca:#3f7cf030;--sct:#fff}
+.sc2{--sc:#e3a51f;--sca:#e3a51f30;--sct:#1a1405}
+.sc3{--sc:#202024;--sca:#d9d2c033;--sct:#f3ead6}
+.seat .av{background:var(--sc,var(--gold));color:var(--sct,#1a1405);box-shadow:0 0 0 1.5px #f3ead6aa}
+.sc3 .av{box-shadow:0 0 0 1.5px #f3ead6}
+.seat .plate{border-color:var(--sc,var(--felt-line));border-width:1.5px}
+.sc3 .plate{border-color:#cfc6b0}
+.seat.turn .plate{box-shadow:0 0 0 2px #f6eed4,0 0 14px #f6eed488;background:#f6eed41f}
+.seat.turn .av::before{--ringc:#f6eed4}
+.seat.turn .av.low::before{--ringc:#ff4a55}
+.seat .pers .mini{background:var(--sca,#00000033);box-shadow:inset 3px 0 0 var(--sc,transparent)}
+.pn small .pb{display:inline-flex;align-items:center;gap:3px;margin-left:5px;color:#ff8a8a;font-weight:700}
+.pn small .pb::before{content:"";width:7px;height:7px;background:#c1121f;border-radius:0 50% 50% 50%;transform:rotate(45deg);box-shadow:0 0 0 1px #0006}
+.pr .dot,.er .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--sc);margin-right:6px;box-shadow:0 0 0 1px #f3ead688;vertical-align:middle}
+/* ıstaka: tahta raf, iki sıra taş rafın üstünde durur; boş yuvalar belli belirsiz */
+.rack{--rp:12px;--rg:12px;padding:var(--rp) 6px;row-gap:var(--rg);column-gap:1px;
+  background:linear-gradient(180deg,#b98a5b 0,#7a5233 2px,#4a2e1a 5px,#1f130b 9px) no-repeat 0 calc(var(--rp) + var(--th) + 1px)/100% 9px,
+  linear-gradient(180deg,#b98a5b 0,#7a5233 2px,#4a2e1a 5px,#1f130b 9px) no-repeat 0 calc(var(--rp) + 2*var(--th) + 5px + var(--rg))/100% 9px,
+  linear-gradient(180deg,#0000002e,#00000014);box-shadow:inset 0 4px 8px #0008,inset 0 -2px 0 #ffffff12}
+.rs{background:#0000001a;box-shadow:inset 0 1px 2px #00000040;border-radius:3px}
+.rs.over{background:#e8b93a55}
+
+/* sıra ibresi: deste göbeğinin çevresinde, sırası gelen oyuncuyu gösterir */
+.pile>.needle{position:absolute;left:50%;top:calc(100% - 24px);width:98px;height:98px;margin:-49px 0 0 -49px;z-index:0;pointer-events:none;transform:rotate(var(--nd));animation:needle .65s cubic-bezier(.3,.7,.2,1.2) both;animation-delay:calc(0ms - var(--ne,0ms))}
+.pile>.needle::after{content:"";position:absolute;left:50%;top:-2px;margin-left:-9px;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:14px solid var(--nc);filter:drop-shadow(0 0 5px var(--nc)) drop-shadow(0 1px 1px #000)}
+@keyframes needle{from{transform:rotate(var(--nf))}to{transform:rotate(var(--nd))}}
+.sinking .pile>.needle,.dealing .pile>.needle{display:none}
+/* ceza yazısı: cezayı alanın isminin üstünde kan kırmızısı +N */
+.fxl{position:absolute;inset:0;pointer-events:none;z-index:12;overflow:visible}
+.pfloat{position:absolute;left:0;top:0;font:700 22px/1 var(--display);letter-spacing:.02em;color:#ff4040;text-shadow:0 2px 0 #000,0 0 12px #c1121f,0 0 2px #000;white-space:nowrap;animation:pfl 2s ease-out both;animation-delay:calc(0ms - var(--pe,0ms));opacity:0}
+@keyframes pfl{0%{opacity:0;transform:translate(-50%,-30%) scale(.5)}12%{opacity:1;transform:translate(-50%,-80%) scale(1.25)}25%{transform:translate(-50%,-90%) scale(1)}75%{opacity:1;transform:translate(-50%,-125%)}100%{opacity:0;transform:translate(-50%,-150%)}}
+/* uçan taş kopyası */
+.flyc{position:fixed;z-index:60;margin:0!important;pointer-events:none;will-change:transform;transition:none!important;animation:none!important}
+@media (prefers-reduced-motion:reduce){.pile>.needle{animation:none}.pfloat{animation-duration:.01s}}
+
+/* ===== el sonu kartı ===== */
+.endov{position:absolute;inset:0;z-index:11;display:flex;align-items:center;justify-content:center;padding:10px;background:radial-gradient(80% 70% at 50% 45%,#0009,#000c);animation:endin .45s ease-out both;animation-delay:calc(1300ms - var(--el,0ms))}
+@keyframes endin{from{opacity:0}to{opacity:1}}
+.endcard{width:min(100%,440px);max-height:100%;overflow:auto;background:linear-gradient(180deg,#22160f,#150d09);border:1px solid #5b3a24;border-radius:14px;padding:12px;box-shadow:0 16px 40px #000c;color:#f3e8d8;animation:endup .5s cubic-bezier(.2,.9,.3,1.15) both;animation-delay:calc(1350ms - var(--el,0ms));scrollbar-width:thin}
+@keyframes endup{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+.endhd{display:grid;justify-items:center;text-align:center;gap:3px;padding:2px 0 10px;border-bottom:1px solid #ffffff1a}
+.endhd b{font:700 22px/1.05 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.endhd small{color:#e8b93a;font:600 12px/1.3 var(--body);letter-spacing:.06em}
+.endhd .crown{width:46px;height:30px;color:#e8b93a;filter:drop-shadow(0 0 10px #e8b93a99);animation:crown 1.6s ease-in-out infinite alternate}
+@keyframes crown{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-3px) rotate(4deg)}}
+.endhd.me b{color:#ffd36a;text-shadow:0 0 14px #e8b93a88}
+.endrows{display:grid;gap:6px;margin-top:8px}
+.er{border-radius:9px;padding:7px 9px;background:#ffffff08;border-left:4px solid var(--sc)}
+.er.win{background:linear-gradient(90deg,#e8b93a26,#ffffff08);box-shadow:inset 0 0 0 1px #e8b93a55}
+.erh{display:flex;align-items:center;gap:8px}
+.erh b{font:700 15px/1.1 var(--display);letter-spacing:.03em;text-transform:uppercase;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.erh .et{font:700 18px/1 var(--display);font-variant-numeric:tabular-nums}
+.er .et.neg{color:#7ee2a0}.er .et.pos{color:#ff6b6b}
+.erd{font-size:12px;line-height:1.35;color:#d8c9b4;margin-top:3px}
+.erd b{color:#f3e8d8}
+.erm{display:flex;flex-wrap:wrap;gap:2px;margin-top:5px}
+.erm .t{width:15px;height:21px;font-size:11px;border-radius:3px;margin:0;box-shadow:0 1px 0 #b5a97f}
+.erm .t i{width:3px;height:3px;margin-top:1px}
+.ers{font-size:11px;color:#b09f8d;margin-top:3px}
+.endft{margin-top:10px;display:grid;gap:8px}
+.endft .bar{height:4px;border-radius:2px;background:#ffffff14;overflow:hidden}
+.endft .bar i{display:block;height:100%;background:linear-gradient(90deg,#8f0b18,#e8b93a);transform-origin:left;animation:nextbar 6.5s linear both;animation-delay:calc(0ms - var(--el,0ms))}
+@keyframes nextbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.endft .row{justify-content:center}
+.endft small{text-align:center;color:#b09f8d}
+.endx{position:absolute;top:8px;right:8px;min-height:30px;padding:4px 10px;font-size:12px;z-index:2}
+.endov.hid{background:none;pointer-events:none;align-items:flex-end}
+.endov.hid .endcard{display:none}
+.endov .endo{display:none}
+.endov.hid .endo{display:inline-flex;pointer-events:auto;margin-bottom:6px}
+.final .endhd b{font-size:24px}
+.lastp{color:#ff6b6b}
+@media (prefers-reduced-motion:reduce){.endov,.endcard{animation-delay:0s!important;animation-duration:.01s!important}.endhd .crown{animation:none}}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
 /* sunucu bağlantısı koptuğunda üstte uyarı */
 body.offline::before{content:"Bağlantı koptu, yeniden bağlanıyor…";position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:90;padding:8px 14px;border-radius:999px;background:#b3202a;color:#fff;font:600 13px/1.2 var(--body);box-shadow:0 4px 14px #000a;white-space:nowrap}
 </style>
+</head><body>
 
 <div class="wrap">
   <div class="top"><h1><span class="bleed">Kanlı</span> <span>Okey</span></h1><div class="chips"><span id="chips" class="chips"></span><button class="chip tg" id="sndT" aria-pressed="true">Ses</button><button class="chip tg" id="vibT" aria-pressed="true">Titreşim</button><a class="chip" href="https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt" target="_blank" rel="noopener" style="text-decoration:none;color:var(--fg)">Kurallar ↗</a><button class="chip tg mbtn" id="menuT" aria-expanded="false" aria-haspopup="dialog">Menü</button></div></div>
@@ -689,7 +778,8 @@ if(typeof document!=='undefined'&&typeof document.addEventListener==='function')
   syncTg();
 }
 const STAMP=`<svg class="stamp" viewBox="0 0 300 300" aria-hidden="true" focusable="false"><defs><path id="stA" d="M50 150A100 100 0 0 1 250 150"/><path id="stB" d="M28 150A122 122 0 0 0 272 150"/></defs><g fill="none" stroke="currentColor"><circle cx="150" cy="150" r="142" stroke-width="5"/><circle cx="150" cy="150" r="133" stroke-width="1.5"/><circle cx="150" cy="150" r="84" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round"/><circle cx="150" cy="150" r="75" stroke-width="1"/></g><g fill="currentColor" font-family="Oswald,Impact,sans-serif" font-weight="700" text-anchor="middle"><text font-size="38" letter-spacing="9"><textPath href="#stA" startOffset="50%">KANLI OKEY</textPath></text><text font-size="17" letter-spacing="9"><textPath href="#stB" startOffset="50%">★ ★ ★</textPath></text><text x="38" y="160" font-size="24">★</text><text x="262" y="160" font-size="24">★</text></g></svg>`;
-let flashPen=0;
+let flashPen=0,penFx=[];
+const SEATC=['#d63a3a','#3f7cf0','#e3a51f','#f3ead6'];
 const tblSig=s=>[0,1,2,3].map(i=>(s.tbl['t'+i]||[]).map(r=>r.g.join('.')).join(',')).join('|');
 const tblCnt=s=>[0,1,2,3].reduce((a,i)=>a+(s.tbl['t'+i]||[]).reduce((b,r)=>b+r.g.length,0),0);
 const discCnt=s=>[0,1,2,3].reduce((a,i)=>a+(s.disc['d'+i]||[]).length,0);
@@ -719,6 +809,8 @@ function sfxDiff(a,b){
   const pen=[0,1,2,3].some(i=>ex(i)>0);
   if(pen){
     flashPen=Date.now();
+    penFx=penFx.filter(x=>Date.now()-x.t<2200);
+    for(let i=0;i<4;i++)if(ex(i)>0)penFx.push({i,v:ex(i),t:Date.now()});
     SFX.later('penalty',t);
     if(ex(me)>0)SFX.vib([90,50,260]);
     t+=250;
@@ -1094,7 +1186,60 @@ const orack=(r,cnt)=>{
 let showPen=false;
 function penPanel(){
   const idx=[0,1,2,3].sort((a,b)=>(S.scores['s'+b]||0)-(S.scores['s'+a]||0)),ended=S.ph==='end';
-  return `<div class="penpanel" role="dialog" aria-label="Ceza puanları"><h3>Ceza puanları</h3>${idx.map((i,k)=>`<div class="pr ${k===0&&(S.scores['s'+i]||0)>0?'top':''}"><span>${esc(S.names[i])}<small>bu tur ${ended?(S.last[i]>0?'+':'')+S.last[i]:'+'+((S.ex||{})['s'+i]||0)}</small></span><b>${S.scores['s'+i]||0}</b></div>`).join('')}<small style="margin-top:6px">En yüksek ceza alan sonuncu olur.</small></div>`;
+  return `<div class="penpanel" role="dialog" aria-label="Ceza puanları"><h3>Ceza puanları</h3>${idx.map((i,k)=>`<div class="pr sc${i} ${k===0&&(S.scores['s'+i]||0)>0?'top':''}"><span><i class="dot"></i>${esc(S.names[i])}<small>bu tur ${ended?(S.last[i]>0?'+':'')+S.last[i]:'+'+((S.ex||{})['s'+i]||0)}</small></span><b>${S.scores['s'+i]||0}</b></div>`).join('')}<small style="margin-top:6px">En yüksek ceza alan sonuncu olur.</small></div>`;
+}
+/* sıra ibresi: hep aynı yönde (sıranın döndüğü yönde) döner */
+let needleA=null,needleF=0,needleT=0,needleK='';
+function needleH(me){
+  const k=S.gid+':'+S.turn,r=(S.turn-me+4)%4,base=[180,90,0,-90][r];
+  if(k!==needleK){
+    needleK=k;
+    if(needleA===null){needleA=base;needleF=base;needleT=0}
+    else{let t=base;while(t>needleA)t-=360;while(t<=needleA-360)t+=360;if(t!==needleA){needleF=needleA;needleA=t;needleT=Date.now()}}
+  }
+  const el=needleT?Date.now()-needleT:9999;
+  return `<i class="needle" aria-hidden="true" style="--nf:${needleF}deg;--nd:${needleA}deg;--ne:${Math.min(el,9999)}ms;--nc:${SEATC[S.turn]}"></i>`;
+}
+/* el sonu kartı: kim neden ne kadar ceza aldı, satır satır (KURALLAR.md: Eli bitirme, Ceza puanları) */
+let endHide=-1;
+const CROWN='<svg class="crown" viewBox="0 0 46 30" aria-hidden="true"><path fill="currentColor" d="M3 26 0 6l12 9L23 0l11 15 12-9-3 20z"/><rect x="3" y="26" width="40" height="4" rx="1.5" fill="currentColor"/></svg>';
+function endBreak(i,f,m,mr){
+  const B=S.B,O=S.okey,h=S.hands['h'+i]||[],ex=(S.ex||{})['s'+i]||0,per=B?10:5,okv=B?500:250;
+  let base=0;const L=[];
+  if(i===f){base=B?-200:-100;L.push(`Eli bitirdi <b>${base}</b>`)}
+  else if(S.opn['s'+i]>0){
+    const jk=h.filter(x=>isJ(x,O)).length,n=h.filter(x=>!isJ(x,O)).reduce((a,x)=>a+tv(x,O).n,0);
+    base=n*per+jk*okv;
+    if(!h.length)L.push('Elinde taş kalmadı <b>0</b>');
+    else{if(n)L.push(`Elde kalan ${h.length-jk} taş: ${n} × ${per} = <b>${n*per}</b>`);if(jk)L.push(`Elde okey: ${jk} × ${okv} = <b>${jk*okv}</b>`)}
+  }else{base=B?1000:500;L.push(`Açamadı <b>${base}</b>`)}
+  if(m>1&&base)L.push(`${mr} <b>× ${m}</b>`);
+  if(ex)L.push(`Bu elde yazılan cezalar (işleme, işler taş) <b>+${ex}</b>`);
+  const tot=m*base+ex;
+  return{L,tot,ok:tot===(S.last||[])[i]};
+}
+function endH(me,elE,finalEnd){
+  const f=S.win>=0&&S.win<4?S.win:-1,O=S.okey;
+  const lt=f>=0?(S.disc['d'+f]||[]).slice(-1)[0]:null,okeyEnd=f>=0&&lt!=null&&isJ(lt,O);
+  const solo=f>=0&&S.opn['s'+f]>0&&[0,1,2,3].every(i=>i===f||!(S.opn['s'+i]>0));
+  const m=f>=0?(okeyEnd?2:1)*(solo?2:1):1;
+  const mr0=[okeyEnd?'okeyle bitirme':'',solo?'tek başına bitirme':''].filter(Boolean).join(' + '),mr=mr0?mr0.charAt(0).toUpperCase()+mr0.slice(1):'';
+  const title=finalEnd?'Oyun bitti':f<0?'Deste bitti':f===me?'Eli bitirdin!':esc(S.names[f])+' eli bitirdi';
+  const sub2=f<0?'Kimse bitiremedi, açamayanlara tam ceza':(mr?mr+': cezalar '+m+' katı':'El '+(S.round+1)+' / '+S.R+' sonu');
+  const ids=[0,1,2,3].sort((a,b)=>finalEnd?((S.scores['s'+a]||0)-(S.scores['s'+b]||0)):(((S.last||[])[a]||0)-((S.last||[])[b]||0)));
+  const lastP=[0,1,2,3].sort((a,b)=>(S.scores['s'+b]||0)-(S.scores['s'+a]||0))[0];
+  const rows=ids.map(i=>{
+    const r=endBreak(i,f,m,mr),v=(S.last||[])[i]||0,h=S.hands['h'+i]||[];
+    const tiles=i!==f&&h.length?`<div class="erm">${h.slice().sort((a,b)=>a-b).map(x=>tile(x,O)).join('')}</div>`:'';
+    return `<div class="er sc${i} ${i===f?'win':''}"><div class="erh"><i class="dot"></i><b>${esc(S.names[i])}${i===me?' · sen':''}</b><span class="et ${v<0?'neg':v>0?'pos':''}">${v>0?'+':''}${v}</span></div>
+<div class="erd">${r.ok?r.L.join('<br>'):'Bu el: <b>'+(v>0?'+':'')+v+'</b>'}</div>${tiles}<div class="ers ${finalEnd&&i===lastP?'lastp':''}">Toplam ceza: <b>${S.scores['s'+i]||0}</b>${finalEnd&&i===lastP?' · sonuncu':''}</div></div>`;
+  }).join('');
+  let ft='';
+  if(finalEnd)ft=`<div class="row"><button class="p" id="home">Ana ekrana dön</button></div><small>En yüksek ceza alan sonuncu olur.</small>`;
+  else if(elE>9500)ft=`<div class="row"><button class="p" id="again">Sonraki el</button></div>`;
+  else ft=`<div class="bar"><i></i></div><small>Taşlar karılıyor, yeni el birazdan başlıyor…</small>`;
+  const hid=endHide===S.gid;
+  return `<div class="endov ${hid?'hid':''}" style="--el:${Math.min(elE,60000)}ms"><button class="endo" id="endo">Sonuçları göster</button><div class="endcard" role="dialog" aria-label="El sonu"><button class="endx" id="endx">Masayı gör</button><div class="endhd ${f===me?'me':''}">${f>=0?CROWN:''}<b>${title}</b><small>${sub2}</small></div><div class="endrows">${rows}</div><div class="endft">${ft}</div></div></div>`;
 }
 let dealGid=-1,dealT=0,endGid=-1,endT=0,nextFor=-1,nextTimer=null,dealTimer=null;
 function scheduleNext(){
@@ -1118,7 +1263,10 @@ function render(){
   const fitM=typeof matchMedia==='function'&&matchMedia('(max-width:999px) and (orientation:portrait)').matches;
   if(A&&keep&&fitM){A._mh=0;A.style.minHeight=''}
   else if(A&&keep){const h=A.offsetHeight;if(h>(A._mh||0)){A._mh=h}A.style.minHeight=(A._mh||0)+'px'}
+  let fp=null;try{fp=snapFly()}catch(e){}
   render0();
+  try{runFly(fp);placeFx()}catch(e){}
+  flyLast=S&&S.seats&&S.deck&&S.disc?flyNow():null;
   const A2=$('#app');
   if(A2&&A2.classList&&A2.classList.contains&&!A2.classList.contains('gm')){A2._mh=0;A2.style.minHeight=''}
   const fix=()=>{
@@ -1127,6 +1275,59 @@ function render(){
   };
   fix();
   if(typeof requestAnimationFrame==='function'){requestAnimationFrame(fix);setTimeout(fix,120)}
+}
+/* uçan taşlar: çizimden önce her taşın yeri ölçülür, sonra yeri değişen taş eski yerinden yenisine uçar
+   (desteden ıstakaya, ıstakadan masaya, rakibin ıstakasından masaya ya da atılan taşlara). Istaka içi kayma runFlip'te. */
+let flyLast=null; /* son çizimdeki deste sayısı, sıra, atılan taş sayıları (S yeni veriye geçmeden önceki hal) */
+const flyNow=()=>({deckN:S.deck.length,turn:S.turn,gid:S.gid,dn:[0,1,2,3].map(i=>(S.disc['d'+i]||[]).length)});
+/* taşın bulunduğu yer türü: ıstaka, masadaki per, atılan taşlar, diğer (gösterge) */
+const flyKind=t=>t.closest('#rack')?'r':t.closest('.mini')?'m':t.closest('.dstack')?'d':'o';
+const FLYOK=typeof matchMedia==='function'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+function snapFly(){
+  if(!FLYOK||!S||!S.seats||S.ph==='end'||typeof document.querySelectorAll!=='function'||!document.getElementById('scene'))return null;
+  const m=new Map();
+  document.querySelectorAll('#app .t[data-id]').forEach(t=>{if(t.classList.contains('flyc'))return;const r=t.getBoundingClientRect();if(r.width)m.set(+t.dataset.id,{r,k:flyKind(t)})});
+  const src={};
+  document.querySelectorAll('#scene .seat[data-seat]').forEach(e=>{const o=e.querySelector('.orack')||e.querySelector('.plate');if(o)src[e.dataset.seat]=o.getBoundingClientRect()});
+  const dk=document.getElementById('deck');
+  const L=flyLast||flyNow();
+  return{m,src,deck:dk?dk.getBoundingClientRect():null,...L};
+}
+function flyEl(el,from){
+  const to=el.getBoundingClientRect();if(!to.width||!from||!from.width)return;
+  const dx=from.left+from.width/2-(to.left+to.width/2),dy=from.top+from.height/2-(to.top+to.height/2);
+  if(Math.abs(dx)<10&&Math.abs(dy)<10)return;
+  const cs=getComputedStyle(el),base=cs.transform&&cs.transform!=='none'?cs.transform:'';
+  const c=el.cloneNode(true);c.removeAttribute('data-id');c.classList.remove('pop','dnew','sel','ag');c.classList.add('flyc');
+  c.style.cssText=`left:${to.left}px;top:${to.top}px;width:${to.width}px;height:${to.height}px;font-size:${cs.fontSize}`;
+  document.body.appendChild(c);
+  el.style.visibility='hidden';el.style.animation='none';
+  const s=Math.max(.45,Math.min(2.2,from.width/to.width));
+  const a=c.animate([{transform:`translate(${dx}px,${dy}px) scale(${s}) ${base}`},{transform:base||'none'}],{duration:Math.min(520,300+Math.hypot(dx,dy)*.35),easing:'cubic-bezier(.2,.75,.25,1)'});
+  const done=()=>{c.remove();el.style.visibility=''};
+  a.onfinish=done;a.oncancel=done;setTimeout(done,900);
+}
+function runFly(p){
+  if(!p||!S||S.ph==='end'||S.gid!==p.gid)return;
+  const A=document.getElementById('app');if(!A||A.classList.contains('dealing')||A.classList.contains('sinking'))return;
+  let n=0;
+  document.querySelectorAll('#app .t[data-id]').forEach(el=>{
+    if(n>=8)return;
+    const id=+el.dataset.id,k=flyKind(el),inRack=k==='r',pv=p.m.get(id);
+    if(k==='o')return;
+    let from=null;
+    if(pv){if(pv.k===k)return;from=pv.r}
+    else if(inRack){if(S.deck.length<p.deckN)from=p.deck}
+    else if(k==='d'){const st=el.closest('.seat'),i=st?+st.dataset.seat:-1;if(i>=0&&(S.disc['d'+i]||[]).length>(p.dn?p.dn[i]:0))from=p.src[p.turn]||null}
+    else from=p.src[p.turn]||null;
+    if(from){flyEl(el,from);n++}
+  });
+}
+function placeFx(){
+  const fl=document.querySelectorAll('.fxl .pfloat');if(!fl.length)return;
+  const L=document.querySelector('.fxl');if(!L)return;
+  const b=L.getBoundingClientRect();
+  fl.forEach(x=>{const pl=document.querySelector(`.seat[data-seat="${x.dataset.fs}"] .plate`);if(!pl)return;const r=pl.getBoundingClientRect();x.style.left=(r.left+r.width/2-b.left)+'px';x.style.top=(r.top-b.top)+'px'});
 }
 function render0(){
   const A=$('#app'),C=$('#chips');
@@ -1174,15 +1375,16 @@ function render0(){
       const olds=pl.slice(-4,-1).map(id=>`<div class="t old c${tv(id,O).c}" style="--ox:${(id*13)%11-5}px;--oy:${(id*7)%7-3}px;--or:${(id*17)%37-18}deg">${id>=104?'★':tv(id,O).n}</div>`).join('');
       let tiles=olds+shown.map((id,k)=>r===3&&k===shown.length-1?`<button class="pilebtn ${canDraw?'live':''}" id="tk" ${canDraw?'':'disabled'} aria-label="Soldaki oyuncunun attığı taşı al">${dtile(id,fr)}</button>`:dtile(id,fr)).join('');
       if(hid>0)tiles=`<span class="more">+${hid}</span>`+tiles;
-      return `<div class="seat ${S.turn===i&&!ended?'turn':''}">
-<div class="plate"><span class="av">${esc(S.names[i].slice(0,1).toUpperCase())}</span><div class="pn"><b>${esc(S.names[i])}${i===me?'<em>sen</em>':''}</b><small>${cnt} taş${o>0?' · açtı '+o:''}</small></div></div>
+      const pz=S.scores['s'+i]||0;
+      return `<div class="seat sc${i} ${S.turn===i&&!ended?'turn':''}" data-seat="${i}">
+<div class="plate"><span class="av">${esc(S.names[i].slice(0,1).toUpperCase())}</span><div class="pn"><b>${esc(S.names[i])}${i===me?'<em>sen</em>':''}</b><small>${cnt} taş${o>0?' · açtı '+o:''}${pz?`<span class="pb" title="Toplam ceza">${pz}</span>`:''}</small></div></div>
 ${i===me?'':orack(r,cnt)}
 <div class="dpile" aria-label="${esc(S.names[i])} attığı taşlar">${tiles?`<div class="dstack" style="--pe:${S.tt?Math.max(0,Date.now()-S.tt):0}ms">${tiles}</div>`:''}</div>${persH(i)}</div>`;
     };
     const rnd=n=>{const v=Math.sin(n*78.233+1.37)*43758.5453;return v-Math.floor(v)};
     const chaosH=ended&&!finalEnd?`<div class="chaos" aria-hidden="true">${Array.from({length:36},(_,k)=>{const c=Math.floor(rnd(k*9+7)*4),n=1+Math.floor(rnd(k*9+8)*13),px=v=>Math.round(v)+'px',r1=Math.round(rnd(k*9+5)*360);return `<div class="t c${c}" style="--x1:${px((rnd(k*9+1)-.5)*220)};--y1:${px((rnd(k*9+2)-.5)*250)};--x2:${px((rnd(k*9+3)-.5)*220)};--y2:${px((rnd(k*9+4)-.5)*250)};--r1:${r1}deg;--r2:${r1+Math.round((rnd(k*9+6)-.5)*320)}deg;--t:${(.4+rnd(k*9+0)*.6).toFixed(2)}s">${n}</div>`}).join('')}</div>`:'';
     let mid=`<div class="okeyrow">${S.B?'<span class="lab">Joker (★) = okey</span>':`<div class="grp"><span class="lab">Gösterge</span>${tile(S.ind,O)}</div>`}</div>
-<div class="pile"><span class="lab">Deste</span><button class="pilebtn ${canDraw?'live':''}" id="deck" ${canDraw?'':'disabled'} aria-label="Desteden çek, ${S.deck.length} taş kaldı"><span class="back">${S.deck.length}</span></button></div>`;
+<div class="pile"><span class="lab">Deste</span>${ended?'':needleH(me)}<button class="pilebtn ${canDraw?'live':''}" id="deck" ${canDraw?'':'disabled'} aria-label="Desteden çek, ${S.deck.length} taş kaldı"><span class="back">${S.deck.length}</span></button></div>`;
     const tg=i=>(S.tbl['t'+i]||[]).filter(g=>g&&g.g);
     const insOK=mine&&S.ph==='discard'&&opened;
     const insT=insOK&&sel.length===1&&sel[0]!==S.must?sel[0]:null;
@@ -1213,19 +1415,14 @@ ${i===me?'':orack(r,cnt)}
     const sgroups=md&&stage.length?`<div class="sgroups">${stage.map((g,gi)=>`<div class="g">${g.map(x=>tile(x,O)).join('')}<button class="un" data-un="${gi}" aria-label="Bu grubu ıstakaya geri koy">✕</button></div>`).join('')}<button id="clr">Hepsini geri al</button></div>`:'';
     /* durum */
     let st,tag;
-    if(ended){tag='<span class="tag wait">Bitti</span>';st=S.win===99?'Deste bitti.':esc(S.names[S.win])+' eli bitirdi!'}
+    if(ended){tag='<span class="tag wait">Bitti</span>';st=finalEnd?'Oyun bitti.':S.win===99?'Deste bitti.':S.win===me?'Eli bitirdin!':esc(S.names[S.win])+' eli bitirdi!'}
     else if(mine){tag='<span class="tag">Sıra sende</span>';st=S.ph==='draw'?'Desteden çek ya da soldaki taşı al.':(S.must>=0?'Yandan taş aldın: onu açmalısın.':'Taş at, aç ya da eli bitir.')}
     else{tag='<span class="tag wait">Bekle</span>';st=esc(S.names[S.turn])+' oynuyor…'}
     h+=`<div class="panel gstat"><div class="status">${tag}<b>${st}</b><button class="penbtn" id="pen" aria-expanded="${showPen}">Cezalar</button></div>${timerH(mine)}${showPen?penPanel():''}`;
-    if(ended){
-      h+='<div class="res" style="margin-top:10px">'+S.names.map((n,i)=>`<div><span>${esc(n)}</span><b>${S.last[i]>0?'+':''}${S.last[i]}</b></div>`).join('')+'</div>';
-      if(S.round+1<S.R)h+=elE>9500?'<div class="row" style="margin-top:12px"><button class="p" id="again">Sonraki el</button></div>':'<p class="mut" style="margin:12px 0 0">Masa taşları karıyor, yeni el birazdan başlıyor…</p>';
-      else{const r=[0,1,2,3].sort((a,b)=>(S.scores['s'+b]||0)-(S.scores['s'+a]||0));h+=`<div class="score"><b>Oyun bitti. Sonuncu: ${esc(S.names[r[0]])}</b><div class="res">${r.map(i=>`<div><span>${esc(S.names[i])}</span><b>${S.scores['s'+i]||0}</b></div>`).join('')}</div></div><div class="row" style="margin-top:12px"><button class="p" id="home">Ana ekrana dön</button></div>`}
-    }
     h+='</div><!--SEC-->';
     /* masa */
     A.classList.add('gm');
-    h+=`<div class="scene ${Date.now()-flashPen<1200?'pflash':''}" id="scene" style="--pe:${Math.max(0,Date.now()-flashPen)}ms"><div class="board"><div class="felt3d">${STAMP}<div class="area a-top">${seatH(2)}</div><div class="area a-left">${seatH(3)}</div><div class="area a-mid">${mid}</div><div class="area a-right">${seatH(1)}</div><div class="area a-me">${seatH(0)}</div>${chaosH}</div></div></div>`;
+    h+=`<div class="scene ${Date.now()-flashPen<1200?'pflash':''}" id="scene" style="--pe:${Math.max(0,Date.now()-flashPen)}ms"><div class="board"><div class="felt3d">${STAMP}<div class="area a-top">${seatH(2)}</div><div class="area a-left">${seatH(3)}</div><div class="area a-mid">${mid}</div><div class="area a-right">${seatH(1)}</div><div class="area a-me">${seatH(0)}</div>${chaosH}</div></div><div class="fxl" aria-hidden="true">${penFx.filter(x=>Date.now()-x.t<2100).map(x=>`<span class="pfloat" data-fs="${x.i}" style="--pe:${Date.now()-x.t}ms">+${x.v}</span>`).join('')}</div>${ended?endH(me,elE,finalEnd):''}</div>`;
     /* ıstaka */
     const arr=autoOpen(order.map(x=>x!=null&&!staged.includes(x)?x:null),O,-1,opened?(S.opm||{})['s'+me]:''),hp=arr.pts,ptsOk=!opened&&hp>=need;
     h+='<!--SEC--><div class="rackbox">';
@@ -1514,6 +1711,8 @@ $('#app').addEventListener('click',async e=>{
     else if(id==='botfill'){const hq=Math.min(L.length,4);await setBots(Math.max(0,4-hq))}
     else if(id==='go')await start(null,(ROOM&&ROOM.R)||9);
     else if(id==='again')await start(S);
+    else if(id==='endx'){endHide=S?S.gid:-1;render()}
+    else if(id==='endo'){endHide=-1;render()}
     else if(id==='deck')await drawDeck();
     else if(id==='tk')await takeDisc();
     else if(id==='dis')await discard();
