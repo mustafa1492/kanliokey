@@ -86,7 +86,7 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 ## Deste bitince
 - Kimse bitirmeden deste biterse el sona erer. Hiç açamayan 500 (büyük elde 1000), açmış olanlar elde kalan taşlara göre ceza yer. Bitiren olmadığı için eksi puan yok, çarpan yok.
 
-## Eşli oyun (Mustafa anlattı; henüz oyunda yok)
+## Eşli oyun (Mustafa anlattı; v42 ile oyunda)
 - Masa kurulurken "eşli" seçilebilir. Masayı kuran eşleri belirler.
 - Eşler karşılıklı oturur.
 - Eşin eli bitirirse sana hiç ceza yazılmaz: açamamışsan açamama cezası da, açmışsan elinde kalan taşların cezası da yazılmaz.
