@@ -1329,7 +1329,7 @@ function render(){
   else if(A&&keep){const h=A.offsetHeight;if(h>(A._mh||0)){A._mh=h}A.style.minHeight=(A._mh||0)+'px'}
   let fp=null;try{fp=snapFly()}catch(e){}
   render0();
-  try{runFly(fp);placeFx()}catch(e){}
+  try{runFly(fp);if(penFx.length&&typeof requestAnimationFrame==='function')requestAnimationFrame(()=>{try{placeFx()}catch(e){}})}catch(e){}
   flyLast=S&&S.seats&&S.deck&&S.disc?flyNow():null;
   const A2=$('#app');
   if(A2&&A2.classList&&A2.classList.contains&&!A2.classList.contains('gm')){A2._mh=0;A2.style.minHeight=''}
@@ -1361,7 +1361,7 @@ function flyEl(el,from){
   const to=el.getBoundingClientRect();if(!to.width||!from||!from.width)return;
   const dx=from.left+from.width/2-(to.left+to.width/2),dy=from.top+from.height/2-(to.top+to.height/2);
   if(Math.abs(dx)<10&&Math.abs(dy)<10)return;
-  const cs=getComputedStyle(el),base=cs.transform&&cs.transform!=='none'?cs.transform:'';
+  const cs=getComputedStyle(el),base=el.closest('.dstack')&&cs.transform&&cs.transform!=='none'?cs.transform:'';
   const c=el.cloneNode(true);c.removeAttribute('data-id');c.classList.remove('pop','dnew','sel','ag');c.classList.add('flyc');
   c.style.cssText=`left:${to.left}px;top:${to.top}px;width:${to.width}px;height:${to.height}px;font-size:${cs.fontSize}`;
   document.body.appendChild(c);
@@ -1374,9 +1374,9 @@ function flyEl(el,from){
 function runFly(p){
   if(!p||!S||S.ph==='end'||S.gid!==p.gid)return;
   const A=document.getElementById('app');if(!A||A.classList.contains('dealing')||A.classList.contains('sinking'))return;
-  let n=0;
+  const todo=[];
   document.querySelectorAll('#app .t[data-id]').forEach(el=>{
-    if(n>=8)return;
+    if(todo.length>=8)return;
     const id=+el.dataset.id,k=flyKind(el),inRack=k==='r',pv=p.m.get(id);
     if(k==='o')return;
     let from=null;
@@ -1384,8 +1384,13 @@ function runFly(p){
     else if(inRack){if(S.deck.length<p.deckN)from=p.deck}
     else if(k==='d'){const st=el.closest('.seat'),i=st?+st.dataset.seat:-1;if(i>=0&&(S.disc['d'+i]||[]).length>(p.dn?p.dn[i]:0))from=p.src[p.turn]||null}
     else from=p.src[p.turn]||null;
-    if(from){flyEl(el,from);n++}
+    if(from){todo.push([el,from]);el.style.visibility='hidden'}
   });
+  if(!todo.length)return;
+  /* ölçümü bir sonraki karede yap: tarayıcının zaten yapacağı yerleşim hesabını tekrar ettirmeyelim */
+  /* arada yeniden çizim olduysa aynı taşın yeni öğesini bul */
+  const go=()=>todo.forEach(([el,from])=>{const cur=el.isConnected?el:document.querySelector(`#app .t[data-id="${el.dataset.id}"]:not(.flyc)`);if(cur)flyEl(cur,from)});
+  if(typeof requestAnimationFrame==='function')requestAnimationFrame(go);else go();
 }
 function placeFx(){
   const fl=document.querySelectorAll('.fxl .pfloat');if(!fl.length)return;
