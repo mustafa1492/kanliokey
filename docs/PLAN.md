@@ -125,7 +125,11 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] Titreşim iPhone'da çalışmıyor (Apple web sayfalarına izin vermiyor). Mustafa: gerek yok, bu konu kapandı. Android'de titreşim çalışmaya devam ediyor.
 
 Estetik kararları (Mustafa seçti, toplu güncellemede yapılacak)
-- [ ] Ana ekran: masa sözleri logonun altında sırayla değişir (sözleri Mustafa seçecek, örnekler gönderildi; seçmeden eklenmeyecek)
+- [ ] Ana ekran: masa sözleri logonun altında sırayla değişir. Mustafa'nın seçtiği sözler (aynen):
+  - "Çift açan tek kalır, tek kalan içine alır."
+  - "Kanlı okeyde dost olmaz."
+  - "Bu kurallar kan ile yazıldı."
+  (Altında "Masa sözü" yazar. Kurallar sitesindeki iki söz de dönüşe girsin mi: Mustafa'ya sorulacak)
 - [ ] Ana ekran: arka planda bulanık, yukarıdan okey masası ve dağınık taşlar, üstünde hafifçe titreyen kahvehane lambası ışığı
 - [ ] Oyun içi: büyük anlar için ortada kısa duyuru ("Ali 24 ile açtı!", "İşler taş! +500", "Okeyle bitirdi!")
 - [ ] Oyun içi: avatar seçimi (kahvehane karakterleri: çay bardağı, tespih, bıyıklı amca, kasket…; kendi çizimlerimiz)
