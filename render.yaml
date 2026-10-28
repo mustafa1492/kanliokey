@@ -1,0 +1,14 @@
+# Render.com için hazır ayar (New > Blueprint ile bu depo seçilir)
+services:
+  - type: web
+    name: kanli-okey
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node server/server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ADMIN_PASSWORD
+        generateValue: true
