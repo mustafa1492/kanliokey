@@ -124,6 +124,8 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 
 - [x] Titreşim iPhone'da çalışmıyor (Apple web sayfalarına izin vermiyor). Mustafa: gerek yok, bu konu kapandı. Android'de titreşim çalışmaya devam ediyor.
 
+- [ ] EŞLİ OYNAMA: masa kurarken "eşli" seçeneği eklenecek (Mustafa söyledi). Kuralları Mustafa anlatacak, tahminle kurulmayacak. Sorulacaklar: eşler karşılıklı mı oturur; cezalar eşlerin toplamı mı, takım puanı nasıl yazılır; eşlerden biri bitirince ne olur; eşin perine işlemek ceza mı; eşin açtığı puan katlamalıda sayılır mı; eşler birbirine yandan taş vermek gibi bir avantaj kullanabilir mi; oyunun sonunda kaybeden takım nasıl belirlenir; botlar eşli oynayabilsin mi
+
 Estetik kararları (Mustafa seçti, toplu güncellemede yapılacak)
 - [ ] Ana ekran: masa sözleri logonun altında sırayla değişir. Mustafa'nın seçtiği sözler (aynen):
   - "Çift açan tek kalır, tek kalan içine alır."
