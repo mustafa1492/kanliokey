@@ -726,6 +726,7 @@ body.home .wrap{position:relative;z-index:1;max-width:560px}
 .rc-tiles .c0{color:#d3241b}.rc-tiles .c1{color:#1b54d6}.rc-tiles .c2{color:#c27600}.rc-tiles .c3{color:#1b1b1b}
 .rulecard:active{transform:scale(.99)}
 
+#rack .t.pv{transition:transform .15s ease-out!important}
 /* v43: sürüklenen taş işlenebilen perler parlar */
 .mini.can{box-shadow:0 0 0 2px #ffd36a,0 0 12px #ffd36a99!important;border-radius:5px}
 .mini.can.tgt{box-shadow:0 0 0 3px #7bd88f,0 0 16px #7bd88fbb!important}
@@ -1831,6 +1832,21 @@ function placeTile(id,t){
   if(k>=0){order[k]=id;return true}
   return false;
 }
+/* sürüklerken dolu yuvaya gelince komşu taşlar kayarak yer açar (üst üste binmez); bırakınca aynı yere oturur */
+function pvPush(d){
+  const k=d.tgt?d.tgt.idx+':'+(d.tgt.ins?1:0)+':'+(d.tgt.right?1:0):'';
+  if(k===d.pvK)return;d.pvK=k;
+  if(!d.pvEls){d.pvEls=new Map();document.querySelectorAll('#rack .rs .t[data-id]').forEach(el=>{if(el!==d.el)d.pvEls.set(+el.dataset.id,el)})}
+  let sim=null;
+  if(d.tgt&&slotCache){const sv=order;order=sv.slice();try{placeTile(d.kind==='rack'?d.id:-999,d.tgt);sim=order}catch(e){}order=sv}
+  d.pvEls.forEach((el,id)=>{
+    const a=order.indexOf(id),b=sim?sim.indexOf(id):a;
+    if(a<0||b<0||a===b||!slotCache||!slotCache.L[a]||!slotCache.L[b]){if(el.style.transform){el.style.transform=''}return}
+    const ra=slotCache.L[a].r,rb=slotCache.L[b].r;
+    el.classList.add('pv');el.style.transform=`translate(${Math.round(rb.left-ra.left)}px,${Math.round(rb.top-ra.top)}px)`+(el.classList.contains('sel')?' translateY(-10px)':'');
+  });
+}
+function pvClear(d){if(d&&d.pvEls)d.pvEls.forEach(el=>{el.style.transform='';el.classList.remove('pv')})}
 function markSlot(d,x,y){
   const sl=slotAt(x,y);
   d.tgt=null;
@@ -1849,6 +1865,7 @@ function markSlot(d,x,y){
     if(el&&cls)el.classList.add(cls);
     d.mkEl=el;d.mkC=cls;
   }
+  try{pvPush(d)}catch(e){}
   return !!sl;
 }
 function dragMove(e){
@@ -1922,6 +1939,8 @@ function dragEnd(e){
   const rb=$('.rackbox');if(rb)rb.classList.remove('hot');
   if(d.ghost)d.ghost.remove();
   document.querySelectorAll('.pile.pulled').forEach(x=>x.classList.remove('pulled'));
+  const fl=d.on&&d.kind==='rack'&&d.tgt&&!d.ins&&!d.disc?snapRects():null;
+  pvClear(d);
   if(d.on){
     lastDrag=Date.now();
     const ok=e.type!=='pointercancel';
@@ -1944,7 +1963,7 @@ function dragEnd(e){
           }
           warnI={id:-1,t:0};sel=[d.id];pend=false;discard();return}
         msg='Taşı atmak için sıranın sende olması ve önce taş çekmiş olman gerekir.';
-      }else if(d.tgt){flip=snapRects();placeTile(d.id,d.tgt);SFX.play('drop')}
+      }else if(d.tgt){flip=fl||snapRects();placeTile(d.id,d.tgt);SFX.play('drop')}
     }
   }
   if(d.on||pend){pend=false;render()}
