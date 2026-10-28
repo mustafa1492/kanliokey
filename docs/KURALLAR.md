@@ -86,6 +86,24 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 ## Deste bitince
 - Kimse bitirmeden deste biterse el sona erer. Hiç açamayan 500 (büyük elde 1000), açmış olanlar elde kalan taşlara göre ceza yer. Bitiren olmadığı için eksi puan yok, çarpan yok.
 
+## Eşli oyun (Mustafa anlattı; henüz oyunda yok)
+- Masa kurulurken "eşli" seçilebilir. Masayı kuran eşleri belirler.
+- Eşler karşılıklı oturur.
+- Sen açamamışsan ve eşin eli bitirirse sana açamama cezası yazılmaz.
+- Katlamalı kural eşin açılışına da geçerlidir (eşin 21 açtıysa sen en az 22 ile açarsın).
+- Eşinin perine işlersen ceza yazılmaz.
+- Eşinin perlerini ve taşlarını kullanamazsın.
+- Oyun sonunda en çok ceza yiyen takım kaybeder.
+- Bot eş olabilir. Eşli oyunda botlar en zeki seviyede (Usta) oynar.
+
+Eşli oyunda açık sorular (cevaplanmadan eşli mod yapılmaz):
+1. Eşin bitirince sen açmışsan elinde kalan taşların cezası yazılır mı?
+2. Takımın cezası iki eşin cezasının toplamı mı?
+3. Eşin bitirince bitirme puanı (−100 / −200) sadece bitirene mi yazılır?
+4. Tek başına bitirme (×2) eşlide nasıl: eşin de açmışsa "tek başına" sayılır mı?
+5. Eşinin perindeki okeyi değiştirirsen (okey değiştirme) ceza yazılır mı?
+6. Sadece eşinin perine işlenebilen taşı atarsan işler taş cezası (500) yazılır mı?
+
 ## Benim koyduğum varsayımlar
 Hepsi onaylandı. Şu an açık varsayım yok.
 Onaylananlar: yandan alınan taşı geri koyma, okey işler taş sayılır, dişi perde okey yerleşimi, aynı turda farklı perlere işleme, son taşı işleyememe, elde kalan her okey ayrı, büyük elde iki joker okey, okey değiştirmeyi sadece açmışlar yapar, rakip çiftine uyan tek taş işler taş sayılmaz, okey değiştirirken yandan alınan taş kullanılamaz.
