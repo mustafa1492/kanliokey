@@ -116,6 +116,8 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 ## Çözülecek konular (Mustafa ile konuşulacak)
 - [ ] Elindeki perlerin hepsini açmak istemeyince ne olacak? Şu an "Per aç" ıstakada yan yana dizili (yeşil çerçeveli) bütün geçerli perleri birlikte açıyor; sadece bazılarını açmanın kolay bir yolu yok (şimdilik açmak istemediğin peri dağıtmak gerekiyor). Çözüm birlikte bulunacak (örneğin: açılacak perlere dokunarak seçme, ya da ıstakada açılacakları ayrı bir bölgeye koyma). Kural tarafı da sorulacak: açarken elindeki her peri açmak zorunlu mu?
 
+- [ ] Açılış puanında fazlalık (Mustafa fark etti, sonra bakılacak): dörtlü erkek perde 4. taş 3'e bölünerek puana katılıyor. Dört 11 açınca 4. 11 → 11/3 = 3 tam + 2/3 artık; dört 12 açınca 4. 12 → 12/3 = 4 puan ekleniyor. Şu anki hesap: bütün açılan taşların toplamı / 3, aşağı yuvarlanır (üç 11 = 33/3 = 11, dört 11 = 44/3 = 14). Doğrusunun nasıl olacağını Mustafa söyleyecek; tahminle değiştirilmeyecek.
+
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
 Giriş ekranı
 - [ ] Botlarla hızlı oyun: tek dokunuşla 3 botlu masa açılır, hemen başlar (yalnızken deneme ve öğrenme)
