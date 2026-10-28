@@ -32,6 +32,20 @@ const {client}=require('./wsclient.js');
   ok((await Bc.call({op:'get',path:'rooms/'+C})).snap.data.st==='lobby','oda durumu istemciden değiştirilemez');
   ok(!(await Bc.call({op:'start',code:C})).ok,'kuran olmayan oyunu başlatamaz');
   ok((await A.call({op:'start',code:C})).ok,'oyun başladı');
+  // sayfa, simgeler, paylaşım önizlemesi
+  const http=require('http'),port=S.server.address().port;
+  const get=(p)=>new Promise(r=>http.get({host:'127.0.0.1',port,path:p,headers:{'accept-encoding':'identity'}},res=>{let b='';res.setEncoding('latin1');res.on('data',d=>b+=d);res.on('end',()=>r({code:res.statusCode,type:res.headers['content-type'],body:b,h:res.headers}))}));
+  const home=await get('/');
+  const homeU=Buffer.from(home.body,'latin1').toString('utf8');
+  ok(home.code===200&&homeU.includes('<link rel="manifest"')&&homeU.includes('og:image')&&!homeU.includes('@HEAD@'),'ana sayfa: uygulama ve paylaşım etiketleri eklendi');
+  const inv=Buffer.from((await get('/?k='+C)).body,'latin1').toString('utf8');
+  ok(/og:title" content="Kanlı Okey · Aliscript seni masaya çağırıyor"/.test(inv)&&inv.includes('Oda kodu: '+C),'davet bağlantısının önizlemesi kuranın adını ve kodu gösteriyor');
+  const man=await get('/manifest.webmanifest');ok(man.code===200&&/manifest/.test(man.type)&&JSON.parse(man.body).display==='standalone','manifest');
+  const sw=await get('/sw.js');ok(sw.code===200&&/javascript/.test(sw.type)&&sw.h['service-worker-allowed']==='/','service worker');
+  const ic=await get('/icon-192.png');ok(ic.code===200&&ic.type==='image/png','simge');
+  const og=await get('/og.jpg');ok(og.code===200&&og.type==='image/jpeg','paylaşım görseli');
+  const kr=Buffer.from((await get('/kurallar')).body,'latin1').toString('utf8');ok(kr.includes('Kanlı Okey kuralları')&&kr.includes('href="/"'),'kurallar sayfası, oyuna dönüş bağlantısı');
+  ok((await get('/../server/server.js')).code===404,'dosya sızdırma yok');
   // gizli eller
   let ga=null,gb=null;
   A.sub('doc','rooms/'+C+'/game/main',s=>{ga=s.exists?s.data:null});

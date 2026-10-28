@@ -1,4 +1,9 @@
-<title>Kanlı Okey</title>
+<!doctype html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kanlı Okey kuralları: nasıl oynanır?</title>
+<meta name="description" content="Kanlı okeyin kuralları: büyük el, 17 ile açma, katlamalı, çift açma, taş işleme, okey değiştirme, cezalar ve çarpanlar.">
+<meta name="theme-color" content="#150b0a">
+<!--@HEAD@-->
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap">
 <style>
@@ -144,9 +149,30 @@ section>*{position:relative;z-index:1}
 section{padding-top:64px}
 @media(min-width:700px){section{padding-top:72px}}
 html,body{overflow-x:hidden}.wrap{overflow-x:clip}
+
+/* ===== v13: oyunla aynı koyu, sıcak görünüm ===== */
+html:root:not(#_){color-scheme:dark;--bg:#0b0707;--surface:#1a1211;--fg:#f1e7d8;--mut:#b09f8d;--line:#3a2a25;--blood:#cf2431;--blood-fg:#fff;
+  --tile:#f6efdb;--tile-line:#b9ad8a;--t-red:#d3241b;--t-yel:#c27600;--t-blu:#1b54d6;--t-blk:#1b1b1b;--felt:#18533b;--felt-fg:#ecf4ee}
+html{background:#080505}
+body{background-color:#080505;background-image:radial-gradient(130% 55% at 50% -6%,#4a1412 0%,#1a0b09 46%,#080505 100%);border-top:0;box-shadow:none}
+.hero{color:var(--fg)}.hero h1 .ok{color:#f6eed4}.hero .lede{color:#e3d6c4}.hero .facts{color:#cdbca7}.hero .facts b{color:#fff}
+.quote p{color:#f1e7d8}
+section{background:linear-gradient(180deg,#1f1513,#170f0e);border-color:#3f2c26;color:var(--fg);box-shadow:0 10px 26px #000a}
+.pair>div,.tw{background:#ffffff08;border-color:var(--line)}
+.pair .big,.demo{background:radial-gradient(90% 90% at 50% 30%,#27774f 0%,#18533b 55%,#0c3225 100%);color:var(--felt-fg)}
+.steps b{color:#ff5a63}
+th{color:var(--mut)}td small{color:var(--mut)}
+.neg{color:#7ee2a0}
+footer{color:var(--mut)}
+.brand{display:flex;align-items:center;gap:10px;padding-top:18px}
+.brand svg{width:44px;height:44px;filter:drop-shadow(0 6px 10px #000a)}
+@media(max-width:520px){.steps li{grid-template-columns:1fr!important;gap:6px}}
+.brand a{color:var(--mut);font:600 14px/1 var(--body);text-decoration:none;letter-spacing:.06em}
 </style>
+</head><body>
 
 <main class="wrap">
+  <div class="brand"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="kt" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffcf3"/><stop offset=".55" stop-color="#f3ead2"/><stop offset="1" stop-color="#dccfa9"/></linearGradient><linearGradient id="kb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0404c"/><stop offset=".55" stop-color="#c4141f"/><stop offset="1" stop-color="#7d0a12"/></linearGradient></defs><g transform="rotate(-7 60 60)"><rect x="29" y="17" width="64" height="86" rx="10" fill="#8a7a55"/><rect x="29" y="13" width="64" height="86" rx="10" fill="url(#kt)" stroke="#b9ad8a" stroke-width="1.5"/><rect x="34" y="18" width="54" height="76" rx="7" fill="none" stroke="#00000014" stroke-width="1.5"/><path d="M61 27C61 27 44 50 44 62a17 17 0 0 0 34 0C78 50 61 27 61 27Z" fill="url(#kb)"/><ellipse cx="54.5" cy="58" rx="3.6" ry="7" fill="#ffffff70" transform="rotate(18 54.5 58)"/><path d="M47 98.5c1.5 0 2.4 1.2 2.4 3.4v7.6a2.6 2.6 0 0 1-5.2 0v-7.6c0-2.2 1.1-3.4 2.8-3.4z" fill="url(#kb)"/><circle cx="46.8" cy="113.5" r="3.4" fill="#a50f18"/><path d="M71 98.6c1 0 1.6.9 1.6 2.3v3.4a1.7 1.7 0 0 1-3.4 0v-3.4c0-1.4.7-2.3 1.8-2.3z" fill="#b3101a"/></g></svg><a href="https://claude.ai/artifact/V24JG6ai5ioRV7m3Tfpkrc" target="_blank" rel="noopener">← Oyuna dön</a></div>
   <header class="hero">
     <p class="kick">Yöresel kart oyunu · 4 kişilik</p>
     <h1><span class="bleed">Kanlı</span><span class="ok">Okey</span></h1>
@@ -272,3 +298,4 @@ html,body{overflow-x:hidden}.wrap{overflow-x:clip}
 
   <footer>Kurallar oyunu oynayanlar anlattıkça güncellenir. Daha fazla kural eklenecek.</footer>
 </main>
+</body></html>

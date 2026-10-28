@@ -1,6 +1,6 @@
 {
   "name": "kanli-okey",
-  "version": "0.39.0",
+  "version": "0.41.0",
   "private": true,
   "description": "Kanlı Okey: 4 kişilik, telefondan oynanan yöresel okey (sunucu + istemci + kural motoru)",
   "main": "server/server.js",

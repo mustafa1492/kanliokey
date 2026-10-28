@@ -309,7 +309,7 @@ function handle(conn,m){
     conn.uid=e.uid;online.set(conn.uid,(online.get(conn.uid)||0)+1);
     const cn=+m.now;conn.skew=Number.isFinite(cn)&&Math.abs(cn-now())<864e5?cn-now():0;
     for(const [k,g] of store)if(/\/game\/main$/.test(k)&&g.seats&&g.seats.includes(conn.uid))kick(roomOf(k));
-    return reply(conn,id,{ok:true,uid:conn.uid,token:tok,now:now()});
+    return reply(conn,id,{ok:true,uid:conn.uid,token:tok,now:now(),ver:BUILD});
   }
   if(!conn.uid)return deny(conn,id,'hello');
   if(op==='ping')return reply(conn,id,{ok:true});
@@ -340,31 +340,81 @@ function handle(conn,m){
 }
 
 /* ---------- HTTP ---------- */
+const INDEX=process.env.INDEX==='1'; /* arama motorlarına açık mı (alan adı alınınca açılacak) */
+let BUILD='';try{BUILD=fs.readFileSync(path.join(ROOT,'dist','build.txt'),'utf8').trim()}catch(e){}
+const TYPES={'.html':'text/html; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.webmanifest':'application/manifest+json','.js':'application/javascript; charset=utf-8'};
+const STATIC={'/manifest.webmanifest':'manifest.webmanifest','/sw.js':'sw.js','/icon-192.png':'icon-192.png','/icon-512.png':'icon-512.png','/icon-maskable.png':'icon-maskable.png','/apple-touch-icon.png':'apple-touch-icon.png','/apple-touch-icon-precomposed.png':'apple-touch-icon.png','/favicon.ico':'icon-192.png','/og.jpg':'og.jpg'};
 const files={};
 function loadFile(name){
   const f=path.join(ROOT,'dist',name);
   let body=fs.readFileSync(f);
   if(name==='kurallar.html')body=Buffer.from(body.toString('utf8').replace(/https:\/\/claude\.ai\/artifact\/V24JG6ai5ioRV7m3Tfpkrc/g,'/').replace(/target="_blank" rel="noopener">Oyunu aç/g,'>Oyunu aç'));
-  return{body,gz:zlib.gzipSync(body,{level:9}),etag:'"'+crypto.createHash('sha1').update(body).digest('hex').slice(0,16)+'"'};
+  const text=/\.html$/.test(name);
+  return{body,text,gz:zlib.gzipSync(body,{level:9}),etag:'"'+crypto.createHash('sha1').update(body).digest('hex').slice(0,16)+'"'};
 }
 function getFile(name){
   if(!files[name]){try{files[name]=loadFile(name)}catch(e){return null}}
   return files[name];
 }
-const CSP="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' ws: wss: data:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const attr=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function originOf(req){
+  const host=String(req.headers['x-forwarded-host']||req.headers.host||'localhost').split(',')[0].trim().replace(/[^A-Za-z0-9.:-]/g,'');
+  let proto=String(req.headers['x-forwarded-proto']||'').split(',')[0].trim();
+  if(proto!=='http'&&proto!=='https')proto=/^(localhost|127\.|\[?::1|192\.168\.|10\.)/.test(host)?'http':'https';
+  return proto+'://'+host;
+}
+/* sayfanın <head>'ine: uygulama simgeleri, telefona ekleme bilgisi, WhatsApp/sosyal paylaşım önizlemesi */
+function headTags(req,name,q){
+  const o=originOf(req);
+  let title='Kanlı Okey',desc='Arkadaşlarınla telefondan oynanan dört kişilik yöresel okey. Masa kur, kodu paylaş, masaya otur.',url=o+'/';
+  if(name==='kurallar.html'){title='Kanlı Okey kuralları: nasıl oynanır?';desc='Kanlı okeyin kuralları: büyük el, 17 ile açma, katlamalı, çift açma, taş işleme, okey değiştirme, cezalar ve çarpanlar.';url=o+'/kurallar'}
+  else{
+    const k=String(q.get('k')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5);
+    const r=CODE_RE.test(k)?store.get('rooms/'+k):null;
+    if(r){title='Kanlı Okey · '+cleanName(r.hostName)+' seni masaya çağırıyor';desc='Oda kodu: '+k+'. Bağlantıya dokun, kod hazır gelsin, masaya otur.';url=o+'/?k='+k}
+  }
+  return ['<link rel="manifest" href="/manifest.webmanifest">','<link rel="icon" type="image/png" href="/icon-192.png">','<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+    '<meta name="mobile-web-app-capable" content="yes">','<meta name="apple-mobile-web-app-capable" content="yes">','<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">','<meta name="apple-mobile-web-app-title" content="Kanlı Okey">',
+    '<meta property="og:type" content="website">','<meta property="og:site_name" content="Kanlı Okey">','<meta property="og:locale" content="tr_TR">',
+    `<meta property="og:title" content="${attr(title)}">`,`<meta property="og:description" content="${attr(desc)}">`,`<meta property="og:url" content="${attr(url)}">`,
+    `<meta property="og:image" content="${attr(o)}/og.jpg">`,'<meta property="og:image:width" content="1200">','<meta property="og:image:height" content="630">','<meta property="og:image:alt" content="Kanlı Okey">',
+    '<meta name="twitter:card" content="summary_large_image">',`<meta name="twitter:title" content="${attr(title)}">`,`<meta name="twitter:description" content="${attr(desc)}">`,`<meta name="twitter:image" content="${attr(o)}/og.jpg">`,
+    ...(INDEX?[`<link rel="canonical" href="${attr(url.split('?')[0])}">`]:[])].join('\n');
+}
+const pageCache=new Map(); /* (sayfa|köken) -> sıkıştırılmış hal; davet bağlantıları her seferinde hesaplanır */
+const CSP="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' ws: wss: data:; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 const server=http.createServer((req,res)=>{
-  const u=(req.url||'/').split('?')[0];
-  const base={'X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex','Content-Security-Policy':CSP};
-  if(u==='/health'){res.writeHead(200,{...base,'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({ok:true,rooms:[...store.keys()].filter(k=>/^rooms\/[A-Z0-9]{5}$/.test(k)).length,conns:conns.size}));return}
+  const [u,qs]=(req.url||'/').split('?');
+  const q=new URLSearchParams(qs||'');
+  const base={'X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':CSP,...(INDEX?{}:{'X-Robots-Tag':'noindex'})};
+  if(u==='/health'){res.writeHead(200,{...base,'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({ok:true,ver:BUILD,rooms:[...store.keys()].filter(k=>/^rooms\/[A-Z0-9]{5}$/.test(k)).length,conns:conns.size}));return}
   if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405,base);res.end();return}
+  if(u==='/robots.txt'){res.writeHead(200,{...base,'Content-Type':'text/plain'});res.end(INDEX?'User-agent: *\nAllow: /\n':'User-agent: *\nDisallow: /\n');return}
+  const gzOk=/\bgzip\b/.test(req.headers['accept-encoding']||'');
+  const st=STATIC[u];
+  if(st){
+    const f=getFile(st);if(!f){res.writeHead(404,base);res.end();return}
+    const ext=path.extname(st),cache=st==='sw.js'?'no-cache':ext==='.webmanifest'?'public, max-age=3600':'public, max-age=604800';
+    if(req.headers['if-none-match']===f.etag){res.writeHead(304,{...base,ETag:f.etag});res.end();return}
+    const z=gzOk&&(ext==='.js'||ext==='.webmanifest');
+    res.writeHead(200,{...base,'Content-Type':TYPES[ext]||'application/octet-stream','Cache-Control':cache,ETag:f.etag,...(st==='sw.js'?{'Service-Worker-Allowed':'/'}:{}),...(z?{'Content-Encoding':'gzip',Vary:'Accept-Encoding'}:{})});
+    res.end(req.method==='HEAD'?undefined:(z?f.gz:f.body));return;
+  }
   const name=u==='/'||u==='/index.html'?'index.html':u==='/kurallar'||u==='/kurallar.html'?'kurallar.html':null;
-  if(u==='/robots.txt'){res.writeHead(200,{...base,'Content-Type':'text/plain'});res.end('User-agent: *\nDisallow: /\n');return}
   const f=name&&getFile(name);
   if(!f){res.writeHead(404,{...base,'Content-Type':'text/plain; charset=utf-8'});res.end('Bulunamadı');return}
-  if(req.headers['if-none-match']===f.etag){res.writeHead(304,{...base,ETag:f.etag});res.end();return}
-  const gz=/\bgzip\b/.test(req.headers['accept-encoding']||'');
-  res.writeHead(200,{...base,'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache',ETag:f.etag,Vary:'Accept-Encoding',...(gz?{'Content-Encoding':'gzip'}:{})});
-  res.end(req.method==='HEAD'?undefined:(gz?f.gz:f.body));
+  const invite=name==='index.html'&&q.has('k');
+  const key=name+'|'+originOf(req);
+  let pg=invite?null:pageCache.get(key);
+  if(!pg){
+    const body=Buffer.from(f.body.toString('utf8').replace('<!--@HEAD@-->',headTags(req,name,q)));
+    pg={body,gz:gzOk?zlib.gzipSync(body,{level:invite?6:9}):null,etag:'"'+crypto.createHash('sha1').update(body).digest('hex').slice(0,16)+'"'};
+    if(!invite){if(pageCache.size>20)pageCache.clear();if(!pg.gz)pg.gz=zlib.gzipSync(body,{level:9});pageCache.set(key,pg)}
+  }
+  if(!invite&&req.headers['if-none-match']===pg.etag){res.writeHead(304,{...base,ETag:pg.etag});res.end();return}
+  const z=gzOk&&pg.gz;
+  res.writeHead(200,{...base,'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache',...(invite?{}:{ETag:pg.etag}),Vary:'Accept-Encoding',...(z?{'Content-Encoding':'gzip'}:{})});
+  res.end(req.method==='HEAD'?undefined:(z?pg.gz:pg.body));
 });
 
 /* ---------- WebSocket ---------- */

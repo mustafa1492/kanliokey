@@ -9,7 +9,11 @@ async function connectServer(){
   let ws=null,seq=0,live=false,uid=null,tries=0,closedByUs=false;
   const pend=new Map(),subs=new Map(),queue=[];
   let sidSeq=0,firstHello=null;
-  const banner=on=>{try{document.body.classList.toggle('offline',on)}catch(e){}};
+  const banner=on=>{try{document.body.classList.toggle('offline',on&&!!uid)}catch(e){}};
+  /* sunucu uyuyorsa (ücretsiz plan) ilk bağlantı uzun sürer: açılış ekranında haber ver */
+  const slowT=setTimeout(()=>{try{document.body.classList.add('slowconn')}catch(e){}},3500);
+  /* telefona uygulama gibi eklenebilsin, sunucu uyurken sayfa hemen açılsın */
+  try{if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{})}catch(e){}
   function raw(o){if(ws&&ws.readyState===1){ws.send(JSON.stringify(o));return true}return false}
   function call(o){
     return new Promise((res,rej)=>{
@@ -34,6 +38,8 @@ async function connectServer(){
         pend.set(id,{res:m=>{
           if(!m.ok){resolve(false);return}
           uid=m.uid;ls.set(TK,m.token);live=true;tries=0;banner(false);
+          clearTimeout(slowT);try{document.body.classList.remove('slowconn')}catch(e){}
+          if(m.ver&&typeof APP_BUILD==='string'&&APP_BUILD.indexOf('@')<0&&m.ver!==APP_BUILD){try{window.dispatchEvent(new Event('ko-newver'))}catch(e){}}
           for(const [sid,s] of subs)raw({op:'sub',sid,kind:s.kind,path:s.path});
           while(queue.length)raw(queue.shift());
           resolve(true);

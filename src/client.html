@@ -618,6 +618,51 @@ body.gmode .xtra .hint{margin:0}
 .final .endhd b{font-size:24px}
 .lastp{color:#ff6b6b}
 @media (prefers-reduced-motion:reduce){.endov,.endcard{animation-delay:0s!important;animation-duration:.01s!important}.endhd .crown{animation:none}}
+
+/* ===== v41: logo, açılış ekranı, yeni ana ekran, koyu lobi ===== */
+.splash{min-height:70vh;min-height:70dvh;display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;color:#f3e8d8}
+.spl-logo .emb{width:110px;height:110px;filter:drop-shadow(0 14px 24px #000c);animation:sbob 2.4s ease-in-out infinite}
+@keyframes sbob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+.splash b{font:700 20px/1 var(--display);letter-spacing:.08em;text-transform:uppercase}
+.shuf{position:relative;width:132px;height:44px}
+.shuf i{position:absolute;top:4px;width:28px;height:38px;border-radius:5px;background:linear-gradient(165deg,#fffcf3,#f3ead2 55%,#dccfa9);box-shadow:0 3px 0 #b5a97f,0 5px 6px #0008;display:grid;place-items:center;font:700 17px/1 var(--display);font-style:normal;animation:shf 1.6s ease-in-out infinite}
+.shuf .c0{left:0;color:#d3241b}.shuf .c1{left:34px;color:#1b54d6;animation-delay:-.4s}.shuf .c2{left:68px;color:#c27600;animation-delay:-.8s}.shuf .c3{left:102px;color:#1b1b1b;animation-delay:-1.2s}
+@keyframes shf{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-12px) rotate(-8deg)}50%{transform:translate(8px,0) rotate(6deg)}75%{transform:translate(-6px,-4px) rotate(-3deg)}}
+.splash .slow{display:none;max-width:260px;color:#b09f8d}
+.slowconn .splash .slow{display:block}
+@media (prefers-reduced-motion:reduce){.spl-logo .emb,.shuf i{animation:none}}
+/* koyu lobi (ana ekran, masa bekleme, yönetim) */
+body.lobby{background-color:#080505;background:radial-gradient(130% 60% at 50% -10%,#4a1412 0%,#1a0b09 48%,#080505 100%) fixed;color:var(--fg)}
+body.lobby .panel{background:linear-gradient(180deg,#1f1513,#170f0e);color:var(--fg);border-color:#3f2c26}
+body.lobby .panel .mut,body.lobby .panel small,body.lobby .flab{color:var(--mut)}
+body.lobby .slot{background:#ffffff08;border-color:#3f2c26}
+body.lobby .slot.sc0,body.lobby .slot.sc1,body.lobby .slot.sc2,body.lobby .slot.sc3{border-left:4px solid var(--sc)}
+body.lobby .slot.sc3{border-left-color:#cfc6b0}
+body.lobby .slot.bot{background:#ffffff0d;color:var(--fg);border-color:#3f2c26;border-style:solid}
+body.lobby .panel .slot.bot small{color:var(--mut)}
+body.lobby .slot.empty{color:var(--mut);border-left-width:1px}
+body.home .top h1,body.home .top a.chip{display:none}
+body.home .top{justify-content:flex-end}
+body.home .top .chips{justify-content:flex-end}
+.hero2{display:grid;justify-items:center;text-align:center;padding:2px 0 4px}
+.hlogo .emb{width:min(116px,26vw);height:auto;filter:drop-shadow(0 16px 26px #000c);animation:sbob 4s ease-in-out infinite}
+.hero2 .wm{font:700 clamp(40px,12.5vw,66px)/.95 var(--display);text-transform:uppercase;letter-spacing:.01em;margin:10px 0 0;white-space:nowrap}
+.hero2 .wm .ok{color:#f6eed4}
+.hero2 .wm .bleed{color:#e0242f}
+.hero2 .tagl{margin:calc(30px + .5em) 0 0;color:#d8c8b2;max-width:22em;font-size:16px;line-height:1.4}
+.card2{display:grid;gap:10px;padding:16px}
+.card2 input{width:100%;min-height:50px;font-size:18px}
+.card2 .big{min-height:56px;font-size:20px}
+.or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:13px;margin:2px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:#3f2c26}
+.join{flex-wrap:nowrap}
+.join input{flex:1;min-width:0;text-transform:uppercase;letter-spacing:.3em;text-align:center;font:700 22px/1 var(--display)}
+.join button{min-width:96px}
+.resume{width:100%;min-height:50px;background:#ffffff0a;border-color:#5b3a24}
+.resume b{letter-spacing:.15em;color:#e8b93a}
+.hlinks{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 18px}
+.hlinks a,.lnk{color:#e8d9c2;font:600 14px/1 var(--body);text-decoration:underline;text-underline-offset:3px;background:none;border:0;padding:10px 4px;min-height:44px;cursor:pointer}
+body.lobby .agate{color:var(--mut)}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -628,7 +673,7 @@ body.offline::before{content:"Bağlantı koptu, yeniden bağlanıyor…";positio
 
 <div class="wrap">
   <div class="top"><h1><span class="bleed">Kanlı</span> <span>Okey</span></h1><div class="chips"><span id="chips" class="chips"></span><button class="chip tg" id="sndT" aria-pressed="true">Ses</button><button class="chip tg" id="vibT" aria-pressed="true">Titreşim</button><a class="chip" href="https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt" target="_blank" rel="noopener" style="text-decoration:none;color:var(--fg)">Kurallar ↗</a><button class="chip tg mbtn" id="menuT" aria-expanded="false" aria-haspopup="dialog">Menü</button></div></div>
-  <div id="app">Yükleniyor…</div>
+  <div id="app"><div class="splash" role="status"><div class="spl-logo"><svg class="emb" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="kt" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffcf3"/><stop offset=".55" stop-color="#f3ead2"/><stop offset="1" stop-color="#dccfa9"/></linearGradient><linearGradient id="kb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0404c"/><stop offset=".55" stop-color="#c4141f"/><stop offset="1" stop-color="#7d0a12"/></linearGradient></defs><g transform="rotate(-7 60 60)"><rect x="29" y="17" width="64" height="86" rx="10" fill="#8a7a55"/><rect x="29" y="13" width="64" height="86" rx="10" fill="url(#kt)" stroke="#b9ad8a" stroke-width="1.5"/><rect x="34" y="18" width="54" height="76" rx="7" fill="none" stroke="#00000014" stroke-width="1.5"/><path d="M61 27C61 27 44 50 44 62a17 17 0 0 0 34 0C78 50 61 27 61 27Z" fill="url(#kb)"/><ellipse cx="54.5" cy="58" rx="3.6" ry="7" fill="#ffffff70" transform="rotate(18 54.5 58)"/><path d="M47 98.5c1.5 0 2.4 1.2 2.4 3.4v7.6a2.6 2.6 0 0 1-5.2 0v-7.6c0-2.2 1.1-3.4 2.8-3.4z" fill="url(#kb)"/><circle cx="46.8" cy="113.5" r="3.4" fill="#a50f18"/><path d="M71 98.6c1 0 1.6.9 1.6 2.3v3.4a1.7 1.7 0 0 1-3.4 0v-3.4c0-1.4.7-2.3 1.8-2.3z" fill="#b3101a"/></g></svg></div><b>Masa hazırlanıyor…</b><div class="shuf" aria-hidden="true"><i class="c0">7</i><i class="c1">8</i><i class="c2">9</i><i class="c3">10</i></div><small class="slow">Sunucu uyanıyor, ilk açılış bir dakika sürebilir.</small></div></div>
 </div>
 
 <script>/*@ENGINE@*/</script>
@@ -777,6 +822,24 @@ if(typeof document!=='undefined'&&typeof document.addEventListener==='function')
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('menu-open')){document.body.classList.remove('menu-open')}});
   syncTg();
 }
+const LOGO=`<svg class="emb" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="kt" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffcf3"/><stop offset=".55" stop-color="#f3ead2"/><stop offset="1" stop-color="#dccfa9"/></linearGradient><linearGradient id="kb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0404c"/><stop offset=".55" stop-color="#c4141f"/><stop offset="1" stop-color="#7d0a12"/></linearGradient></defs><g transform="rotate(-7 60 60)"><rect x="29" y="17" width="64" height="86" rx="10" fill="#8a7a55"/><rect x="29" y="13" width="64" height="86" rx="10" fill="url(#kt)" stroke="#b9ad8a" stroke-width="1.5"/><rect x="34" y="18" width="54" height="76" rx="7" fill="none" stroke="#00000014" stroke-width="1.5"/><path d="M61 27C61 27 44 50 44 62a17 17 0 0 0 34 0C78 50 61 27 61 27Z" fill="url(#kb)"/><ellipse cx="54.5" cy="58" rx="3.6" ry="7" fill="#ffffff70" transform="rotate(18 54.5 58)"/><path d="M47 98.5c1.5 0 2.4 1.2 2.4 3.4v7.6a2.6 2.6 0 0 1-5.2 0v-7.6c0-2.2 1.1-3.4 2.8-3.4z" fill="url(#kb)"/><circle cx="46.8" cy="113.5" r="3.4" fill="#a50f18"/><path d="M71 98.6c1 0 1.6.9 1.6 2.3v3.4a1.7 1.7 0 0 1-3.4 0v-3.4c0-1.4.7-2.3 1.8-2.3z" fill="#b3101a"/></g></svg>`;
+const SPLASH=`<div class="splash" role="status"><div class="spl-logo"><svg class="emb" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="kt" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffcf3"/><stop offset=".55" stop-color="#f3ead2"/><stop offset="1" stop-color="#dccfa9"/></linearGradient><linearGradient id="kb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0404c"/><stop offset=".55" stop-color="#c4141f"/><stop offset="1" stop-color="#7d0a12"/></linearGradient></defs><g transform="rotate(-7 60 60)"><rect x="29" y="17" width="64" height="86" rx="10" fill="#8a7a55"/><rect x="29" y="13" width="64" height="86" rx="10" fill="url(#kt)" stroke="#b9ad8a" stroke-width="1.5"/><rect x="34" y="18" width="54" height="76" rx="7" fill="none" stroke="#00000014" stroke-width="1.5"/><path d="M61 27C61 27 44 50 44 62a17 17 0 0 0 34 0C78 50 61 27 61 27Z" fill="url(#kb)"/><ellipse cx="54.5" cy="58" rx="3.6" ry="7" fill="#ffffff70" transform="rotate(18 54.5 58)"/><path d="M47 98.5c1.5 0 2.4 1.2 2.4 3.4v7.6a2.6 2.6 0 0 1-5.2 0v-7.6c0-2.2 1.1-3.4 2.8-3.4z" fill="url(#kb)"/><circle cx="46.8" cy="113.5" r="3.4" fill="#a50f18"/><path d="M71 98.6c1 0 1.6.9 1.6 2.3v3.4a1.7 1.7 0 0 1-3.4 0v-3.4c0-1.4.7-2.3 1.8-2.3z" fill="#b3101a"/></g></svg></div><b>Masa hazırlanıyor…</b><div class="shuf" aria-hidden="true"><i class="c0">7</i><i class="c1">8</i><i class="c2">9</i><i class="c3">10</i></div><small class="slow">Sunucu uyanıyor, ilk açılış bir dakika sürebilir.</small></div>`;
+/* telefona uygulama gibi ekleme (sunucu sürümü) */
+let instEv=null;
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEv=e;try{render()}catch(_){}});
+const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+async function installApp(){
+  if(instEv){try{instEv.prompt();await instEv.userChoice}catch(e){}instEv=null;render();return}
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
+  msg=ios?'iPhone: Safari\'de alttaki Paylaş düğmesine bas, "Ana Ekrana Ekle"yi seç.':'Tarayıcının menüsünden (⋮) "Ana ekrana ekle" ya da "Uygulamayı yükle"yi seç.';
+  render();
+}
+/* yeni sürüm: sunucu yeni sürümdeyse ana ekrandayken sayfa kendini yeniler, oyundayken menüde haber verir */
+let newVer=false;
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('ko-newver',()=>{
+  if(!S||S.ph==='end'){let t=0;try{t=+sessionStorage.getItem('ko_rl')||0}catch(e){}if(Date.now()-t>60000){try{sessionStorage.setItem('ko_rl',String(Date.now()))}catch(e){}location.reload();return}}
+  newVer=true;try{render()}catch(e){}
+});
 const STAMP=`<svg class="stamp" viewBox="0 0 300 300" aria-hidden="true" focusable="false"><defs><path id="stA" d="M50 150A100 100 0 0 1 250 150"/><path id="stB" d="M28 150A122 122 0 0 0 272 150"/></defs><g fill="none" stroke="currentColor"><circle cx="150" cy="150" r="142" stroke-width="5"/><circle cx="150" cy="150" r="133" stroke-width="1.5"/><circle cx="150" cy="150" r="84" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round"/><circle cx="150" cy="150" r="75" stroke-width="1"/></g><g fill="currentColor" font-family="Oswald,Impact,sans-serif" font-weight="700" text-anchor="middle"><text font-size="38" letter-spacing="9"><textPath href="#stA" startOffset="50%">KANLI OKEY</textPath></text><text font-size="17" letter-spacing="9"><textPath href="#stB" startOffset="50%">★ ★ ★</textPath></text><text x="38" y="160" font-size="24">★</text><text x="262" y="160" font-size="24">★</text></g></svg>`;
 let flashPen=0,penFx=[];
 const SEATC=['#d63a3a','#3f7cf0','#e3a51f','#f3ead6'];
@@ -822,6 +885,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 let lastMsg='',msgT=0,toastTimer=null,dropAt=null,fresh={id:-1,t:0};
 let db=null,uid=null,S=null,L=[],sel=[],order=[],stage=[],name='',msg='',ready=false,busy=false,gid=0;
 let SRV=null; /* sunucu modu: kendi sunucumuza bağlıyken dolu */
+const APP_BUILD='/*@BUILD@*/';
 let RULES_URL='https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt';
 /* davet bağlantısı: site.com/?k=KOD ile gelen kod giriş kutusuna hazır gelir */
 const INVITE=(()=>{try{return (new URLSearchParams(location.search).get('k')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}catch(e){return ''}})();
@@ -924,22 +988,22 @@ async function shareCode(){
 }
 function homeH(){
   const saved=lsGet('okeyRoom');
-  const tiles=[['#c9302c','7'],['#1f5fbf','8'],['#222','9'],['#d98a12','10']].map((t,i)=>`<g transform="translate(${30+i*21} 120) rotate(${(i-1.5)*5})"><rect width="18" height="25" rx="3" fill="#efe8d2" stroke="#a39a7c"/><text x="9" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="${t[0]}">${t[1]}</text></g>`).join('');
-  const hero=`<svg class="lhero" viewBox="0 0 160 160" role="img" aria-label="Dört kişilik okey masası"><rect x="6" y="6" width="148" height="148" rx="22" fill="#9aa3a8"/><rect x="12" y="12" width="136" height="136" rx="17" fill="#6b4a2f"/><rect x="18" y="18" width="124" height="124" rx="12" fill="#1f6f4a"/><circle cx="80" cy="80" r="21" fill="#7d1119"/><circle cx="80" cy="80" r="12" fill="#0d0d0e"/><rect x="73" y="70" width="14" height="20" rx="3" fill="#1f6f4a" stroke="#e8b93a"/>${[[80,28],[80,132],[28,80],[132,80]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="8" fill="#e8b93a"/>`).join('')}<g opacity=".95">${[0,1,2,3,4,5].map(i=>`<rect x="${52+i*9}" y="40" width="7" height="10" rx="1.5" fill="#efe8d2"/>`).join('')}</g></svg>`;
-  return `<section class="lobby-hero"><div>${hero}</div><div><small class="kick">4 KİŞİLİK · TELEFONDAN</small><h2 class="lh">Masaya otur</h2><p>Her oyuncu kendi telefonunda. Kodu paylaş, masa kurulsun.</p><div class="pills"><span>9 ya da 13 el</span><span>Bot ile doldur</span><span>Kodla katıl</span></div></div></section>
-<div class="panel lobby-card"><label class="flab" for="nm">Takma adın</label><input id="nm" placeholder="Örn. Mustafa" maxlength="14" value="${esc(name)}" aria-label="Takma adın"></div>
-<div class="lobby-opts"><div class="panel opt"><span class="ob">1</span><h2>Oyun kur</h2><p class="mut">Yeni bir oda aç, 5 harflik kodu arkadaşlarına ver. Eksik kalan koltukları botlar doldurur.</p><button class="p" id="mk">Oyun kur</button></div>
-<div class="panel opt"><span class="ob">2</span><h2>Odaya katıl</h2><p class="mut">Arkadaşından aldığın kodu yaz, doğrudan masaya otur.</p><div class="row"><input id="cd" placeholder="KOD" maxlength="5" value="${esc(INVITE)}" autocapitalize="characters" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em;text-align:center;flex:1;min-width:0" aria-label="Oda kodu"><button class="p" id="jn">Katıl</button></div></div></div>
-${saved?`<button id="resume" class="resume">Son odaya dön · ${esc(saved)}</button>`:''}
-<ol class="lsteps"><li><b>Kur</b><span>Oda kodunu al</span></li><li><b>Paylaş</b><span>Arkadaşlar kodla girer</span></li><li><b>Oyna</b><span>Dört koltuk dolunca başla</span></li></ol>
-<details class="agate" ${agOpen?'open':''}><summary>Yönetici girişi</summary><div class="row"><input id="ap" type="password" inputmode="numeric" placeholder="Şifre" autocomplete="off" aria-label="Yönetici şifresi" style="flex:1;min-width:0"><button id="adm">Gir</button></div></details>
-${msg?`<div class="warn">${esc(msg)}</div>`:''}`;
+  const inst=SRV&&!isStandalone()?`<button class="lnk" id="inst">Telefona uygulama gibi ekle</button>`:'';
+  return `<section class="hero2"><div class="hlogo">${LOGO}</div><h2 class="wm"><span class="bleed">Kanlı</span> <span class="ok">Okey</span></h2><p class="tagl">Dört kişilik yöresel okey. Herkes kendi telefonunda, kodla aynı masada.</p></section>
+<div class="panel card2"><label class="flab" for="nm">Takma adın</label><input id="nm" placeholder="Örn. Mustafa" maxlength="14" value="${esc(name)}" autocomplete="nickname">
+<button class="p big" id="mk">Masa kur</button>
+<div class="or"><span>ya da arkadaşının masasına katıl</span></div>
+<div class="row join"><input id="cd" placeholder="KOD" maxlength="5" value="${esc(INVITE)}" autocapitalize="characters" autocomplete="off" aria-label="Oda kodu"><button class="p" id="jn">Katıl</button></div></div>
+${saved?`<button id="resume" class="resume">Son masaya dön · <b>${esc(saved)}</b></button>`:''}
+${msg?`<div class="warn">${esc(msg)}</div>`:''}
+<nav class="hlinks"><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar</a>${inst}</nav>
+<details class="agate" ${agOpen?'open':''}><summary>Yönetici girişi</summary><div class="row"><input id="ap" type="password" inputmode="numeric" placeholder="Şifre" autocomplete="off" aria-label="Yönetici şifresi" style="flex:1;min-width:0"><button id="adm">Gir</button></div></details>`;
 }
 function roomH(){
   if(!ROOM)return '<div class="panel mut">Oda yükleniyor…</div>';
   const q=[...L].sort((a,b)=>a.t-b.t),hq=Math.min(q.length,4),nb=Math.max(0,Math.min(bots,4-hq)),inL=q.slice(0,4).some(x=>x.id===uid);
   const host=ROOM.host===uid,playing=ROOM.st==='playing';
-  const slots=[0,1,2,3].map(i=>q[i]?`<div class="slot"><small class="mut">${q[i].id===ROOM.host?'KURAN':'OYUNCU '+(i+1)}</small>${esc(q[i].name)}</div>`:i<hq+nb?`<div class="slot bot"><small class="mut">BOT</small>Bot ${i-hq+1}</div>`:`<div class="slot empty"><small>OYUNCU ${i+1}</small>Boş</div>`).join('');
+  const slots=[0,1,2,3].map(i=>q[i]?`<div class="slot sc${i}"><small class="mut">${q[i].id===ROOM.host?'KURAN':'OYUNCU '+(i+1)}</small>${esc(q[i].name)}</div>`:i<hq+nb?`<div class="slot bot sc${i}"><small class="mut">BOT</small>Bot ${i-hq+1}</div>`:`<div class="slot empty"><small>OYUNCU ${i+1}</small>Boş</div>`).join('');
   let ctl='';
   if(playing)ctl='<p class="mut" style="margin:0">Oyun başlamış ama bu oyunda koltuğun yok.</p>';
   else if(host)ctl=`<div class="row"><button id="botadd" ${hq+nb>=4?'disabled':''}>Bot ekle</button><button id="botdel" ${nb>0?'':'disabled'}>Bot çıkar</button><button id="botfill" ${hq>=4?'disabled':''}>Botlarla doldur</button></div>
@@ -1334,11 +1398,11 @@ function render0(){
   if(drag&&drag.on){pend=true;return}
   if(document.activeElement&&(document.activeElement.id==='nm'||document.activeElement.id==='rn'||document.activeElement.id==='cd'||document.activeElement.id==='ap'||document.activeElement.id==='an'))return;
   C.innerHTML='';A.className='';A.style.removeProperty('--el');
-  if(!ready){A.innerHTML='<div class="panel mut">Yükleniyor…</div>';return}
+  if(!ready){if(!A.querySelector('.splash'))A.innerHTML=SPLASH;return}
   if(!db||!uid){const nc=typeof claude==='undefined';A.innerHTML=`<div class="panel"><h2>${nc?'Bağlantı yok':'Giriş gerekli'}</h2><p class="mut" style="margin:0">${nc?'Oyun sunucusuna bağlanılamadı. İnternetini kontrol edip sayfayı yenile.':'Oyun için giriş yapmış olman gerekiyor. Sayfayı bağlantıyla, claude.ai hesabınla aç.'}</p></div>`;return}
   const me=S&&S.seats?S.seats.indexOf(uid):-1;
   if(document.body){const gm=!!(S&&me>=0);document.body.classList.toggle('lobby',!gm);document.body.classList.toggle('gmode',gm);if(document.documentElement&&document.documentElement.classList)document.documentElement.classList.toggle('gmode',gm);if(!gm)document.body.classList.remove('menu-open')}
-  let h='';
+  let h='',isHome=false;
   if(S&&me>=0){
     B=S.B;const O=S.okey,ended=S.ph==='end',mine=S.turn===me&&!ended;
     if(gid!==S.gid){gid=S.gid;stage=[];sel=[];order=[];A._mh=0;A.style.minHeight=''}
@@ -1429,7 +1493,7 @@ ${i===me?'':orack(r,cnt)}
     h+=`<div><div class="rlabel"><span class="lab">Istakan · ${myH.length} taş</span><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`Dizilen <b>${hp}</b> / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop':'')):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
-<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><button class="tg" data-tg="vib" aria-pressed="${SFX.vb}">Titreşim</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a></div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
+<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><button class="tg" data-tg="vib" aria-pressed="${SFX.vb}">Titreşim</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
     h+='<!--SEC-->';
     /* uyarı: ekranın üstünde kısa süre görünür */
     if(msg!==lastMsg){lastMsg=msg;msgT=msg?Date.now():0}
@@ -1447,7 +1511,7 @@ ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></d
   }else if(view==='room'&&code){
     h+=roomH();
   }else{
-    h+=homeH();
+    h+=homeH();isHome=true;
   }
   if(false){
     /* eski masa kaldırıldı */
@@ -1458,6 +1522,7 @@ ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></d
     for(let i=0;i<parts.length;i++)if(parts[i]!==A._p[i])A.children[i].innerHTML=parts[i];
   }else A.innerHTML=parts.map(p=>`<div class="sec">${p}</div>`).join('');
   A._p=parts;
+  if(document.body&&document.body.classList)document.body.classList.toggle('home',isHome);
   if(flip)runFlip();
   scheduleBot();
   scheduleNext();
@@ -1711,6 +1776,8 @@ $('#app').addEventListener('click',async e=>{
     else if(id==='botfill'){const hq=Math.min(L.length,4);await setBots(Math.max(0,4-hq))}
     else if(id==='go')await start(null,(ROOM&&ROOM.R)||9);
     else if(id==='again')await start(S);
+    else if(id==='inst')await installApp();
+    else if(id==='reload')location.reload();
     else if(id==='endx'){endHide=S?S.gid:-1;render()}
     else if(id==='endo'){endHide=-1;render()}
     else if(id==='deck')await drawDeck();
