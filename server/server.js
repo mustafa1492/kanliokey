@@ -206,7 +206,7 @@ function hPut(conn,m){
       if(r.st==='playing'&&seatOf(c,u)<0)return deny(conn,m.id,'playing','Bu odada oyun başlamış.');
       if(ms.length>=4)return deny(conn,m.id,'full','Masa dolu.');
     }
-    put(p,{name:cleanName(d.name),t:prev?prev.t:now()});touch(c);
+    const av=+d.av;put(p,{name:cleanName(d.name),av:av>=0&&av<8&&(av|0)===av?av:(prev&&prev.av!=null?prev.av:-1),t:prev?prev.t:now()});touch(c);
     return reply(conn,m.id,{ok:true});
   }
   return deny(conn,m.id);

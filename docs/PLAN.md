@@ -78,6 +78,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] v22: Açılan perler sahibinin önünde (alt: önünde, üst: rafının altında, yanlar: rafın yanında). Istaka kutusunda yalnızca dizdiğin (ayrı ve düzgün sıralı) perlerin puanı görünür, elindeki en yüksek puan gösterilmez. Normal elde yerde yalnızca gösterge görünür. Desteden/yandan taş sürükleme: parmağın üstünde yükselen taş, hedef yuva parlıyor, gelen taş yuvaya "pop" animasyonuyla oturuyor
 - [x] v23: Istakada taşı iki taşın arasına sürükleyip sokma (komşular kayar, boşluk kapanır); yuvalar arası boşluğa bırakınca en yakın yuva seçiliyor, araya sokma yeri altın çizgiyle gösteriliyor. El bitince taşlar masanın ortasında karışıp uçuşuyor (36 taş), rakip ıstakaları, perler ve atılan taşlar da ortaya çöküyor
 - [x] v24: Taşlara daha gerçekçi görünüm (cilalı yüz, iç çerçeve, altında renkli nokta); araya sokunca komşu taşlar kayarak yerine oturuyor. "Açma alanı" masadan kaldırıldı, "Per aç" (çift dizdiyse "Çift aç") ıstakanın altındaki düğme sırasında. Açılamama sebebi uyarı olarak çıkıyor
+- [x] v42: EŞLİ OYUN (masa kurarken açılır, kuran eşleri seçer, karşılıklı oturma, takım cezası Cezalar panelinde ve el sonu kartında, oyun sonunda kaybeden takım, botlar Usta). KAN: "KANLI" harflerinin içi ıslak parlak kan, harf ayaklarından damlalar "OKEY"in (fildişi) üstünden süzülür, arada damla düşer; panel kenarı akıntıları, sıçramalar, ceza anı ve kurallar sayfası başlığı aynı ıslak görünümde. ANA EKRAN: 5 masa sözü logonun altında sırayla döner, arkada bulanık okey masası + dağınık taşlar + titreyen lamba ışığı, Kurallar tanıtım kartı. OYUN İÇİ: kahvehane karakterleri (Çay, Tespih, Amca, Kasketli, Zar, Kahve, Simit, Kanlı taş; ana ekranda seçilir, masada ve bekleme odasında görünür, botlarda sabit), büyük anlar duyurusu (açılış puanı, işler taş +500, okeyle / tek başına bitirme), bitirişte son taş masaya çakılır + masa sarsılır, açamayıp tam ceza yiyenin isminde kan sıçraması (masada ve el sonu kartında), ıstakadaki okeyde altın parıltı, gösterge dağıtımda ters gelip dönerek açılır, kendi sıranın son 10 saniyesinde ekran kenarları kırmızı nabız atar
 - [x] v41: GÖRÜNÜM: koltuk renkleri (herkes aynı oyuncuyu aynı renkte görür; isim, avatar, masadaki perler), isim kutusunda toplam ceza, ince durum şeridi, tahta raflı ıstaka, deste göbeğinde sıra ibresi, ceza anında isim üstünde +N, taşlar uçarak gider (desteden ıstakaya, ıstakadan masaya, rakip ıstakasından masaya/atılanlara), el sonu kartı (ceza kalemleri satır satır, çarpanlar, kalan taşlar, kazanana taç, "Masayı gör"), logo ve yeni ana ekran, koyu lobi, "Masa hazırlanıyor" açılışı, telefona uygulama gibi ekleme (simge, tam ekran, sunucu uyurken kayıtlı sayfa), WhatsApp önizlemesi (davette kuranın adı ve oda kodu), yeni sürümde sayfa kendini yeniler, kurallar sayfası oyunla aynı koyu görünüm (site v13), Türkçe büyük harf düzeltmesi (İ)
 - [x] v40: ALTYAPI: kural motoru ayrı dosya (src/engine.js), kendi sunucumuz (server/server.js: odalar, oyun kuralları sunucuda, başkasının eli ve deste sırası gizli, botlar ve süre sunucuda, durum diske kaydediliyor, yönetici şifresi sunucuda, hız sınırı), aynı oyun dosyası hem claude.ai'de hem sunucuda çalışıyor (claude.ai'de değilse sunucuya bağlanır), davet bağlantısı, bağlantı koptu uyarısı; Dockerfile + render.yaml; testler: test/engine.test.js, test/sim.test.js, test/server.test.js, test/e2e.py
 - [x] v39: Telefonda tek ekran: sayfa kaydırması yok, masa ekrana sığıyor (üst çubuk + durum + masa + ıstaka + 4 düğme). Ses, Titreşim, Kurallar, Nasıl kullanılır ve Ana ekran "Menü"de. Lobide bot kartı okunur (yeşil zemin açık yazı). Sürüklemede kasma azaltıldı (yuva konumları önbellekte, her karede sayfa ölçümü yok, sınıflar sadece değişince; masa ayrı katmanda). iPhone'da (iOS 18+) titreşim yerine anahtar dokunuşu denenir. Yatay ekranda eski kaydırmalı düzen
@@ -118,28 +119,28 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 
 - [ ] Açılış puanında fazlalık (Mustafa fark etti, sonra bakılacak): dörtlü erkek perde 4. taş 3'e bölünerek puana katılıyor. Dört 11 açınca 4. 11 → 11/3 = 3 tam + 2/3 artık; dört 12 açınca 4. 12 → 12/3 = 4 puan ekleniyor. Şu anki hesap: bütün açılan taşların toplamı / 3, aşağı yuvarlanır (üç 11 = 33/3 = 11, dört 11 = 44/3 = 14). Doğrusunun nasıl olacağını Mustafa söyleyecek; tahminle değiştirilmeyecek.
 
-- [ ] Kan efektleri daha gerçekçi olacak. KARAR (taslak A1, docs/taslaklar/kan-yazi-secilen.png): "KANLI" yazısının harflerinin içi ıslak, parlak koyu kan; harflerin ayaklarından damlalar akar, uzun damlalar alttaki "OKEY"in üstünden süzülür; "OKEY" parlak beyaz değil fildişi (taş rengi), hafif doku ve kenar gölgesiyle. Damlalar yavaşça uzar, arada biri kopup düşer. Aynı ıslak, parlak görünüm diğer kan efektlerine de uygulanacak (panel kenarı akıntıları, sıçramalar, ceza anındaki kan akışı, kurallar sayfası başlığı). Uygulama örneği: docs/taslaklar/kan-yazi-taslak.html
-- [ ] Ana ekran (ilk masa kurma ekranı) çok sade kaldı: oraya neler ekleneceği birlikte düşünülecek
-- [ ] Ana ekrandaki "Kurallar" bağlantısı çok sade: kurallar sayfası güzel, daha dikkat çekici olsun (örneğin küçük bir tanıtım kartı: başlık, birkaç taş, "Kuralları oku" düğmesi)
+- [x] (v42) Kan efektleri daha gerçekçi olacak. KARAR (taslak A1, docs/taslaklar/kan-yazi-secilen.png): "KANLI" yazısının harflerinin içi ıslak, parlak koyu kan; harflerin ayaklarından damlalar akar, uzun damlalar alttaki "OKEY"in üstünden süzülür; "OKEY" parlak beyaz değil fildişi (taş rengi), hafif doku ve kenar gölgesiyle. Damlalar yavaşça uzar, arada biri kopup düşer. Aynı ıslak, parlak görünüm diğer kan efektlerine de uygulanacak (panel kenarı akıntıları, sıçramalar, ceza anındaki kan akışı, kurallar sayfası başlığı). Uygulama örneği: docs/taslaklar/kan-yazi-taslak.html
+- [x] (v42) Ana ekran (ilk masa kurma ekranı) çok sade kaldı: oraya neler ekleneceği birlikte düşünülecek
+- [x] (v42) Ana ekrandaki "Kurallar" bağlantısı çok sade: kurallar sayfası güzel, daha dikkat çekici olsun (örneğin küçük bir tanıtım kartı: başlık, birkaç taş, "Kuralları oku" düğmesi)
 
 - [x] Titreşim iPhone'da çalışmıyor (Apple web sayfalarına izin vermiyor). Mustafa: gerek yok, bu konu kapandı. Android'de titreşim çalışmaya devam ediyor.
 
-- [ ] EŞLİ OYNAMA: kuralları tamam (docs/KURALLAR.md "Eşli oyun"). Yapılacaklar: masa kurma ekranında eşli seçeneği ve kuranın eşleri belirlemesi, karşılıklı oturma, takım cezası (iki eşin toplamı) her yerde (Cezalar paneli, el sonu kartı, oyun sonu: kaybeden takım), eşin bitirince eşe ceza yok, eşin perine işleme ve okey değiştirmede ceza yok, botlar eşli oyunda Usta ve eşini cezalandırmayan işlemeyi bilir, sunucu ve claude.ai sürümü, testler.
+- [x] (v42) EŞLİ OYNAMA: kuralları tamam (docs/KURALLAR.md "Eşli oyun"). Yapılacaklar: masa kurma ekranında eşli seçeneği ve kuranın eşleri belirlemesi, karşılıklı oturma, takım cezası (iki eşin toplamı) her yerde (Cezalar paneli, el sonu kartı, oyun sonu: kaybeden takım), eşin bitirince eşe ceza yok, eşin perine işleme ve okey değiştirmede ceza yok, botlar eşli oyunda Usta ve eşini cezalandırmayan işlemeyi bilir, sunucu ve claude.ai sürümü, testler.
 
 Estetik kararları (Mustafa seçti, toplu güncellemede yapılacak)
-- [ ] Ana ekran: masa sözleri logonun altında sırayla değişir. Mustafa'nın seçtiği sözler (aynen):
+- [x] (v42) Ana ekran: masa sözleri logonun altında sırayla değişir. Mustafa'nın seçtiği sözler (aynen):
   - "Çift açan tek kalır, tek kalan içine alır."
   - "Kanlı okeyde dost olmaz."
   - "Bu kurallar kan ile yazıldı."
   - "Kan kanla yıkanmaz; kanlı okeyde el kanla değil, sabırla kazanılır." (kurallar sitesinden, Masa sözü)
   - "Muco'nun sabrını zorlarsan kafana ıstakayı yiyebilirsin." (kurallar sitesinden, Mamika)
   (İlk üçünün altında "Masa sözü" yazar. Mustafa: beşi de dönüşe girsin)
-- [ ] Ana ekran: arka planda bulanık, yukarıdan okey masası ve dağınık taşlar, üstünde hafifçe titreyen kahvehane lambası ışığı
-- [ ] Oyun içi: büyük anlar için ortada kısa duyuru ("Ali 24 ile açtı!", "İşler taş! +500", "Okeyle bitirdi!")
-- [ ] Oyun içi: avatar seçimi (kahvehane karakterleri: çay bardağı, tespih, bıyıklı amca, kasket…; kendi çizimlerimiz)
-- [ ] Oyun içi: eli bitirince taşlar masaya vurulur, ekran hafif sarsılır; açamayıp tam ceza yiyenin isminde kan sıçraması
-- [ ] Oyun içi: ıstakadaki okey taşında arada altın parıltı, gösterge el başında dönerek açılır
-- [ ] Oyun içi: sıranın son 10 saniyesinde ekran kenarları kırmızı nabız atar
+- [x] (v42) Ana ekran: arka planda bulanık, yukarıdan okey masası ve dağınık taşlar, üstünde hafifçe titreyen kahvehane lambası ışığı
+- [x] (v42) Oyun içi: büyük anlar için ortada kısa duyuru ("Ali 24 ile açtı!", "İşler taş! +500", "Okeyle bitirdi!")
+- [x] (v42) Oyun içi: avatar seçimi (kahvehane karakterleri: çay bardağı, tespih, bıyıklı amca, kasket…; kendi çizimlerimiz)
+- [x] (v42) Oyun içi: eli bitirince taşlar masaya vurulur, ekran hafif sarsılır; açamayıp tam ceza yiyenin isminde kan sıçraması
+- [x] (v42) Oyun içi: ıstakadaki okey taşında arada altın parıltı, gösterge el başında dönerek açılır
+- [x] (v42) Oyun içi: sıranın son 10 saniyesinde ekran kenarları kırmızı nabız atar
 Cepte (sonra): ana ekranda canlı şerit (şu an kaç masa / bugün kaç el), "son oyunun" kartı, masa teması (keçe rengi), kahvehane uğultusu sesi
 
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
