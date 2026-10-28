@@ -1,0 +1,81 @@
+<html lang="tr"><head><meta charset="utf-8"><style>
+body{margin:0;background:radial-gradient(130% 60% at 50% -10%,#4a1412 0%,#1a0b09 48%,#080505 100%);color:#f3e8d8;font:600 15px/1.4 Inter,sans-serif;padding:18px}
+h3{font:700 13px/1 Inter;letter-spacing:.14em;color:#e8b93a;margin:22px 0 6px;text-transform:uppercase}
+svg{display:block;width:100%;overflow:visible}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<linearGradient id="bl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a80d17"/><stop offset=".5" stop-color="#8a0811"/><stop offset="1" stop-color="#5c030a"/></linearGradient>
+<linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".22" stop-color="#fff" stop-opacity=".1"/><stop offset=".34" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<filter id="wet" x="-5%" y="-20%" width="110%" height="160%" color-interpolation-filters="sRGB">
+ <feTurbulence type="fractalNoise" baseFrequency="0.045 0.006" numOctaves="2" seed="3" result="n"/>
+ <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="b"/>
+ <feComposite in="b" in2="n" operator="arithmetic" k1="0" k2="1" k3=".22" k4="0" result="h"/>
+ <feSpecularLighting in="h" surfaceScale="6" specularConstant="1.5" specularExponent="38" lighting-color="#fff" result="s"><fePointLight x="120" y="-120" z="190"/></feSpecularLighting>
+ <feComposite in="s" in2="SourceAlpha" operator="in" result="si"/>
+ <feColorMatrix in="si" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="sii"/>
+ <feColorMatrix in="n" type="matrix" values="0 0 0 0 .1  0 0 0 0 0  0 0 0 0 .01  -1.6 0 0 0 .8" result="dk"/>
+ <feComposite in="dk" in2="SourceAlpha" operator="in" result="dki"/>
+ <feMorphology in="SourceAlpha" operator="erode" radius="1.4" result="er"/><feComposite in="SourceAlpha" in2="er" operator="out" result="edge"/>
+ <feFlood flood-color="#2a0004" flood-opacity=".9"/><feComposite in2="edge" operator="in" result="edg"/>
+ <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="dki"/><feMergeNode in="edg"/><feMergeNode in="sii"/></feMerge>
+</filter>
+<linearGradient id="iv1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eee2c6"/><stop offset=".55" stop-color="#e2d3b0"/><stop offset="1" stop-color="#cdb98f"/></linearGradient>
+<linearGradient id="iv2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4d5b5"/><stop offset=".55" stop-color="#d4c29b"/><stop offset="1" stop-color="#b9a27a"/></linearGradient>
+<filter id="ivory" x="-5%" y="-5%" width="110%" height="115%" color-interpolation-filters="sRGB">
+ <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="8" result="g"/>
+ <feColorMatrix in="g" type="matrix" values="0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .15  0 0 0 .10 0" result="gr"/>
+ <feComposite in="gr" in2="SourceAlpha" operator="in" result="gri"/>
+ <feMorphology in="SourceAlpha" operator="erode" radius="2" result="er"/><feGaussianBlur in="er" stdDeviation="2" result="eb"/>
+ <feComposite in="SourceAlpha" in2="eb" operator="out" result="rim"/><feFlood flood-color="#6b5434" flood-opacity=".45"/><feComposite in2="rim" operator="in" result="rimc"/>
+ <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gri"/><feMergeNode in="rimc"/></feMerge>
+</filter>
+<filter id="sh" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity=".75"/></filter>
+</defs></svg>
+<h3>A1 · Fildişi (taş rengi)</h3>
+<svg viewBox="0 0 620 300" id="A1"><g filter="url(#sh)"><g filter="url(#wet)" fill="url(#bl)" class="kan"><text x="10" y="130" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2">KANLI</text></g></g>
+<g filter="url(#sh)"><text x="10" y="285" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2" fill="url(#iv1)" filter="url(#ivory)" class="ok">OKEY</text></g><g filter="url(#wet)" fill="url(#bl)" class="over"></g></svg>
+<h3>A2 · Biraz daha koyu, eskimiş kemik</h3>
+<svg viewBox="0 0 620 300" id="A2"><g filter="url(#sh)"><g filter="url(#wet)" fill="url(#bl)" class="kan"><text x="10" y="130" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2">KANLI</text></g></g>
+<g filter="url(#sh)"><text x="10" y="285" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2" fill="url(#iv2)" filter="url(#ivory)" class="ok">OKEY</text></g><g filter="url(#wet)" fill="url(#bl)" class="over"></g></svg>
+ht="140%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity=".75"/></filter>
+</defs></svg>
+<h3>A · KANLI'nın içi kan, OKEY'e damlıyor</h3>
+<svg viewBox="0 0 620 300" id="A"><g filter="url(#sh)"><g filter="url(#wet)" fill="url(#bl)" class="kan"><text x="10" y="130" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2">KANLI</text></g></g>
+<g filter="url(#sh)"><text x="10" y="285" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2" fill="#f2e8cf" class="ok">OKEY</text></g><g filter="url(#wet)" fill="url(#bl)" class="over"></g></svg>
+<h3>B · İki kelime de kan</h3>
+<svg viewBox="0 0 620 330" id="B"><g filter="url(#sh)"><g filter="url(#wet)" fill="url(#bl)" class="kan"><text x="10" y="130" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2">KANLI</text></g></g>
+<g filter="url(#sh)"><g filter="url(#wet)" fill="url(#bl)" class="kan"><text x="10" y="285" font-family="Oswald,'Inter Display',sans-serif" font-weight="900" font-size="150" letter-spacing="-2">OKEY</text></g></g></svg>
+<script>
+/* harflerin alt uçlarından akan damlalar: harf kutusuna göre göreli konum */
+const FEET={K:[.13,.86],A:[.12,.88],N:[.13,.87],L:[.16,.62],I:[.5],O:[.5],E:[.18,.62],Y:[.5]};
+function rnd(s){let x=Math.sin(s*12.9898)*43758.5453;return x-Math.floor(x)}
+function drip(x,y,w,L){
+  const b=w*.62;
+  return `M${x-w*.95} ${y-3} C${x-w*.7} ${y+5} ${x-w*.42} ${y+L*.3} ${x-w*.36} ${y+L} A${b} ${b*1.2} 0 1 0 ${x+w*.36} ${y+L} C${x+w*.42} ${y+L*.3} ${x+w*.7} ${y+5} ${x+w*.95} ${y-3}Z`;
+}
+function addDrips(g,seed,maxL,stainG,stainY){
+  const t=g.querySelector('text'),n=t.getNumberOfChars();let k=0,ps='',st='';
+  for(let i=0;i<n;i++){
+    const ch=t.textContent[i],e=t.getExtentOfChar(i),f=FEET[ch]||[];
+    for(const fx of f){
+      k++;const r=rnd(seed+k);if(r<.25)continue;
+      const x=e.x+e.width*fx+(rnd(seed+k*3)-.5)*e.width*.05,y=+t.getAttribute('y')-2,w=e.width*.08+rnd(seed+k*7)*e.width*.05;
+      const L=8+Math.pow(rnd(seed+k*5),1.6)*maxL;
+      ps+=`<path d="${drip(x,y,w,L)}"/>`;
+      if(stainG&&L>maxL*.55)st+=`<path d="M${x-w*1.1} ${stainY} C${x-w} ${stainY+6} ${x-w*.5} ${stainY+12+L*.15} ${x} ${stainY+14+L*.2} C${x+w*.5} ${stainY+12+L*.15} ${x+w} ${stainY+6} ${x+w*1.1} ${stainY}Z"/>`;
+    }
+  }
+  g.insertAdjacentHTML('beforeend',ps);
+  g.parentNode.insertAdjacentHTML('beforeend',`<text x="${t.getAttribute('x')}" y="${t.getAttribute('y')}" font-family="${t.getAttribute('font-family')}" font-weight="900" font-size="150" letter-spacing="-2" fill="url(#gl)" style="pointer-events:none">${t.textContent}</text>`);
+  if(stainG)stainG.insertAdjacentHTML('beforeend',st);
+}
+/* KANLI'dan OKEY'in üstüne akan uzun damlalar (OKEY'in önünde çizilir) */
+function overDrips(g,dst){
+  const t=g.querySelector('text');let ps='';
+  [[1,.13,150],[2,.88,120],[3,.5,95]].forEach(([i,fx,L],k)=>{const e=t.getExtentOfChar(i),x=e.x+e.width*fx,y=+t.getAttribute('y')-2,w=e.width*.1;ps+=`<path d="${drip(x,y,w,L)}"/>`});
+  dst.insertAdjacentHTML('beforeend',ps);
+}
+document.fonts.ready.then(()=>{
+  for(const id of ['A1','A2']){const A=document.getElementById(id).querySelectorAll('.kan');addDrips(A[0],1,40);overDrips(A[0],document.querySelector('#'+id+' .over'))}
+});
+</script></body></html>
