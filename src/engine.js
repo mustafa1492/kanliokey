@@ -166,6 +166,7 @@ MOVES.take=(s,me,a)=>{
   if(s.ph!=='draw')return;
   const pv=(me+3)%4,pile=s.disc[dk(pv)];
   if(!pile.length)return;
+  if(!s.deck.length){emsg='Deste bitti: yandan taş alınamaz, desteye dokun.';return}
   const tid=pile.pop();s.hands[hk(me)].push(tid);
   return{disc:{[dk(pv)]:pile},hands:{[hk(me)]:s.hands[hk(me)]},ph:'discard',must:tid};
 };
@@ -201,7 +202,7 @@ MOVES.insert=(s,me,a)=>{
   const key=o+':'+gi+':'+e,ik=s.ik||[];
   if(ik.includes(key)){emsg='Bu uca bu turda zaten taş işledin. Sıran tekrar gelince işleyebilirsin.';return}
   const v=addVal(r,t,e,O),pen=o===me||isMate(s,o,me)?0:v*10;
-  const nr={...r,g:e==='l'?[t,...r.g]:[...r.g,t]};
+  const nr={...r,g:e==='l'?[t,...r.g]:[...r.g,t],x:[...(r.x||[]),t]};
   if(e==='l')nr.lo=r.lo-1;
   grs[gi]=nr;
   h.splice(i,1);
@@ -223,7 +224,7 @@ MOVES.swap=(s,me,a)=>{
   const grs=[...(s.tbl['t'+o]||[])],r=grs[gi];
   if(!r||!canSwap(r,idx,t,O)){emsg='Bu taş bu okeyin yerine geçmiyor.';return}
   const jk=r.g[idx],g2=[...r.g];
-  g2[idx]=t;grs[gi]={...r,g:g2};
+  g2[idx]=t;grs[gi]={...r,g:g2,x:[...(r.x||[]),t]};
   h.splice(ti,1);h.push(jk);
   const pen=o===me||isMate(s,o,me)?0:tv(t,O).n*10,r2={hands:{[hk(me)]:h},tbl:{...s.tbl,['t'+o]:grs}};
   if(pen){
@@ -244,7 +245,7 @@ MOVES.pair=(s,me,a)=>{
   if(h.length<(s.ot===me?4:3)){emsg=s.ot===me?'Açtığın turda son taşını atamazsın: elinde en az bir taş kalmalı.':'Atacak bir taşın kalmalı, son taşlarını işleyemezsin.';return}
   const grs=[...(s.tbl['t'+o]||[])],r=grs[gi];
   if(!r||r.k!=='p'||r.n!==n){emsg='Çift işlemek için aynı sayılı açılmış bir çift olmalı.';return}
-  grs.push({g:[...sel],k:'p',n});
+  grs.push({g:[...sel],k:'p',n,x:[...sel]});
   const nh=h.filter(x=>!sel.includes(x)),pen=o===me||isMate(s,o,me)?0:n*2*10,r2={hands:{[hk(me)]:nh},tbl:{...s.tbl,['t'+o]:grs}};
   if(pen){
     r2.scores={...s.scores,['s'+o]:(s.scores['s'+o]||0)+pen};
@@ -493,7 +494,7 @@ function botSwapPlan(s,me,h,O){
   }
   if(!best)return null;
   const{o,gi,idx,t}=best,grs=[...(s.tbl['t'+o]||[])],r=grs[gi],jk=r.g[idx],g2=[...r.g];
-  g2[idx]=t;grs[gi]={...r,g:g2};
+  g2[idx]=t;grs[gi]={...r,g:g2,x:[...(r.x||[]),t]};
   const nh=h.filter(x=>x!==t);nh.push(jk);
   const pen=o===me||isMate(s,o,me)?0:tv(t,O).n*10,out={hands:{[hk(me)]:nh},tbl:{...s.tbl,['t'+o]:grs}};
   if(pen){out.scores={...s.scores,['s'+o]:(s.scores['s'+o]||0)+pen};out.ex={...(s.ex||{}),['s'+o]:((s.ex||{})['s'+o]||0)+pen}}
@@ -520,7 +521,7 @@ function botInsertPlan(s,me,h,O,lvl){
   }
   if(!best)return null;
   const{o,gi,e,t,key,pen}=best,grs=[...(s.tbl['t'+o]||[])],r=grs[gi];
-  const nr={...r,g:e==='l'?[t,...r.g]:[...r.g,t]};if(e==='l')nr.lo=r.lo-1;
+  const nr={...r,g:e==='l'?[t,...r.g]:[...r.g,t],x:[...(r.x||[]),t]};if(e==='l')nr.lo=r.lo-1;
   grs[gi]=nr;
   const out={hands:{[hk(me)]:h.filter(x=>x!==t)},tbl:{...s.tbl,['t'+o]:grs},ik:[...(s.ik||[]),key]};
   if(pen){out.scores={...s.scores,['s'+o]:(s.scores['s'+o]||0)+pen};out.ex={...(s.ex||{}),['s'+o]:((s.ex||{})['s'+o]||0)+pen}}

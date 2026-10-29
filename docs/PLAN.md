@@ -58,7 +58,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] Yönetim paneli sunucuda gerçek yetkiyle: şifre sunucuda, deneme sınırı var
 - [~] Bağlantı kopma: kopan oyuncu aynı cihazdan istediği zaman geri döner (yapıldı). Botun devralması ve geri verme henüz yok (süre dolunca taş otomatik atılıyor)
 - [x] Sıra zaman aşımı: süre dolunca taş otomatik çekilip atılır (süre panelden ayarlanır)
-- [ ] Oyun kayıtları: her hamle kaydedilir (anlaşmazlıkta "ne oldu" bakılır, ileride tekrar izleme için de lazım)
+- [x] (v56, yöneticide) Oyun kayıtları: her hamle kaydedilir (anlaşmazlıkta "ne oldu" bakılır, ileride tekrar izleme için de lazım)
 - [x] Hız sınırı, geçersiz istek koruması, koltuk kimlik doğrulaması, başka siteden bağlantı engeli, taş sayısı denetimi
 
 ## Aşama 5: Oynama hissi (telefon önce)
@@ -79,6 +79,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] v23: Istakada taşı iki taşın arasına sürükleyip sokma (komşular kayar, boşluk kapanır); yuvalar arası boşluğa bırakınca en yakın yuva seçiliyor, araya sokma yeri altın çizgiyle gösteriliyor. El bitince taşlar masanın ortasında karışıp uçuşuyor (36 taş), rakip ıstakaları, perler ve atılan taşlar da ortaya çöküyor
 - [x] v24: Taşlara daha gerçekçi görünüm (cilalı yüz, iç çerçeve, altında renkli nokta); araya sokunca komşu taşlar kayarak yerine oturuyor. "Açma alanı" masadan kaldırıldı, "Per aç" (çift dizdiyse "Çift aç") ıstakanın altındaki düğme sırasında. Açılamama sebebi uyarı olarak çıkıyor
 - [x] v55: Telefonda masa düzeni: yan oyuncular masanın üst ve orta kısmı boyunca uzanır (karşıdaki oyuncu ortada), yan ıstaka çubukları yatay ve küçük; masadaki per taşları büyüdü (alt/üst 22×31, yanlar 19×27; büyük taş modunda 25×35 / 21×30), sığmazsa en fazla %72'ye küçülür; okey taşındaki ★ ve sayı taşın içinde; hiçbir taş başka bir şeyin üstüne binmez (ui/t29.py ölçer). GitHub'a Mustafa "yükle" deyince gönderilecek (oyun sürerken güncelleme yok)
+- [x] v56: İşlenen taşlar perde yatay görünür. Deste bitince yandan taş alınamaz. Masayı takip: durum satırının altında tek satırlık son hamle şeridi (dokununca bu elin hamle geçmişi ve herkesin attığı taşlar), açmış ve 3 ya da daha az taşı kalan oyuncuda "bitiyor!" rozeti. Hata / kural yanlış / öneri bildirimi (menüden ve ana ekrandan; masadaysa durum ve son hamleler otomatik eklenir), yöneticide bildirim listesi (durumu gör, okundu, sil). Yöneticide oyuncu listesi (bağlı mı, son görülme, masası) ve her odanın hamle kaydı (son 400 hamle, okunur metin). Herkese açık masa: kuran açar, ana ekranda "Masa seç" listesi; bekleyene katılınır, oyundakinde bot yerine oturulur. Masa kurarken bot seviyesi (Kolay / Orta / Zor). Kurallar: büyük el 1-5-9-13, son taş işler+okey değişmez, süre dolunca otomatik atma, botlar çift açmaz (Mustafa onayladı). GitHub'a Mustafa söyleyince gönderilecek
 - [x] v54: SOHBET: oyunda 💬 (okunmamış sayısı kırmızı rozet), bekleme odasında "💬 Sohbet"; mesajlar herkeste anında görünür, oyunda yazanın isminin üstünde balon çıkar; son 60 mesaj odada tutulur; hazır mesajlar ve emojiler aynı pencerede; sunucuda sadece odadakiler okur/yazar, hız sınırı, 200 karakter. Test: test/chat.test.js, test/chat_e2e.py
 - [x] v53: Sağ/sol perler okunur boyutta (sadece yükseklik sığmazsa küçülür, en az %55). Taşı perin soluna/sağına sürükleyerek istenen uca işleme (yeşil uç çizgisi gösterir; okey iki uca da gidebiliyorsa bıraktığın taraf), en yakın pere yapışma, taşı seçip pere dokunarak işleme. Zorluk modu (Ayarlar: Kolay / Normal / Zor): Kolay her ipucu + "hangi taş gelirse açarsın" + okeyi ya da perin parçasını atarken uyarı + bitirebileceğin taşta BİTİR; Normal ipuçları var ama hangi taş gelirse yok; Zor ipucu ve uyarı yok. Odak düğmesi (ıstaka başlığında ⤢): taşlar büyür, masa küçülür. Yatay ekran düzeni (telefon yan: solda masa, sağda durum + ıstaka + düğmeler, kaydırma yok; yan oyuncuların ıstaka çubukları gizli). Akıcılık: sürüklerken hiç yeniden çizim yok (taşa dokunduğun an dahil), sürükleme başında 15 katman açılmıyor, masa parlaması yeniden çizim yapmıyor. Uzun bot denemeleri: ui/botplay.py (ben de sürükleyerek çekip açıp uçlara işleyip atıyorum; dikey ve yatayda 9'ar el, hata yok)
 - [x] v52 (Mustafa seçti): Masayı yakınlaştır (isim kutusuna ya da perlere dokununca o oyuncunun perleri ve bu elde attığı bütün taşlar büyük görünür), desteden/yandan çekilen taş "YENİ" etiketiyle belirgin, Botlarla hızlı oyun (ana ekranda tek düğme), WhatsApp'ta davet et (bekleme odasında), Hazır mesajlar / emoji (durum çubuğunda 💬; isim kutusunun üstünde balon; herkes görür). Test: ui/t26.py
@@ -176,16 +177,16 @@ Giriş ekranı
 - [ ] Masa ekranında WhatsApp'a doğrudan gönder düğmesi (davet bağlantısıyla)
 - [ ] Kimliği başka telefona taşıma kodu (hesap açmadan: telefon değişince koltuk ve geçmiş kaybolmasın)
 - [ ] Son oyunlarım: son 5 oyun, kendi cezan, sonuncu kim
-- [ ] Bekleme odasında: "Hazırım", kuranın oyuncu çıkarması, oda başına bot seviyesi
+- [~] Bekleme odasında: oda başına bot seviyesi var (v56); "Hazırım" ve kuranın oyuncu çıkarması yok
 - [ ] Ayarlar: büyük yazı, renk körü işaretleri, sol el düzeni
-- [ ] (Sonra) Açık masalar: yabancılarla oynama. Hile ve küfür önlemi gerektirir
+- [x] (v56) Açık masalar: yabancılarla oynama (kuran açar, "Masa seç" listesi, bot yerine oturma). Hile ve küfür önlemi hâlâ açık: Hile ve küfür önlemi gerektirir
 Yönetim paneli
-- [ ] Hata / "kural yanlış" bildirim kutusu: oyuncu menüden yazar, oyunun o anki durumu otomatik eklenir, panelde listelenir
+- [x] (v56) Hata / "kural yanlış" bildirim kutusu: oyuncu menüden yazar, oyunun o anki durumu otomatik eklenir, panelde listelenir
 - [ ] Canlı durum: bağlı oyuncu, açık oda, sunucu sürümü, ne zamandır açık
 - [ ] Bakım duyurusu: "5 dakika sonra güncelleme" şeridi ve yeni oyun başlatmayı geçici kapatma (ücretsiz planda güncelleme oyunları siliyor)
 - [ ] Yedek indir / geri yükle: oyunlar ve istatistik tek dosya
-- [ ] Hamle kaydı: her oyunun hamleleri sırayla; anlaşmazlıkta "ne oldu" bakılır, hata bildirimine eklenir
-- [ ] Oyuncular: takma ad, son görülme, oyun sayısı, engelleme
+- [x] (v56) Hamle kaydı: her oyunun hamleleri sırayla; anlaşmazlıkta "ne oldu" bakılır, hata bildirimine eklenir
+- [~] (v56) Oyuncular: takma ad, son görülme, masası var; oyun sayısı ve engelleme yok
 - [ ] İstatistik: günlük oyun, ortalama el süresi, okeyle bitirme ve deste biten el oranı
 - [ ] Kural ayarları (ev kuralları): sadece Mustafa'nın onayladığı değerler (açılış eşiği, cezalar)
 - [ ] İşlem kaydı: hangi yönetici neyi sildi / değiştirdi
@@ -203,8 +204,8 @@ Hedef: kuralı hiç bilmeyen biri 10 dakikada oyunu oynayabilsin.
 
 ## Aşama 6: Kapalı beta
 - [ ] Mustafa ve 5-10 gerçek arkadaş grubu gerçek 4 kişilik oyun oynar
-- [ ] Hata bildirme düğmesi (ekran görüntüsü + oyun kaydı otomatik gelir)
-- [ ] "Kural yanlış" bildirme düğmesi: Mustafa'ya sorulacaklar listesine girer (bölgeden bölgeye kural farkı burada ortaya çıkar)
+- [x] (v56) Hata bildirme düğmesi (oyun durumu + son hamleler otomatik gelir; ekran görüntüsü yok)
+- [x] (v56) "Kural yanlış" bildirme düğmesi: Mustafa'ya sorulacaklar listesine girer (bölgeden bölgeye kural farkı burada ortaya çıkar)
 - [ ] Basit istatistik: kaç oyun başladı, kaç tanesi bitti, nerede çıkıldı
 - [ ] Performans: yavaş telefon, kötü internet, arka planda sekme testleri
 - [ ] Beta bulguları düzelmeden yayına geçilmez
@@ -230,7 +231,7 @@ Ayrıntı: kanli-okey-app/docs/HILE-ONLEMLERI.md
 - [x] Odayı sil, 24 saatten eskileri sil, hepsini sil, eski kayıtları temizle (çift dokunma onayı)
 - [ ] Oyuncu atma / odadan çıkarma
 - [ ] Odayı izleme: kimin sırası, deste durumu (eller görünmez, hile olmasın)
-- [ ] Hata ve şikayet kutusu: oyuncuların "kural yanlış" ve hata bildirimleri burada toplanır
+- [x] (v56) Hata ve şikayet kutusu: oyuncuların "kural yanlış" ve hata bildirimleri burada toplanır
 - [ ] İstatistik: günlük oyun sayısı, ortalama süre, kaç oyun bitti, nerede bırakıldı
 - [ ] Kural sorusu listesi: Mustafa'ya sorulacak açık konular burada görünür ve cevaplandıkça kapanır
 - [ ] Yasaklı takma ad / kullanıcı engelleme (yabancı eşleştirme açılınca şart)

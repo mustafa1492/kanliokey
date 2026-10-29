@@ -133,5 +133,12 @@ console.log('--- puan: artanlar birikir, yandan (K-puan)');
  const s5=base([...q,...p,id(1,9),id(2,9),id(3,9),id(1,2)]);const r5=run(s5,'open',{groups:[q,p]});
  ok(r5.r&&r5.r.hands.h0.length===4&&r5.r.tbl.t0.length===2,'9-9-9 elde kaldı, sadece seçilen perler açıldı');}
 const s2=base([red(1),red(2)],{turn:1});ok(run(s2,'discard',{t:red(1)}).r===null,'sırası olmayan oynayamaz');
+console.log('--- v56: işlenen taş yatay, deste bitince yandan alınmaz');
+s=base([id(1,8),id(2,2),id(2,3)],{opn:{s0:20,s1:20,s2:0,s3:0},opm:{s0:'p',s1:'p',s2:'',s3:''},tbl:{t0:[],t1:[per567],t2:[],t3:[]}});
+r=run(s,'insert',{o:1,gi:0,e:'h',t:id(1,8)});ok(r.r&&JSON.stringify(r.r.tbl.t1[0].x)===JSON.stringify([id(1,8)]),'işlenen taş perde işaretlenir (yatay gösterilir)');
+s=base([id(1,8),id(2,2)],{ph:'draw',disc:{d0:[],d1:[],d2:[],d3:[id(2,9)]},deck:[]});
+r=run(s,'take',{});ok(!r.r&&/Deste bitti/.test(r.msg),'deste bitince yandan taş alınamaz');
+s=base([id(1,8),id(2,2)],{ph:'draw',disc:{d0:[],d1:[],d2:[],d3:[id(2,9)]}});
+r=run(s,'take',{});ok(!!r.r,'destede taş varken yandan alınır');
 console.log(fails?'FAILED '+fails:'ALL PASSED');
 process.exit(fails?1:0);

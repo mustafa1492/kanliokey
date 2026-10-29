@@ -1,13 +1,13 @@
 {
   "name": "kanli-okey",
-  "version": "0.55.0",
+  "version": "0.56.0",
   "private": true,
   "description": "Kanlı Okey: 4 kişilik, telefondan oynanan yöresel okey (sunucu + istemci + kural motoru)",
   "main": "server/server.js",
   "scripts": {
     "build": "node tools/build.js",
     "start": "node tools/build.js && node server/server.js",
-    "test": "node tools/build.js && node test/engine.test.js && node test/sim.test.js && node test/server.test.js && node test/pair.test.js && node test/claim.test.js && node test/push.test.js && node test/chat.test.js && node test/stress.test.js"
+    "test": "node tools/build.js && node test/engine.test.js && node test/sim.test.js && node test/server.test.js && node test/pair.test.js && node test/claim.test.js && node test/push.test.js && node test/chat.test.js && node test/tables.test.js && node test/stress.test.js"
   },
   "engines": { "node": ">=18" },
   "dependencies": { "ws": "^8.18.0" }

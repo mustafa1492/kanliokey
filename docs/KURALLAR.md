@@ -9,7 +9,7 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 
 ## Dağıtım ve büyük el
 - Oyun rastgele bir oyuncuyu seçer. O oyuncunun dağıttığı el büyük el (1000 cezalık), diğer üç oyuncunun dağıttığı eller normal el (500 cezalık).
-- Dağıtma sırası her tur bir sonraki oyuncuya geçer. Büyük el 1, 5, 9, 13. turlarda gelir.
+- Dağıtma sırası her tur bir sonraki oyuncuya geçer. Büyük el 1, 5, 9, 13. turlarda gelir (9 ve 13 turlu oyunda gerçekte de böyle, Mustafa onayladı).
 - Dağıtan oyuncudan sonraki kişi 15 taşla başlar ve ilk taşı o atar.
 
 ## Okey
@@ -42,6 +42,7 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 ## Yandan taş
 - Açmış ya da açmamış fark etmez, yandan taş alınabilir.
 - Alınan taş per ya da çift açarak kullanılmak zorundadır. İşlemek bu işi görmez.
+- Deste bittiyse yandan taş alınamaz (Mustafa: "böyle bir şeye izin verme"). Sırası gelen desteye dokunur, el biter.
 
 ## Taş işleme
 - Sadece açmış oyuncular işleyebilir. Açtığın turda da işleyebilirsin.
@@ -53,6 +54,7 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 - Rakibin perine işlersen perin sahibine işlediğin taşın sayısı × 10 ceza yazılır. Büyük elde de çarpan 10. Ceza anında yazılır.
 - Okey işlenirse perde yerine geçtiği taşın sayısı × 10 (5-6-7'ye 8 yerine okey = 80).
 - Kendi perine işlersen ceza yok, sadece taş eksilir.
+- İşlenen taşlar perde yatay (yan yatmış) görünür, kimin nereye işlediği belli olur.
 - Çift işleme: Çift olarak açılmış çiftlere sadece iki taş birlikte işlenir (aynı renk, aynı sayı; okey katılabilir). Kaç kez işlendiğinin sınırı yok. Ceza: işlenen iki taşın sayıları toplamı × 10, çiftin sahibine (7+7 = 140). Kendi çiftine işlersen ceza yok.
 
 ## Okey (joker) değiştirme
@@ -72,6 +74,7 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 - Okeyle bitirmek: son atılan taş okey olmalı. Bütün cezalar 2 katı.
 - Tek başına bitirmek: o elde senden başka kimse açmamışsa ve sen açıp bitirirsen bütün cezalar 2 katı.
 - İkisi birden: bütün cezalar 4 katı.
+- Eli bitiren son taş hem işler taş hem okeyse hiçbir şey değişmez (Mustafa): bitiren taşa işler cezası yazılmaz, okeyle bitirme çarpanı geçerlidir.
 - Çarpanlar işleme cezası ve işler taş cezası hariç bütün cezalara uygulanır (bitirenin puanı dahil). Büyük elde okeyle ya da tek başına bitirirsen −400, ikisi birden −800.
 
 ## Ceza puanları (el bittiğinde)
@@ -101,8 +104,16 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 - Eşinin perlerini ve taşlarını kullanamazsın.
 - Bot eş olabilir. Eşli oyunda botlar en zeki seviyede (Usta) oynar.
 
+## Sıra süresi
+- Sıra süresi dolunca oyuncu için taş otomatik çekilir ve en kötü taş atılır (Mustafa: doğru). Yandan alınmış taş varsa önce geri konur.
+
+## Botlar
+- Botlar sadece per açar, çift açmaz (Mustafa: "hayır").
+- Masayı kuran bot seviyesini seçer: Kolay, Orta, Zor.
+
 ## Oyundan çıkma
 - Oyundan çıkan oyuncu tekrar katılabilir (Mustafa). Aynı telefonla oda koduna girince koltuğuna döner. Telefon ya da tarayıcı değiştiyse oda koduyla girince "X olarak dön" çıkar; sadece o an masada bağlı olmayan oyuncuların yerine dönülebilir. Eli, cezaları ve adı aynen kalır.
+- Herkese açık masalarda (masayı kuran açar) yabancılar ana ekrandaki "Masa seç" listesinden bekleyen masaya katılır ya da oyun sürerken bir botun yerine oturur. Botun eli ve cezaları olduğu gibi yeni oyuncuya geçer.
 
 ## Benim koyduğum varsayımlar
 Hepsi onaylandı. Şu an açık varsayım yok.

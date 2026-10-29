@@ -72,6 +72,7 @@ function canReadDoc(conn,p){
   if(p==='settings/stats')return conn.admin;
   const c=roomOf(p);if(!c)return conn.admin;
   if(p==='rooms/'+c)return true;
+  if(p==='rooms/'+c+'/log/main')return conn.admin;
   if(parentOf(p)==='rooms/'+c+'/members')return true;
   if(p===gamePath(c)||p==='rooms/'+c+'/chat/main')return conn.admin||isMember(c,conn.uid)||seatOf(c,conn.uid)>=0;
   return false;
@@ -106,7 +107,7 @@ const timers=new Map(),endAt=new Map();
 function wipeRoom(c){
   clearTimeout(timers.get(c));timers.delete(c);endAt.delete(c);lastAct.delete(c);
   for(const m of membersOf(c))del('rooms/'+c+'/members/'+m.id);
-  del(gamePath(c));del('rooms/'+c+'/chat/main');del('rooms/'+c);
+  del(gamePath(c));del('rooms/'+c+'/chat/main');del('rooms/'+c+'/log/main');del('rooms/'+c);
 }
 function humansOnline(g){return g.seats.some(u=>!ENG.isBot(u)&&(online.get(u)||0)>0)}
 function applyPatch(c,patch,why){
@@ -117,10 +118,38 @@ function applyPatch(c,patch,why){
   if(n1!==n0||n1!==106){log('TAŞ SAYISI TUTMUYOR',c,why,n0,n1);return false}
   for(let i=0;i<4;i++){const h=g.hands['h'+i];if(new Set(h).size!==h.length){log('AYNI TAŞ İKİ KEZ',c,why);return false}}
   store.set(p,g);dirty=true;touch(c);
+  try{logMoves(c,g0,g,why)}catch(e){}
   if(g0.ph!=='end'&&g.ph==='end')onHandEnd(c,g);
   notify(p);kick(c);
   if(g.ph!=='end'&&g.turn!==g0.turn)pushTurn(c,g);
   return true;
+}
+/* hamle kaydı (yönetici için): her odada son 400 hamle, okunur metin */
+const RENK=['kırmızı','mavi','sarı','siyah'];
+function tname(id,g){if(id==null||id<0)return '?';if(id>=104)return g.B?'joker':'sahte okey';const c=id/26|0,n=id%13+1,o=g.okey||{};return RENK[c]+' '+n+(!g.B&&o.c===c&&o.n===n?' (okey)':'')}
+function describe(a,b){
+  const out=[],m=a.turn,N=i=>b.names[i],pv=(m+3)%4,dA=i=>a.disc['d'+i]||[],dB=i=>b.disc['d'+i]||[];
+  if(b.deck.length<a.deck.length)out.push(N(m)+' desteden çekti ('+tname(b.hands['h'+m].find(x=>!a.hands['h'+m].includes(x))??-1,b)+')');
+  if(dB(pv).length<dA(pv).length)out.push(N(m)+' yandan '+tname(dA(pv)[dA(pv).length-1],b)+' aldı');
+  if(dB(pv).length>dA(pv).length&&b.ph==='draw'&&b.turn===a.turn)out.push(N(m)+' yandan aldığı taşı geri koydu');
+  for(let i=0;i<4;i++)if(!(a.opn['s'+i]>0)&&b.opn['s'+i]>0)out.push(N(i)+' '+b.opn['s'+i]+' ile '+((b.opm||{})['s'+i]==='c'?'çift ':'')+'açtı: '+(b.tbl['t'+i]||[]).map(r=>r.g.map(x=>tname(x,b)).join(', ')).join(' | '));
+  for(let o=0;o<4;o++){
+    if(!(a.opn['s'+o]>0)&&b.opn['s'+o]>0)continue;
+    const fa=new Set((a.tbl['t'+o]||[]).flatMap(r=>r.g)),nw=(b.tbl['t'+o]||[]).flatMap(r=>r.g).filter(x=>!fa.has(x));
+    if(nw.length)out.push(N(m)+' '+(o===m?'kendi':N(o)+' adlı oyuncunun')+' perine '+nw.map(x=>tname(x,b)).join(', ')+' işledi');
+  }
+  if(dB(m).length>dA(m).length)out.push(N(m)+' '+tname(dB(m)[dB(m).length-1],b)+' attı');
+  for(let i=0;i<4;i++){const d=((b.ex||{})['s'+i]||0)-((a.ex||{})['s'+i]||0);if(d>0)out.push(N(i)+' +'+d+' ceza')}
+  if(a.ph!=='end'&&b.ph==='end')out.push(b.win===99?'Deste bitti, el bitti':b.win>=0&&b.win<4?N(b.win)+' eli bitirdi':'El bitti');
+  return out;
+}
+function logMoves(c,a,b,why){
+  if(!a||a.gid!==b.gid)return;
+  const L=describe(a,b);if(!L.length)return;
+  const p='rooms/'+c+'/log/main',d=store.get(p)||{m:[]},w=String(why||'').replace(/^oyuncu:/,'');
+  const t=now(),add=L.map(x=>({t,h:b.round+1,x,w}));
+  store.set(p,{m:[...(d.m||[]),...add].slice(-400)});dirty=true;
+  const ds=docSubs.get(p);if(ds&&ds.size)notify(p);
 }
 function onHandEnd(c,g){
   endAt.set(c,now());
@@ -133,6 +162,7 @@ function onHandEnd(c,g){
 function dealHand(c,prev,R,ps,opt){
   const g=ENG.deal(prev,R,ps,now(),opt);
   put(gamePath(c),g);touch(c);
+  {const p='rooms/'+c+'/log/main',d=store.get(p)||{m:[]};store.set(p,{m:[...(prev?d.m||[]:[]),{t:now(),h:g.round+1,x:'— '+(g.round+1)+'. el dağıtıldı'+(g.B?' (büyük el)':'')+' · '+g.names.join(', '),w:'deal'}].slice(-400)})}
   const r=store.get('rooms/'+c);
   if(r)put('rooms/'+c,{...r,st:'playing',rd:g.round,R:g.R,pl:g.names,tg:now()});
   bump(prev?['rounds']:['rounds','games']);
@@ -157,7 +187,8 @@ function kick(c){
     delay=cfg.ms;
     fn=()=>{
       const cur=store.get(gamePath(c));if(!cur||stateKey(cur)!==key){kick(c);return}
-      let r=ENG.botMove(clone(cur),cur.turn,cfg.bot);
+      const rm=store.get('rooms/'+c),lv=rm&&rm.bl!=null?rm.bl:cfg.bot;
+      let r=ENG.botMove(clone(cur),cur.turn,lv);
       if(!r||!applyPatch(c,r,'bot')){r=ENG.timeoutMove(clone(cur));if(!r||!applyPatch(c,r,'bot-yedek'))log('bot hamle yapamadı',c)}
     };
   }else if(cfg.tm>0){
@@ -197,7 +228,9 @@ function hPut(conn,m){
   if(p==='rooms/'+c){
     if(store.has(p))return deny(conn,m.id,'exists');
     if(!allow('room:'+conn.uid,12,600e3))return deny(conn,m.id,'rate','Çok fazla oda kurdun, biraz bekle.');
-    put(p,{code:c,host:conn.uid,hostName:cleanName(d.hostName),R:d.R===13?13:9,bots:0,st:'lobby',t:now()});touch(c);
+    const rd={code:c,host:conn.uid,hostName:cleanName(d.hostName),R:d.R===13?13:9,bots:0,st:'lobby',t:now()};
+    if(d.pub)rd.pub=true;if(d.bl!=null&&+d.bl>=0&&+d.bl<=2)rd.bl=+d.bl|0;
+    put(p,rd);touch(c);
     bump(['rooms']);
     return reply(conn,m.id,{ok:true});
   }
@@ -214,7 +247,7 @@ function hPut(conn,m){
     let re=prev&&prev.re?prev.re:undefined;
     if(d.re&&ri>=0&&ri<20&&(ri|0)===ri){if(!allow('react:'+conn.uid,8,20e3))return deny(conn,m.id,'rate','Biraz yavaş.');re={i:ri,t:now()}}
     const doc={name:cleanName(d.name),av:av>=0&&av<8&&(av|0)===av?av:(prev&&prev.av!=null?prev.av:-1),t:prev?prev.t:now()};if(re)doc.re=re;
-    put(p,doc);touch(c);
+    put(p,doc);touch(c);seen(conn.uid,doc.name,c);
     return reply(conn,m.id,{ok:true});
   }
   return deny(conn,m.id);
@@ -230,6 +263,8 @@ function hUpdate(conn,m){
     if(d.R!=null)n.R=+d.R===13?13:9;
     if(d.pair!=null&&r.st!=='playing')n.pair=!!d.pair;
     if(d.pr!=null&&r.st!=='playing')n.pr=Math.max(0,Math.min(2,+d.pr|0));
+    if(d.pub!=null)n.pub=!!d.pub;
+    if(d.bl!=null){if(+d.bl>=0&&+d.bl<=2)n.bl=+d.bl|0;else delete n.bl}
     put(p,n);touch(c);return reply(conn,m.id,{ok:true});
   }
   if(p==='settings/stats')return reply(conn,m.id,{ok:true});
@@ -315,6 +350,81 @@ function hChat(conn,m){
   put(p,{m:[...(d.m||[]),{u:conn.uid,n:cleanName(i>=0?g.names[i]:mem.name),t:now(),x}].slice(-60)});touch(c);
   return reply(conn,m.id,{ok:true});
 }
+/* oyuncu listesi (yönetici): ad, son görülme, odalar */
+function seen(uid,n,c){
+  if(!uid)return;const d=store.get('settings/players')||{};const e=d[uid]||{f:now()};
+  e.ls=now();if(n)e.n=cleanName(n);if(c){e.c=[c,...(e.c||[]).filter(x=>x!==c)].slice(0,5)}e.k=(e.k||0)+(c?0:1);
+  d[uid]=e;
+  const ks=Object.keys(d);if(ks.length>600){ks.sort((a,b)=>(d[a].ls||0)-(d[b].ls||0)).slice(0,ks.length-600).forEach(k=>delete d[k])}
+  store.set('settings/players',d);dirty=true;
+}
+/* hata / kural yanlış bildirimi: herkes gönderir, sadece yönetici görür */
+function hReport(conn,m){
+  if(!allow('rep:'+conn.uid,5,600e3))return deny(conn,m.id,'rate','Çok fazla bildirim gönderdin, biraz bekle.');
+  const x=String(m.text||'').replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g,' ').trim().slice(0,1000);
+  if(x.length<3)return deny(conn,m.id,'bad','Kısaca ne olduğunu yaz.');
+  const k=m.kind==='kural'?'kural':m.kind==='fikir'?'fikir':'hata',c=String(m.code||'');
+  const g=CODE_RE.test(c)?store.get(gamePath(c)):null,i=g?g.seats.indexOf(conn.uid):-1;
+  const pl=(store.get('settings/players')||{})[conn.uid]||{};
+  const r={id:crypto.randomBytes(5).toString('hex'),t:now(),k,x,u:conn.uid,n:cleanName(i>=0?g.names[i]:pl.n||m.name),ua:String(m.ua||'').slice(0,160),v:String(m.v||'').slice(0,40)};
+  if(g&&i>=0){r.c=c;r.g={h:g.round+1,R:g.R,trn:g.trn,ph:g.ph,turn:g.turn,me:i};r.snap=clone(g);
+    const L=(store.get('rooms/'+c+'/log/main')||{}).m||[];r.log=L.slice(-15).map(e=>e.x)}
+  const d=store.get('settings/reports')||{r:[]};d.r=[r,...(d.r||[])].slice(0,150);store.set('settings/reports',d);dirty=true;
+  log('bildirim',k,r.n,x.slice(0,80));
+  return reply(conn,m.id,{ok:true});
+}
+/* açık masalar: herkese açık işaretli odalar; bekleyenlere katılınır, oyundakilerde bot yerine oturulur */
+function pubTables(uid){
+  const out=[];
+  for(const [k,r] of store){
+    if(!/^rooms\/[A-Z0-9]{5}$/.test(k)||!r.pub)continue;
+    const c=r.code,g=store.get(gamePath(c)),ms=membersOf(c);
+    if(g&&g.ph==='end'&&g.round+1>=g.R)continue;
+    const hostOn=ms.some(x=>(online.get(x.id)||0)>0)||(g&&humansOnline(g));
+    if(!hostOn)continue;
+    if(r.st==='playing'&&g){
+      const bs=g.seats.map((u,i)=>ENG.isBot(u)?i:-1).filter(i=>i>=0);
+      out.push({code:c,host:r.hostName,st:'playing',R:g.R,rd:g.round+1,names:g.names,bots:bs,mine:g.seats.includes(uid),pair:!!g.pair,bl:r.bl});
+    }else{
+      const hq=Math.min(4,ms.length);
+      out.push({code:c,host:r.hostName,st:'lobby',R:r.R,names:ms.sort((a,b)=>a.t-b.t).slice(0,4).map(x=>cleanName(x.name)),free:4-hq,bots:Math.min(r.bots||0,4-hq),mine:ms.some(x=>x.id===uid),pair:!!r.pair,bl:r.bl});
+    }
+  }
+  return out.sort((a,b)=>(a.st===b.st?0:a.st==='lobby'?-1:1)).slice(0,30);
+}
+function hTakeBot(conn,m){
+  const c=String(m.code||''),i=+m.i;if(!CODE_RE.test(c)||!(i>=0&&i<4&&(i|0)===i))return deny(conn,m.id);
+  if(!allow('take:'+conn.uid,10,600e3))return deny(conn,m.id,'rate','Çok fazla deneme, biraz bekle.');
+  const r=store.get('rooms/'+c),p=gamePath(c),g=store.get(p);
+  if(!r||!g||!r.pub)return deny(conn,m.id,'not-found','Bu masa artık açık değil.');
+  if(g.seats.indexOf(conn.uid)>=0)return reply(conn,m.id,{ok:true});
+  if(!ENG.isBot(g.seats[i]))return deny(conn,m.id,'busy','Bu koltuğa biri oturdu.');
+  if(g.ph==='end'&&g.round+1>=g.R)return deny(conn,m.id,'over','Bu oyun bitti.');
+  const nm=cleanName(m.name),n=clone(g);n.seats[i]=conn.uid;n.names[i]=nm;store.set(p,n);dirty=true;
+  put('rooms/'+c+'/members/'+conn.uid,{name:nm,av:+m.av>=0&&+m.av<8?+m.av|0:-1,t:now()});
+  put('rooms/'+c,{...r,pl:n.names});
+  seen(conn.uid,nm,c);
+  const lp='rooms/'+c+'/log/main',ld=store.get(lp)||{m:[]};store.set(lp,{m:[...(ld.m||[]),{t:now(),h:g.round+1,x:nm+' bot yerine oturdu ('+g.names[i]+')',w:'masa'}].slice(-400)});
+  notify(p);touch(c);try{kick(c)}catch(e){}
+  log('bot yerine oturdu',c,nm);
+  return reply(conn,m.id,{ok:true});
+}
+function hAdminList(conn,m){
+  if(!conn.admin)return deny(conn,m.id);
+  const k=String(m.k||'');
+  if(k==='players'){
+    const d=store.get('settings/players')||{},rooms={};
+    for(const [kk,g] of store)if(/\/game\/main$/.test(kk)&&g.seats)g.seats.forEach(u=>{(rooms[u]=rooms[u]||[]).push(roomOf(kk))});
+    const L=Object.entries(d).map(([u,e])=>({u:u.slice(-6),n:e.n||'(adsız)',f:e.f,ls:e.ls,on:(online.get(u)||0)>0,c:e.c||[],now:rooms[u]||[]})).sort((a,b)=>(b.on-a.on)||(b.ls-a.ls)).slice(0,200);
+    return reply(conn,m.id,{ok:true,list:L,total:Object.keys(d).length,online:[...online.keys()].length});
+  }
+  if(k==='reports'){const d=store.get('settings/reports')||{r:[]};return reply(conn,m.id,{ok:true,list:(d.r||[]).map(r=>({...r,snap:undefined,hasSnap:!!r.snap}))})}
+  if(k==='repSnap'){const d=store.get('settings/reports')||{r:[]},r=(d.r||[]).find(x=>x.id===m.rid);return reply(conn,m.id,{ok:!!r,snap:r&&r.snap})}
+  if(k==='repDel'){const d=store.get('settings/reports')||{r:[]};d.r=(d.r||[]).filter(x=>m.rid==='all'?false:x.id!==m.rid);store.set('settings/reports',d);dirty=true;return reply(conn,m.id,{ok:true})}
+  if(k==='repSeen'){const d=store.get('settings/reports')||{r:[]};(d.r||[]).forEach(x=>{if(x.id===m.rid)x.ok=1});store.set('settings/reports',d);dirty=true;return reply(conn,m.id,{ok:true})}
+  if(k==='log'){const c=String(m.code||'');if(!CODE_RE.test(c))return deny(conn,m.id);return reply(conn,m.id,{ok:true,list:((store.get('rooms/'+c+'/log/main')||{}).m||[])})}
+  return deny(conn,m.id,'unknown');
+}
 function hStart(conn,m,next){
   const c=String(m.code||'');if(!CODE_RE.test(c))return deny(conn,m.id);
   const r=store.get('rooms/'+c);if(!r)return deny(conn,m.id,'not-found','Oda yok.');
@@ -384,6 +494,7 @@ function handle(conn,m){
       tok=crypto.randomBytes(24).toString('hex');e={uid:'u'+crypto.randomBytes(8).toString('hex'),t:now()};tokens.set(tok,e);dirty=true;
     }
     conn.uid=e.uid;online.set(conn.uid,(online.get(conn.uid)||0)+1);
+    seen(conn.uid);
     const cn=+m.now;conn.skew=Number.isFinite(cn)&&Math.abs(cn-now())<864e5?cn-now():0;
     for(const [k,g] of store)if(/\/game\/main$/.test(k)&&g.seats&&g.seats.includes(conn.uid))kick(roomOf(k));
     return reply(conn,id,{ok:true,uid:conn.uid,token:tok,now:now(),ver:BUILD});
@@ -417,6 +528,10 @@ function handle(conn,m){
   if(op==='push')return hPush(conn,m);
   if(op==='vis'){conn.hidden=!!m.hidden;return reply(conn,id,{ok:true})}
   if(op==='claim')return hClaim(conn,m);
+  if(op==='report')return hReport(conn,m);
+  if(op==='tables'){if(!allow('tables:'+conn.uid,40,60e3))return deny(conn,id,'rate');return reply(conn,id,{ok:true,list:pubTables(conn.uid)})}
+  if(op==='takeBot')return hTakeBot(conn,m);
+  if(op==='adminList')return hAdminList(conn,m);
   if(op==='admin')return hAdmin(conn,m);
   if(op==='adminAct')return hAdminAct(conn,m);
   return deny(conn,id,'unknown');
