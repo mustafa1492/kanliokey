@@ -51,7 +51,7 @@ const cleanName=n=>String(n==null?'':n).replace(/[\u0000-\u001f\u007f<>"'`]/g,''
 const gamePath=c=>'rooms/'+c+'/game/main';
 const roomOf=p=>{const m=/^rooms\/([A-Z0-9]{5})(\/|$)/.exec(p);return m?m[1]:null};
 const membersOf=c=>[...store.keys()].filter(k=>parentOf(k)==='rooms/'+c+'/members').map(k=>({id:k.split('/').pop(),...store.get(k)}));
-function getCfg(){const d=store.get('settings/main')||{};return{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):2,ms:Math.max(300,Math.min(4000,+d.ms||1100)),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):45,ann:String(d.ann||'')}}
+function getCfg(){const d=store.get('settings/main')||{};return{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):2,ms:Math.max(300,Math.min(4000,+d.ms||1100)),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):45,ann:String(d.ann||''),pub:d.pub!==false,chat:d.chat!==false,mk:d.mk!==false}}
 function bump(keys){const d=store.get('settings/stats')||{};keys.forEach(k=>d[k]=(d[k]||0)+1);store.set('settings/stats',d);dirty=true;notify('settings/stats')}
 const lastAct=new Map(); /* oda -> son hareket zamanı (bellekte) */
 const touch=c=>lastAct.set(c,now());
@@ -219,7 +219,7 @@ function hPut(conn,m){
   if(p==='settings/main'){
     if(!conn.admin)return deny(conn,m.id);
     const cur=getCfg();
-    put(p,{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):cur.bot,ms:d.ms!=null?Math.max(300,Math.min(4000,+d.ms|0)):cur.ms,ann:String(d.ann!=null?d.ann:cur.ann).replace(/[\u0000-\u001f]/g,'').slice(0,140),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):cur.tm});
+    put(p,{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):cur.bot,ms:d.ms!=null?Math.max(300,Math.min(4000,+d.ms|0)):cur.ms,ann:String(d.ann!=null?d.ann:cur.ann).replace(/[\u0000-\u001f]/g,'').slice(0,140),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):cur.tm,pub:d.pub!=null?!!d.pub:cur.pub,chat:d.chat!=null?!!d.chat:cur.chat,mk:d.mk!=null?!!d.mk:cur.mk});
     for(const c of new Set([...timers.keys()]))kick(c);
     return reply(conn,m.id,{ok:true});
   }
@@ -227,6 +227,7 @@ function hPut(conn,m){
   const c=roomOf(p);if(!c)return deny(conn,m.id);
   if(p==='rooms/'+c){
     if(store.has(p))return deny(conn,m.id,'exists');
+    if(!getCfg().mk&&!conn.admin)return deny(conn,m.id,'off','Şu an yeni masa kurulamıyor (bakım). Biraz sonra dene.');
     if(!allow('room:'+conn.uid,12,600e3))return deny(conn,m.id,'rate','Çok fazla oda kurdun, biraz bekle.');
     const rd={code:c,host:conn.uid,hostName:cleanName(d.hostName),R:d.R===13?13:9,bots:0,st:'lobby',t:now()};
     if(d.pub)rd.pub=true;if(d.bl!=null&&+d.bl>=0&&+d.bl<=2)rd.bl=+d.bl|0;
@@ -343,6 +344,7 @@ function hPush(conn,m){
 function hChat(conn,m){
   const c=String(m.code||'');if(!CODE_RE.test(c)||!store.get('rooms/'+c))return deny(conn,m.id);
   if(!isMember(c,conn.uid)&&seatOf(c,conn.uid)<0)return deny(conn,m.id);
+  if(!getCfg().chat)return deny(conn,m.id,'off','Sohbet şu an kapalı.');
   if(!allow('chat:'+conn.uid,6,10e3))return deny(conn,m.id,'rate','Biraz yavaş yaz.');
   const x=String(m.text||'').replace(/[\u0000-\u001f\u007f]/g,' ').replace(/\s+/g,' ').trim().slice(0,200);if(!x)return deny(conn,m.id);
   const g=store.get(gamePath(c)),i=g?g.seats.indexOf(conn.uid):-1,mem=store.get('rooms/'+c+'/members/'+conn.uid)||{};
@@ -375,7 +377,7 @@ function hReport(conn,m){
 }
 /* açık masalar: herkese açık işaretli odalar; bekleyenlere katılınır, oyundakilerde bot yerine oturulur */
 function pubTables(uid){
-  const out=[];
+  const out=[];if(!getCfg().pub)return out;
   for(const [k,r] of store){
     if(!/^rooms\/[A-Z0-9]{5}$/.test(k)||!r.pub)continue;
     const c=r.code,g=store.get(gamePath(c)),ms=membersOf(c);
@@ -396,7 +398,7 @@ function hTakeBot(conn,m){
   const c=String(m.code||''),i=+m.i;if(!CODE_RE.test(c)||!(i>=0&&i<4&&(i|0)===i))return deny(conn,m.id);
   if(!allow('take:'+conn.uid,10,600e3))return deny(conn,m.id,'rate','Çok fazla deneme, biraz bekle.');
   const r=store.get('rooms/'+c),p=gamePath(c),g=store.get(p);
-  if(!r||!g||!r.pub)return deny(conn,m.id,'not-found','Bu masa artık açık değil.');
+  if(!r||!g||!r.pub||!getCfg().pub)return deny(conn,m.id,'not-found','Bu masa artık açık değil.');
   if(g.seats.indexOf(conn.uid)>=0)return reply(conn,m.id,{ok:true});
   if(!ENG.isBot(g.seats[i]))return deny(conn,m.id,'busy','Bu koltuğa biri oturdu.');
   if(g.ph==='end'&&g.round+1>=g.R)return deny(conn,m.id,'over','Bu oyun bitti.');
@@ -540,8 +542,8 @@ function handle(conn,m){
 /* ---------- HTTP ---------- */
 const INDEX=process.env.INDEX==='1'; /* arama motorlarına açık mı (alan adı alınınca açılacak) */
 let BUILD='';try{BUILD=fs.readFileSync(path.join(ROOT,'dist','build.txt'),'utf8').trim()}catch(e){}
-const TYPES={'.html':'text/html; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.webmanifest':'application/manifest+json','.js':'application/javascript; charset=utf-8'};
-const STATIC={'/manifest.webmanifest':'manifest.webmanifest','/sw.js':'sw.js','/icon-192.png':'icon-192.png','/icon-512.png':'icon-512.png','/icon-maskable.png':'icon-maskable.png','/apple-touch-icon.png':'apple-touch-icon.png','/apple-touch-icon-precomposed.png':'apple-touch-icon.png','/favicon.ico':'icon-192.png','/og.jpg':'og.jpg'};
+const TYPES={'.html':'text/html; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.webmanifest':'application/manifest+json','.js':'application/javascript; charset=utf-8','.ico':'image/x-icon'};
+const STATIC={'/manifest.webmanifest':'manifest.webmanifest','/sw.js':'sw.js','/icon-192.png':'icon-192.png','/icon-512.png':'icon-512.png','/icon-maskable.png':'icon-maskable.png','/apple-touch-icon.png':'apple-touch-icon.png','/apple-touch-icon-precomposed.png':'apple-touch-icon.png','/favicon.ico':'favicon.ico','/favicon-32.png':'favicon-32.png','/og.jpg':'og.jpg'};
 const files={};
 function loadFile(name){
   const f=path.join(ROOT,'dist',name);
@@ -571,7 +573,7 @@ function headTags(req,name,q){
     const r=CODE_RE.test(k)?store.get('rooms/'+k):null;
     if(r){title='Kanlı Okey · '+cleanName(r.hostName)+' seni masaya çağırıyor';desc='Oda kodu: '+k+'. Bağlantıya dokun, kod hazır gelsin, masaya otur.';url=o+'/?k='+k}
   }
-  return ['<link rel="manifest" href="/manifest.webmanifest">','<link rel="icon" type="image/png" href="/icon-192.png">','<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+  return ['<link rel="manifest" href="/manifest.webmanifest">','<link rel="icon" href="/favicon.ico" sizes="any">','<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">','<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
     '<meta name="mobile-web-app-capable" content="yes">','<meta name="apple-mobile-web-app-capable" content="yes">','<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">','<meta name="apple-mobile-web-app-title" content="Kanlı Okey">',
     '<meta property="og:type" content="website">','<meta property="og:site_name" content="Kanlı Okey">','<meta property="og:locale" content="tr_TR">',
     `<meta property="og:title" content="${attr(title)}">`,`<meta property="og:description" content="${attr(desc)}">`,`<meta property="og:url" content="${attr(url)}">`,

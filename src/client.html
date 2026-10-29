@@ -946,6 +946,29 @@ body.big .rack .t{font-size:calc(var(--tw)*.72)}
 .mvd .t.mv{margin:0;width:18px;height:25px;font-size:13px}
 .plate .nf{display:inline-block;padding:0 5px;border-radius:8px;background:#c0392b;color:#fff;font-size:10px;line-height:15px;font-weight:700;letter-spacing:0;white-space:nowrap;animation:nfp 1.6s ease-in-out infinite}
 @keyframes nfp{50%{opacity:.6}}
+.pairbox{display:grid;gap:10px;margin:0 0 12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#0000002a}
+.pq{font:700 15px/1.2 var(--display);letter-spacing:.03em;text-transform:uppercase}
+.mates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mate{display:grid;justify-items:center;gap:4px;padding:10px 4px 8px;min-height:0;position:relative;font-size:13px}.mate span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mate.on{border-color:#e8b93a;background:#e8b93a22;box-shadow:inset 0 0 0 1px #e8b93a99}.mate em{position:absolute;top:4px;right:6px;font-style:normal;font-size:10px;font-weight:700;color:#e8b93a;text-transform:uppercase}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.team{display:grid;gap:6px;padding:8px;border-radius:8px;border:1.5px solid}.team small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.team.ta{border-color:#d63a3a;background:#d63a3a1c}.team.tb{border-color:#3f7cf0;background:#3f7cf01c}
+.pch{display:flex;align-items:center;gap:6px;min-width:0}.pch b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pch .sav{width:26px;height:26px;flex:none}
+.vs{font:700 13px var(--display);color:var(--mut)}
+.pairbox .sav{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;background:radial-gradient(circle at 50% 32%,#4f392c,#1c130f 78%);box-shadow:0 0 0 1.5px #f3ead655;overflow:hidden}.pairbox .sav .avi{width:100%;height:100%}.mate .sav{width:38px;height:38px}.pnote{font-size:12px}
+
+.ahead{display:flex;align-items:center;justify-content:space-between;gap:10px}.ahead h2{margin:0}
+.atabs{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 4px;margin:0 0 10px}.atabs::-webkit-scrollbar{display:none}
+.atabs button{flex:none;min-height:38px;padding:8px 12px;border-radius:20px;font-size:14px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.atabs button.on{background:var(--gold,#e8b93a);color:#1a1405;border-color:transparent;font-weight:700}
+.atabs i{font-style:normal;font-size:11px;font-weight:700;min-width:18px;height:18px;border-radius:9px;background:#c0392b;color:#fff;display:inline-grid;place-items:center;padding:0 4px}
+.atabs i.n{background:#ffffff1f;color:var(--fg)}.atabs button.on i{background:#1a1405;color:#e8b93a}
+.ftog{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding:12px 0}.ftog>div{flex:1;display:grid;gap:3px}.ftog small{font-size:12.5px}
+.sw{box-sizing:border-box;width:52px;min-height:30px;height:30px;padding:0;border-radius:15px;position:relative;flex:none;background:#3a2a22}.sw i{position:absolute;top:50%;margin-top:-11px;left:3px;width:22px;height:22px;border-radius:50%;background:#cbb9a0;transition:left .15s}
+.sw.on{background:#2f8f55;border-color:#3fb36d}.sw.on i{left:calc(100% - 25px);background:#fff}
+
+@media (orientation:portrait){html.iosbar body.gmode{padding-bottom:calc(max(6px,env(safe-area-inset-bottom,0px)) + 76px)}}
 .tables{display:grid;gap:8px}.tbh{display:flex;justify-content:space-between;align-items:baseline}.tbh b{font:700 15px/1.2 var(--display);letter-spacing:.04em;text-transform:uppercase}
 .tbr{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:8px}.tbi{flex:1;min-width:0;display:grid;gap:2px}.tbi small{color:var(--mut);font-size:12.5px}
 .tbn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tbr button{flex:none;min-height:40px;padding:8px 12px}.tbi .lv{display:inline-block;width:7px;height:7px;border-radius:50%;background:#5fd38a;margin-right:5px;vertical-align:1px}
@@ -1306,6 +1329,9 @@ const avI=k=>`<svg class="avi" viewBox="0 0 32 32" aria-hidden="true" focusable=
 const botAv=u=>[2,0,6,4][((parseInt(String(u).slice(3))||1)-1)%4];
 function seatAv(u){if(isBot(u))return botAv(u);const m=(L||[]).find(x=>x.id===u),v=m?+m.av:NaN;return v>=0&&v<8&&(v|0)===v?v:-1}
 const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+/* iOS 26 Safari: alttaki yüzen araç çubuğu sayfanın üstüne biner (100dvh onun arkasına kadar uzanır); oyunda alta boşluk bırakılır */
+const IOSBAR=(()=>{try{const u=navigator.userAgent;if(!/iPhone|iPod/.test(u)||/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(u))return false;const m=/Version\/(\d+)/.exec(u);return !!m&&+m[1]>=26&&!isStandalone()}catch(e){return false}})();
+try{if(IOSBAR)document.documentElement.classList.add('iosbar')}catch(e){}
 async function installApp(){
   if(instEv){try{instEv.prompt();await instEv.userChoice}catch(e){}instEv=null;render();return}
   const ios=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
@@ -1471,7 +1497,7 @@ function openRx(){
   closeRx();rxOpen=true;chatSeen=Date.now();try{localStorage.setItem('okeyChatSeen',String(chatSeen))}catch(e){}
   const el=document.createElement('div');el.id='rxp';el.className='rxp';
   el.innerHTML=`<div class="chs" role="dialog" aria-label="Sohbet"><div class="chh"><b>Sohbet</b><button id="chX" aria-label="Kapat">✕</button></div><div class="chl" id="chl"></div>
-<form class="chf" id="chF" autocomplete="off"><input id="chI" maxlength="200" placeholder="Mesaj yaz…" enterkeyhint="send" autocomplete="off"><button class="p" type="submit">Gönder</button></form>
+${CFG.chat?`<form class="chf" id="chF" autocomplete="off"><input id="chI" maxlength="200" placeholder="Mesaj yaz…" enterkeyhint="send" autocomplete="off"><button class="p" type="submit">Gönder</button></form>`:'<small class="mut">Sohbet şu an kapalı, hazır tepkiler açık.</small>'}
 <div class="rxs">${RX.map((t,i)=>`<button type="button" data-rx="${i}" class="${/^\p{Extended_Pictographic}+$/u.test(t)?'emo':''}">${t}</button>`).join('')}</div></div>`;
   el.addEventListener('click',e=>{const b=e.target.closest('[data-rx]');if(b){sendRx(+b.dataset.rx);return}if(e.target===el||e.target.closest('#chX'))closeRx()});
   el.addEventListener('submit',async e=>{e.preventDefault();const i=document.getElementById('chI');if(!i)return;const v=i.value;if(await sendChat(v)){i.value=''}});
@@ -1734,7 +1760,7 @@ async function fetchTables(force){
 if(typeof setInterval==='function')setInterval(()=>{try{fetchTables()}catch(e){}},6500);
 const BLN=['Kolay','Orta','Zor'];
 function tablesH(){
-  if(!SRV)return '';
+  if(!SRV||!CFG.pub)return '';
   setTimeout(()=>fetchTables(),0);
   const row=t=>{
     const info=t.st==='lobby'?`Bekliyor · ${4-t.free}/4 oyuncu${t.bots?' · '+t.bots+' bot':''}`:`<i class="lv"></i>Oyunda · el ${t.rd}/${t.R} · ${t.bots.length} bot`;
@@ -1800,10 +1826,13 @@ function roomH(){
   /* eşli: kuran eşleri seçer (masaya giriş sırasına göre 3 eşleşme) */
   const pn=[...q.slice(0,4).map(x=>x.name),...Array.from({length:4},(_,k)=>'Bot '+(k+1))].slice(0,Math.max(hq,0)).concat(Array.from({length:nb},(_,k)=>'Bot '+(k+1)));
   while(pn.length<4)pn.push('Oyuncu '+(pn.length+1));
-  const teamTxt=k=>{const o=pairOrder(pn,k);return `<b>${esc(o[0])} + ${esc(o[2])}</b><span>karşı</span><b>${esc(o[1])} + ${esc(o[3])}</b>`};
-  const pairH=ROOM.pair?(host&&!playing?`<div class="pairs" role="radiogroup" aria-label="Eşleri seç">${[0,1,2].map(k=>`<button class="pairo ${(ROOM.pr|0)===k?'on':''}" data-pr="${k}" role="radio" aria-checked="${(ROOM.pr|0)===k}">${teamTxt(k)}</button>`).join('')}</div>`:`<p class="pairinfo">Eşli oyun · ${teamTxt(ROOM.pr|0)}</p>`):'';
+  const P=pn.map((n,k)=>({n,av:k<hq?seatAv(q[k].id):botAv('bot'+(k-hq+1)),me:k<hq&&q[k].id===uid}));
+  const pr=ROOM.pr|0,ord=pairOrder(P,pr),mate=P[pr+1];
+  const pchip=x=>`<span class="pch">${sav(x.av)}<b>${esc(x.n)}</b></span>`;
+  const teamsH=`<div class="teams"><div class="team ta"><small>Takım 1</small>${pchip(ord[0])}${pchip(ord[2])}</div><span class="vs">VS</span><div class="team tb"><small>Takım 2</small>${pchip(ord[1])}${pchip(ord[3])}</div></div><small class="mut pnote">Eşler masada karşılıklı oturur, cezaları birlikte sayılır.</small>`;
+  const pairH=ROOM.pair?(host&&!playing?`<div class="pairbox"><b class="pq">${P[0].me?'Eşin kim?':esc(P[0].n)+' kiminle eş olsun?'}</b><div class="mates" role="radiogroup" aria-label="Eş seç">${[1,2,3].map(j=>`<button class="mate ${j===pr+1?'on':''}" data-pr="${j-1}" role="radio" aria-checked="${j===pr+1}">${sav(P[j].av)}<span>${esc(P[j].n)}</span>${j===pr+1?'<em>eşi</em>':''}</button>`).join('')}</div>${teamsH}</div>`:`<div class="pairbox">${teamsH}</div>`):'';
   const bl=ROOM.bl!=null?ROOM.bl:(CFG.bot|0);
-  const optH=host&&!playing?`${SRV?`<button class="pairT ${ROOM.pub?'on':''}" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık masa: <b>${ROOM.pub?'Açık':'Kapalı'}</b></button>${ROOM.pub?'<small class="mut pubn">Ana ekrandaki "Masa seç" listesinde görünür, yabancılar katılabilir.</small>':''}`:''}<div class="blsel"><small class="mut">Bot seviyesi</small><div class="seg">${BLN.map((l,k)=>`<button class="${bl===k?'p':''}" data-bl="${k}" aria-pressed="${bl===k}">${l}</button>`).join('')}</div></div>`:`<p class="mut blinfo">Bot seviyesi: <b>${BLN[bl]}</b>${ROOM.pub?' · herkese açık masa':''}</p>`;
+  const optH=host&&!playing?`${SRV&&CFG.pub?`<button class="pairT ${ROOM.pub?'on':''}" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık masa: <b>${ROOM.pub?'Açık':'Kapalı'}</b></button>${ROOM.pub?'<small class="mut pubn">Ana ekrandaki "Masa seç" listesinde görünür, yabancılar katılabilir.</small>':''}`:''}<div class="blsel"><small class="mut">Bot seviyesi</small><div class="seg">${BLN.map((l,k)=>`<button class="${bl===k?'p':''}" data-bl="${k}" aria-pressed="${bl===k}">${l}</button>`).join('')}</div></div>`:`<p class="mut blinfo">Bot seviyesi: <b>${BLN[bl]}</b>${ROOM.pub?' · herkese açık masa':''}</p>`;
   const pairT=host&&!playing?`<button class="pairT ${ROOM.pair?'on':''}" id="pairT" aria-pressed="${!!ROOM.pair}">Eşli oyun: <b>${ROOM.pair?'Açık':'Kapalı'}</b></button>`:'';
   let ctl='';
   if(playing)ctl='<p class="mut" style="margin:0">Oyun başlamış ama bu oyunda koltuğun yok.</p>';
@@ -1855,12 +1884,12 @@ async function admRep(a){
   try{await SRV.call({op:'adminList',k:k==='del'?'repDel':'repSeen',rid:id})}catch(e){}
   await admLoad();
 }
-const cfgSave=()=>db.doc('settings/main').set({bot:CFG.bot,ms:CFG.ms,ann:CFG.ann,tm:CFG.tm});
+const cfgSave=()=>db.doc('settings/main').set({bot:CFG.bot,ms:CFG.ms,ann:CFG.ann,tm:CFG.tm,pub:!!CFG.pub,chat:!!CFG.chat,mk:!!CFG.mk});
 async function setCfg(p){CFG={...CFG,...p};try{await cfgSave();admMsg='Kaydedildi.'}catch(e){admMsg='Kaydedilemedi: '+(e.code||'')}render()}
 let cfgU=null,cfgJ='';
 function watchCfg(){
   try{if(cfgU)cfgU();cfgU=db.doc('settings/main').onSnapshot(s=>{
-    const d=s.exists?s.data():{},n={bot:d.bot!=null?+d.bot:2,ms:+d.ms||1100,ann:String(d.ann||''),tm:d.tm!=null?+d.tm:45},j=JSON.stringify(n);
+    const d=s.exists?s.data():{},n={bot:d.bot!=null?+d.bot:2,ms:+d.ms||1100,ann:String(d.ann||''),tm:d.tm!=null?+d.tm:45,pub:d.pub!==false,chat:d.chat!==false,mk:d.mk!==false},j=JSON.stringify(n);
     if(j===cfgJ)return;cfgJ=j;CFG=n;render();
   },()=>{})}catch(e){}
 }
@@ -1938,25 +1967,36 @@ function admPlH(){
   const L=admP.list||[],sh=admPlAll?L:L.slice(0,15);
   return `<div class="panel"><h2>Oyuncular</h2><div class="res"><div><span>Kayıtlı</span><b>${admP.total||0}</b></div><div><span>Şu an bağlı</span><b>${admP.online||0}</b></div></div><div class="plist">${sh.map(p=>`<div class="plr"><span class="pdot ${p.on?'on':''}" aria-label="${p.on?'bağlı':'bağlı değil'}"></span><b>${esc(p.n)}</b><small class="mut">${p.on?'bağlı':agoT(p.ls)+' önce'}${p.now&&p.now.length?' · masada: '+p.now.map(esc).join(', '):p.c&&p.c.length?' · son oda: '+esc(p.c[0]):''}</small></div>`).join('')}</div>${L.length>15?`<div class="row" style="margin-top:8px"><button id="admpl">${admPlAll?'Daha az göster':'Hepsini göster ('+L.length+')'}</button></div>`:''}</div>`;
 }
+let admTab='genel';
 function adminH(){
   const now=Date.now(),rs=[...admRooms].sort((a,b)=>(b.t||0)-(a.t||0));
   const age=t=>{const m=Math.max(0,Math.round((now-t)/60000));return m<60?m+' dk':m<1440?Math.round(m/60)+' sa':Math.round(m/1440)+' gün'};
   const cb=(k,l)=>`<button class="${admC===k?'danger':''}" data-adm="${k}">${admC===k?'Emin misin? Evet':l}</button>`;
   const seg=(items,cur,key)=>`<div class="seg">${items.map(([l,v])=>`<button class="${cur===v?'p':''}" data-cfg="${key}:${v}" aria-pressed="${cur===v}">${l}</button>`).join('')}</div>`;
+  const tog=(key,l,d)=>`<div class="ftog"><div><b>${l}</b><small class="mut">${d}</small></div><button class="sw ${CFG[key]?'on':''}" data-cfg="${key}:${CFG[key]?0:1}" role="switch" aria-checked="${!!CFG[key]}" aria-label="${l}"><i></i></button></div>`;
   const pl=rs.filter(r=>r.st==='playing').length,st=admStats||{},hist=st.hist||[];
   const cnt={};hist.forEach(e=>{const top=Math.max(...e.p.map(x=>x.s));e.p.forEach(x=>{if(!x.b&&x.s===top&&top>0)cnt[x.n]=(cnt[x.n]||0)+1})});
   const worst=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
   const hl=hist.slice(0,8).map(e=>{const top=Math.max(...e.p.map(x=>x.s));return `<div class="hr2"><small class="mut">${age(e.t)} önce</small>${e.p.map(x=>`<span class="${x.s===top?'lose':''}">${esc(x.n)} <b>${x.s}</b></span>`).join('')}</div>`}).join('');
-  return `<div class="panel"><h2>Yönetim</h2>
-<div class="res"><div><span>Toplam oda</span><b>${rs.length}</b></div><div><span>Oyunda</span><b>${pl}</b></div><div><span>Bekleyen</span><b>${rs.length-pl}</b></div></div>
-${admMsg?`<div class="note">${esc(admMsg)}</div>`:''}</div>
-${admRepH()}${admPlH()}<div class="panel"><h2>Bot ayarları</h2><small class="mut">Seviye</small>${seg([['Saf',0],['Orta',1],['Usta',2]],CFG.bot,'bot')}<small class="mut" style="display:block;margin-top:10px">Hız (bekleme)</small>${seg([['Hızlı',500],['Normal',1100],['Yavaş',1800]],CFG.ms,'ms')}<small class="mut" style="display:block;margin-top:10px">Oyuncu süresi (sıra başına)</small>${seg([['Kapalı',0],['30 sn',30],['45 sn',45],['60 sn',60],['90 sn',90]],CFG.tm,'tm')}<p class="mut" style="margin:10px 0 0;font-size:13px">Süre dolunca oyuncu için taş otomatik çekilir ve atılır. Saf: eski bot. Orta: yandan taş alır, işler, ara sıra hata yapar. Usta: okey değiştirir, atışları hesaplar. Ayar, botları oynatan oyuncunun sayfasında geçerli olur.</p></div>
-<div class="panel"><h2>Duyuru</h2><div class="row"><input id="an" maxlength="140" placeholder="Herkesin göreceği kısa mesaj" value="${esc(CFG.ann)}" aria-label="Duyuru" style="flex:1;min-width:0"><button class="p" id="anset">Yayınla</button></div>${CFG.ann?'<div class="row" style="margin-top:8px"><button id="anclr">Duyuruyu kaldır</button></div>':''}</div>
-<div class="panel"><h2>İstatistik</h2><div class="res"><div><span>Kurulan oda</span><b>${st.rooms||0}</b></div><div><span>Başlayan oyun</span><b>${st.games||0}</b></div><div><span>Biten oyun</span><b>${st.done||0}</b></div><div><span>Oynanan el</span><b>${st.rounds||0}</b></div></div>
-${worst?`<p style="margin:10px 0 0">En çok sonuncu olan: <b>${esc(worst[0])}</b> (${worst[1]} oyun)</p>`:''}${hl?`<div class="hist">${hl}</div>`:'<p class="mut" style="margin:10px 0 0">Biten oyun kaydı yok.</p>'}</div>
+  const nRep=(admR||[]).filter(r=>!r.ok).length,nOn=admP?admP.online||0:0;
+  const TABS=[['genel','Odalar',rs.length],['bildirim','Bildirimler',nRep],['oyuncu','Oyuncular',nOn],['ozellik','Özellikler',0],['ayar','Bot ve süre',0],['duyuru','Duyuru',CFG.ann?1:0],['istat','İstatistik',0]];
+  if(!TABS.some(t=>t[0]===admTab))admTab='genel';
+  const tabs=`<nav class="atabs" role="tablist" aria-label="Yönetim bölümleri">${TABS.map(([k,l,n])=>`<button role="tab" class="${admTab===k?'on':''}" data-at="${k}" aria-selected="${admTab===k}">${l}${n?`<i class="${k==='bildirim'?'':'n'}">${n}</i>`:''}</button>`).join('')}</nav>`;
+  let body='';
+  if(admTab==='genel')body=`<div class="panel"><div class="res"><div><span>Toplam oda</span><b>${rs.length}</b></div><div><span>Oyunda</span><b>${pl}</b></div><div><span>Bekleyen</span><b>${rs.length-pl}</b></div></div></div>
 <div class="panel"><h2>Odalar</h2>${rs.length?rs.map(r=>`<div class="ar"><div><b>${esc(r.id)}</b> · ${r.st==='playing'?'oyunda'+(r.rd!=null?' · el '+(r.rd+1)+'/'+r.R:''):'bekliyor'}<small class="mut">Kuran: ${esc(r.hostName||'?')} · ${age(r.t||now)} önce${r.pl?' · '+esc(r.pl.join(', ')):''}${r.pub?' · herkese açık':''}${r.bl!=null?' · bot '+BLN[r.bl]:''}</small></div><div class="row"><button data-watch="${esc(r.id)}">İzle</button>${cb('del:'+r.id,'Sil')}</div></div>`).join(''):'<p class="mut" style="margin:0">Hiç oda yok.</p>'}
-<div class="row" style="margin-top:12px">${cb('old','24 saatten eskileri sil')}${cb('all','Hepsini sil')}${cb('legacy','Eski kayıtları temizle')}</div></div>
-<div class="row"><button id="admback">Çıkış</button></div>`;
+<div class="row" style="margin-top:12px">${cb('old','24 saatten eskileri sil')}${cb('all','Hepsini sil')}${cb('legacy','Eski kayıtları temizle')}</div></div>`;
+  else if(admTab==='bildirim')body=SRV?admRepH():'<div class="panel"><p class="mut" style="margin:0">Bildirimler sadece sunucudaki oyunda var.</p></div>';
+  else if(admTab==='oyuncu')body=SRV?(admPlH()||'<div class="panel"><p class="mut" style="margin:0">Yükleniyor…</p></div>'):'<div class="panel"><p class="mut" style="margin:0">Oyuncu listesi sadece sunucudaki oyunda var.</p></div>';
+  else if(admTab==='ozellik')body=`<div class="panel"><h2>Özellikler</h2><p class="mut" style="margin:0 0 6px;font-size:13px">Oyuna eklenenleri buradan açıp kapatırsın. Değişiklik herkeste hemen geçerli olur.</p>
+${tog('pub','Herkese açık masalar','Ana ekrandaki "Masa seç" listesi ve yabancıların bot yerine oturması.')}
+${tog('chat','Sohbet','Masada yazılı sohbet. Kapalıyken hazır tepkiler yine çalışır.')}
+${tog('mk','Yeni masa kurma','Kapatırsan kimse yeni masa kuramaz (güncellemeden önce bakım için). Süren oyunlar devam eder.')}</div>`;
+  else if(admTab==='ayar')body=`<div class="panel"><h2>Bot ayarları</h2><small class="mut">Varsayılan seviye (masa kuran kendi masası için ayrıca seçebilir)</small>${seg([['Kolay',0],['Orta',1],['Zor',2]],CFG.bot,'bot')}<small class="mut" style="display:block;margin-top:10px">Hız (bekleme)</small>${seg([['Hızlı',500],['Normal',1100],['Yavaş',1800]],CFG.ms,'ms')}<small class="mut" style="display:block;margin-top:10px">Oyuncu süresi (sıra başına)</small>${seg([['Kapalı',0],['30 sn',30],['45 sn',45],['60 sn',60],['90 sn',90]],CFG.tm,'tm')}<p class="mut" style="margin:10px 0 0;font-size:13px">Süre dolunca oyuncu için taş otomatik çekilir ve atılır. Kolay: basit oynar. Orta: yandan taş alır, işler, ara sıra hata yapar. Zor: okey değiştirir, atışları hesaplar.</p></div>`;
+  else if(admTab==='duyuru')body=`<div class="panel"><h2>Duyuru</h2><div class="row"><input id="an" maxlength="140" placeholder="Herkesin göreceği kısa mesaj" value="${esc(CFG.ann)}" aria-label="Duyuru" style="flex:1;min-width:0"><button class="p" id="anset">Yayınla</button></div>${CFG.ann?'<div class="row" style="margin-top:8px"><button id="anclr">Duyuruyu kaldır</button></div>':''}<div class="row" style="margin-top:10px"><button data-ann="Birazdan güncelleme var, oyunlar sıfırlanacak. Elinizi bitirin.">Hazır: güncelleme uyarısı</button></div></div>`;
+  else if(admTab==='istat')body=`<div class="panel"><h2>İstatistik</h2><div class="res"><div><span>Kurulan oda</span><b>${st.rooms||0}</b></div><div><span>Başlayan oyun</span><b>${st.games||0}</b></div><div><span>Biten oyun</span><b>${st.done||0}</b></div><div><span>Oynanan el</span><b>${st.rounds||0}</b></div></div>
+${worst?`<p style="margin:10px 0 0">En çok sonuncu olan: <b>${esc(worst[0])}</b> (${worst[1]} oyun)</p>`:''}${hl?`<div class="hist">${hl}</div>`:'<p class="mut" style="margin:10px 0 0">Biten oyun kaydı yok.</p>'}</div>`;
+  return `<div class="panel ahead"><h2>Yönetim</h2><button id="admback">Çıkış</button></div>${tabs}${admMsg?`<div class="note">${esc(admMsg)}</div>`:''}${body}`;
 }
 /* hamle: claude.ai'de motor burada çalışır ve sonuç kaydedilir; sunucu modunda hamle sunucuya gider, sunucu doğrular */
 async function act(name,args){
@@ -2018,7 +2058,7 @@ const openNow=()=>{
   if(!groups.length){msg='Rafta açılabilecek bir per ya da çift bulunamadı. Taşları yan yana dizip tekrar dene.';render();return false}
   return act('open',{groups});
 };
-let CFG={bot:2,ms:1100,ann:'',tm:45};
+let CFG={bot:2,ms:1100,ann:'',tm:45,pub:true,chat:true,mk:true};
 /* botlar: sırası gelen botu ilk insan oyuncunun sayfası oynatır */
 
 /* sıra süresi */
@@ -2404,7 +2444,7 @@ ${i===me?'':orack(r,cnt)}
     h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><button class="fcs" id="fcs" aria-pressed="${!!SET.focus}" aria-label="Istakaya odaklan (taşları büyüt)" title="Odak">${SET.focus?'⤡':'⤢'}</button><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':''))):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
-<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${SRV?'<button id="repO">🐞 Bildir</button>':''}${SRV&&ROOM&&ROOM.host===uid?`<button class="tg" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık</button>`:''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
+<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${SRV?'<button id="repO">🐞 Bildir</button>':''}${SRV&&CFG.pub&&ROOM&&ROOM.host===uid?`<button class="tg" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık</button>`:''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
     h+='<!--SEC-->';
     /* uyarı: ekranın üstünde kısa süre görünür */
     if(msg!==lastMsg){lastMsg=msg;msgT=msg?Date.now():0}
@@ -2739,8 +2779,10 @@ $('#app').addEventListener('click',async e=>{
   if(b&&b.dataset.tb){const [c,i]=b.dataset.tb.split(':');await takeBot(c,+i);return}
   if(b&&b.dataset.bl!=null){try{await db.doc('rooms/'+code).update({bl:+b.dataset.bl})}catch(e){}return}
   if(b&&b.dataset.rep){await admRep(b.dataset.rep);return}
+  if(b&&b.dataset.at){admTab=b.dataset.at;admMsg='';if(admTab==='bildirim'||admTab==='oyuncu')admLoad();render();return}
+  if(b&&b.dataset.ann){await setCfg({ann:b.dataset.ann});return}
   if(b&&b.dataset.pr!=null){try{await db.doc('rooms/'+code).update({pr:+b.dataset.pr})}catch(e){}return}
-  if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:+v});return}
+  if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:['pub','chat','mk'].includes(k)?v==='1':+v});return}
   if(b&&b.dataset.ins){
     const [o,gi,en]=b.dataset.ins.split(':');
     if(en==='P')await insertPair(+o,+gi);

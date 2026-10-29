@@ -53,6 +53,13 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   ok(pl.ok&&pl.list.some(p=>p.n==='Xe'&&p.on&&p.now.includes(C))&&pl.list.some(p=>p.n==='Ali'),'oyuncu listesinde ad, bağlı ve masa bilgisi');
   /* bot seviyesi odaya göre: Kolay botlar da oynuyor */
   g=(await adm.call({op:'get',path:'rooms/'+C+'/game/main'})).snap.data;ok(g.trn>0,'oda bot seviyesiyle botlar oynuyor (tur '+g.trn+')');
+  /* v57: yönetici özellikleri kapatır */
+  await adm.call({op:'set',path:'settings/main',data:{pub:false,chat:false,mk:false}});
+  t=await X.call({op:'tables'});ok(t.ok&&t.list.length===0,'açık masalar kapalıyken liste boş');
+  ok(!(await X.call({op:'chat',code:C,text:'selam'})).ok,'sohbet kapalıyken mesaj gitmez');
+  ok(!(await Y.call({op:'set',path:'rooms/'+D,data:{hostName:'Ye'}})).ok,'yeni masa kurma kapalıyken masa kurulmaz');
+  await adm.call({op:'set',path:'settings/main',data:{pub:true,chat:true,mk:true}});
+  ok((await X.call({op:'chat',code:C,text:'selam'})).ok&&(await Y.call({op:'set',path:'rooms/'+D,data:{hostName:'Ye'}})).ok,'açınca yine çalışır');
   for(const c of [A,X,Y,adm])c.close();await sleep(100);S.stop();try{fs.unlinkSync(process.env.DATA_FILE)}catch(e){}
   console.log(fails?'FAILED '+fails:'ALL PASSED');process.exit(fails?1:0);
 })().catch(e=>{console.error(e);process.exit(1)});
