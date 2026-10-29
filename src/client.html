@@ -918,6 +918,35 @@ body.big .rack .t{font-size:calc(var(--tw)*.72)}
 .hrow .hl{grid-column:1/-1;color:#bfae95;font-size:11.5px}
 .hrow.win{border-color:#e8b93a66}.hrow.lastp{border-color:#c1121f88}
 #histClr{justify-self:start;color:#ff8a8a}
+
+/* ===== v52: yakınlaştır, tepkiler, yeni taş, hızlı oyun, whatsapp ===== */
+.zoomv{position:fixed;inset:0;z-index:74;background:#000b;display:flex;align-items:center;justify-content:center;padding:14px}
+.zsheet{width:min(100%,480px);max-height:86dvh;overflow:auto;border-radius:16px;background:linear-gradient(180deg,#1f5a3f,#123826);border:3px solid #2a0508;box-shadow:0 0 0 2px #84131b,0 18px 40px #000c;padding:12px 14px 16px;color:#eef6f0}
+.zh{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:8px;align-items:center}
+.zh .dot{grid-row:1/3;width:14px;height:14px;border-radius:50%;background:var(--sc)}
+.zh b{font:700 20px/1.1 var(--display);text-transform:uppercase}.zh small{grid-column:2;color:#cfe3d6}
+.zh button{grid-row:1/3;grid-column:3;width:38px;height:38px;min-height:38px;padding:0;border-radius:50%;background:#0004;color:#fff;border-color:#ffffff33}
+.zsheet h5{margin:14px 0 6px;font:700 11px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:#ffd36a}
+.zpers{display:flex;flex-wrap:wrap;gap:8px 12px}.zg{display:flex;gap:2px;padding:4px;border-radius:8px;background:#0003}
+.zpers .t,.zdis .t{width:32px;height:44px;font-size:20px;margin:0}
+.zdis{display:flex;flex-wrap:wrap;gap:6px}.zd{display:grid;justify-items:center;gap:2px}.zd small{font-size:10px;color:#cfe3d6}
+.rxbtn{min-height:34px;width:38px;padding:0;border-radius:99px;font-size:18px;margin-left:auto}
+.gstat .status .rxbtn+.penbtn{margin-left:6px}
+.rxp{position:fixed;inset:0;z-index:73;display:flex;align-items:flex-start;justify-content:center;padding:calc(110px + env(safe-area-inset-top,0px)) 12px 12px;background:#0006}
+.rxs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:min(100%,420px);padding:10px;border-radius:14px;background:linear-gradient(180deg,#2c1813,#180d0a);border:1px solid #6a2e24;box-shadow:0 12px 28px #000c}
+.rxs button{min-height:42px;padding:6px 4px;font-size:13px;border-radius:10px;background:#ffffff0c;border-color:#ffffff1f;color:#f6ecdb}
+.rxs button.emo{font-size:24px}
+.rxb{position:fixed;z-index:63;transform:translate(-50%,-100%);pointer-events:none;padding:6px 11px;border-radius:14px;background:#fffaf0;color:#2a1405;font:700 14px/1.1 var(--body);box-shadow:0 6px 14px #000a;white-space:nowrap;animation:rxb 2.8s cubic-bezier(.2,.9,.3,1.2) both}
+.rxb::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:#fffaf0}
+.rxb.emo{font-size:30px;padding:4px 8px;background:#fffaf0}
+@keyframes rxb{0%{opacity:0;transform:translate(-50%,-60%) scale(.5)}12%{opacity:1;transform:translate(-50%,-110%) scale(1.08)}20%{transform:translate(-50%,-105%) scale(1)}82%{opacity:1;transform:translate(-50%,-112%)}100%{opacity:0;transform:translate(-50%,-140%)}}
+.rack .t.nw{box-shadow:0 0 0 2px #7bd88f,0 0 12px #7bd88fcc,0 2px 0 #c9bb93,0 5px 6px #0000008c!important}
+.rack .t.nw:not(.ok)::before{content:"YENİ";position:absolute;left:50%;top:-9px;transform:translateX(-50%);padding:1px 4px;border-radius:4px;background:#2f8a55;color:#fff;font:800 8px/1.1 var(--body);letter-spacing:.06em;z-index:3;pointer-events:none;white-space:nowrap}
+#scene .plate,#scene .pers .mini{cursor:zoom-in}
+.quick{display:grid;gap:2px;justify-items:center;min-height:52px;border-radius:8px;background:linear-gradient(180deg,#2a3f2e,#1a2a1f);border-color:#3f6a4c;color:#e8f6ec;font:700 16px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.quick small{font:500 11.5px/1 var(--body);text-transform:none;letter-spacing:0;color:#b9d8c3}
+a.wa{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:10px 14px;border-radius:6px;background:#1f8f4e;color:#fff;font-weight:700;text-decoration:none;border:1px solid #2fb86a}
+a.wa::before{content:"";width:18px;height:18px;background:radial-gradient(circle at 50% 50%,#fff 0 3px,transparent 3.5px),radial-gradient(circle,transparent 6px,#fff 6.5px 8px,transparent 8.5px)}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -1218,6 +1247,47 @@ function histH(){
 <div class="hlist">${L0.slice(0,10).map(x=>`<div class="hrow ${x.last===x.me?'lastp':x.rank===1?'win':''}"><span>${d(x.t)}<small>${x.R} el${x.pair?' · eşli':''}</small></span><span>${x.rank}. <small>/ 4</small></span><b>${x.sc[x.me]}</b><small class="hl">${x.last===x.me?'sonuncu sensin':'sonuncu: '+esc(x.n[x.last]||'')}</small></div>`).join('')}</div>
 <button class="lnk" id="histClr">Geçmişi sil</button>`;
 }
+/* hazır mesajlar ve emojiler (v52): üyelik kaydına yazılır, herkes görür; isim kutusunun üstünde balon çıkar */
+const RX=['😂','😡','😱','👏','🩸','🙏','🔥','🫖','Haydi!','Yine mi!','Bekle…','İyi oyun','Kan kokusu var','Okey bende 😏'];
+let rxOpen=false,rxSeen={},rxLast=0;
+async function sendRx(i){
+  if(!code||!uid||Date.now()-rxLast<1500)return;rxLast=Date.now();rxOpen=false;closeRx();
+  const m=(L||[]).find(x=>x.id===uid)||{};
+  try{await db.doc('rooms/'+code+'/members/'+uid).set({name:m.name||name,av:m.av!=null?m.av:myAv,t:m.t||Date.now(),re:{i,t:Date.now()}})}catch(e){}
+}
+function rxCheck(){
+  if(!S||!S.seats||typeof document==='undefined'||!document.body)return;
+  for(const m of (L||[])){const r=m.re;if(!r||!(r.t>0))continue;const k=m.id;
+    if(r.t<=(rxSeen[k]||0))continue;rxSeen[k]=r.t;if(Date.now()-r.t>6000)continue;
+    const i=S.seats.indexOf(k);if(i<0||!(r.i>=0&&r.i<RX.length))continue;rxBubble(i,RX[r.i])}
+}
+function rxBubble(i,txt){
+  const pl=document.querySelector(`#scene .seat[data-seat="${i}"] .plate`);if(!pl)return;
+  const r=pl.getBoundingClientRect(),el=document.createElement('div');
+  el.className='rxb'+(/^\p{Extended_Pictographic}+$/u.test(txt)?' emo':'');el.textContent=txt;
+  el.style.left=Math.round(r.left+r.width/2)+'px';el.style.top=Math.round(r.top)+'px';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),2900);
+  if(i!==S.seats.indexOf(uid))SFX.play('pick');
+}
+function openRx(){
+  closeRx();rxOpen=true;const el=document.createElement('div');el.id='rxp';el.className='rxp';
+  el.innerHTML=`<div class="rxs" role="dialog" aria-label="Hazır mesajlar">${RX.map((t,i)=>`<button data-rx="${i}" class="${/^\p{Extended_Pictographic}+$/u.test(t)?'emo':''}">${t}</button>`).join('')}</div>`;
+  el.addEventListener('click',e=>{const b=e.target.closest('[data-rx]');if(b){sendRx(+b.dataset.rx);return}closeRx()});
+  document.body.appendChild(el);
+}
+function closeRx(){rxOpen=false;const e=document.getElementById('rxp');if(e)e.remove()}
+/* masayı yakınlaştır (v52): bir oyuncunun isim kutusuna ya da perlerine dokununca perleri ve bu elde attığı taşlar büyük görünür */
+function openZoom(i){
+  if(!S||!S.seats)return;closeZoom();B=S.B;const O=S.okey,me=S.seats.indexOf(uid);
+  const prs0=(S.tbl['t'+i]||[]).filter(r=>r&&r.g),dis=S.disc['d'+i]||[],o=S.opn['s'+i];
+  const el=document.createElement('div');el.id='zoomv';el.className='zoomv';
+  el.innerHTML=`<div class="zsheet sc${i}" role="dialog" aria-label="${esc(S.names[i])}"><div class="zh"><span class="dot"></span><b>${esc(S.names[i])}${i===me?' · sen':''}</b><small>${S.hands['h'+i].length} taş${o>0?' · açtı '+o+((S.opm||{})['s'+i]==='c'?' (çift)':''):' · açmadı'}${S.scores['s'+i]?' · ceza '+S.scores['s'+i]:''}</small><button id="zoomX" aria-label="Kapat">✕</button></div>
+<h5>Perleri</h5>${prs0.length?`<div class="zpers">${prs0.map(r=>`<div class="zg">${r.g.map((x,k)=>isJ(x,O)?`<div class="t ok c3">★<small style="font-size:11px">${slotVal(r,k,O)}</small></div>`:tile(x,O)).join('')}</div>`).join('')}</div>`:'<p class="mut">Henüz per açmadı.</p>'}
+<h5>Bu elde attığı taşlar <small>(${dis.length})</small></h5>${dis.length?`<div class="zdis">${dis.map((x,k)=>`<div class="zd">${tile(x,O)}<small>${k+1}</small></div>`).join('')}</div>`:'<p class="mut">Henüz taş atmadı.</p>'}</div>`;
+  el.addEventListener('click',e=>{if(e.target===el||e.target.closest('#zoomX'))closeZoom()});
+  document.body.appendChild(el);
+}
+function closeZoom(){const e=document.getElementById('zoomv');if(e)e.remove()}
 /* ipuçları (v50): yandan taş, açma, işleme */
 const hc=new Map();const hcGet=(k,f)=>{if(hc.has(k))return hc.get(k);const v=f();if(hc.size>40)hc.clear();hc.set(k,v);return v};
 function formsPer(t,h,O){
@@ -1337,7 +1407,7 @@ const APP_BUILD='/*@BUILD@*/';
 let RULES_URL='https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt';
 /* davet bağlantısı: site.com/?k=KOD ile gelen kod giriş kutusuna hazır gelir */
 const INVITE=(()=>{try{return (new URLSearchParams(location.search).get('k')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}catch(e){return ''}})();
-let bots=0,R=9,botKey='',botTimer=null,claimC=null,autoK='',lastTap={id:-1,t:0},liveGm=null;
+let bots=0,R=9,botKey='',botTimer=null,claimC=null,autoK='',lastTap={id:-1,t:0},liveGm=null,newT={id:-1,trn:-1,gid:-1};
 let ROOM=null,code='',view='home',isAdmin=false,unsubs=[],admRooms=[],admC='',admMsg='';
 try{name=localStorage.getItem('okeyName')||''}catch(e){}
 function tile(id,O,cls=''){
@@ -1376,7 +1446,7 @@ function enterRoom(c){
     if(!s.exists){if(seen&&code===c)leaveLocal('Oda kapatıldı.');return}
     seen=true;const d=s.data(),j=JSON.stringify(d);if(j===rj)return;rj=j;ROOM=d;bots=ROOM.bots||0;render();
   },()=>{}));
-  unsubs.push(db.collection('rooms/'+c+'/members').onSnapshot(s=>{const a=s.docs.map(x=>({id:x.id,...x.data()})),j=JSON.stringify(a);if(j===mj)return;mj=j;L=a;render()},()=>{}));
+  unsubs.push(db.collection('rooms/'+c+'/members').onSnapshot(s=>{const a=s.docs.map(x=>({id:x.id,...x.data()})),j=JSON.stringify(a);if(j===mj)return;mj=j;L=a;render();try{rxCheck()}catch(e){}},()=>{}));
   unsubs.push(db.doc('rooms/'+c+'/game/main').onSnapshot(s=>{const d=s.exists?s.data():null,j=JSON.stringify(d);if(j===gj)return;gj=j;const pv=S;S=d;try{sfxDiff(pv,d)}catch(e){}render()},()=>{}));
   render();
 }
@@ -1399,6 +1469,12 @@ async function createRoom(){
     msg='Oda kodu üretilemedi, tekrar dene.';
   }catch(e){msg='Oda kurulamadı: '+(e.code||'')}
   render();
+}
+async function quickBots(){
+  await createRoom();if(!code)return;
+  try{await db.doc('rooms/'+code).update({bots:3})}catch(e){}
+  for(let k=0;k<40&&!((L||[]).some(x=>x.id===uid)&&ROOM);k++)await new Promise(r=>setTimeout(r,100));
+  await start(null,9);
 }
 async function joinRoom(raw){
   const c=String(raw||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
@@ -1446,6 +1522,7 @@ function homeH(){
 <div class="panel card2"><label class="flab" for="nm">Takma adın</label><div class="nmrow"><button class="avbtn" id="avb" aria-expanded="${avOpen}" aria-label="Karakterini seç: ${AVN[myAv]}">${avI(myAv)}</button><input id="nm" placeholder="Örn. Mustafa" maxlength="14" value="${esc(name)}" autocomplete="nickname"></div>
 ${avOpen?`<div class="avgrid" role="radiogroup" aria-label="Karakterin">${AVN.map((n,k)=>`<button class="avo ${k===myAv?'on':''}" data-av="${k}" role="radio" aria-checked="${k===myAv}">${avI(k)}<small>${n}</small></button>`).join('')}</div>`:''}
 <button class="p big" id="mk">Masa kur</button>
+<button class="quick" id="qb">⚡ Botlarla hızlı oyun <small>3 botla hemen başla</small></button>
 <div class="or"><span>ya da arkadaşının masasına katıl</span></div>
 <div class="row join"><input id="cd" placeholder="KOD" maxlength="5" value="${esc(INVITE)}" autocapitalize="characters" autocomplete="off" aria-label="Oda kodu"><button class="p" id="jn">Katıl</button></div></div>
 ${claimC?`<div class="panel claim"><b>Oda ${esc(claimC.code)}: oyun sürüyor</b><small>Oyundan çıktıysan kendi yerine dönebilirsin. Elin ve cezaların aynen duruyor.</small><div class="row">${claimC.seats.map(x=>`<button class="p" data-claim="${x.i}">${esc(x.n)} olarak dön</button>`).join('')}<button id="claimX">Vazgeç</button></div></div>`:''}
@@ -1474,7 +1551,7 @@ function roomH(){
 ${hq+nb<4?'<small>Başlamak için 4 kişi ya da bot gerekli. Arkadaşların kodla katılsın.</small>':''}`;
   else ctl=`<p class="mut" style="margin:0">${esc(ROOM.hostName||'Kuran')} oyunu başlatınca masa açılır. ${ROOM.R} tur oynanacak.</p>`;
   return `<div class="panel"><h2>Masa</h2><small class="mut">ODA KODU</small><div class="code">${esc(code)}</div>
-<div class="row" style="margin-bottom:14px"><button id="cp">Kodu paylaş</button></div>
+<div class="row" style="margin-bottom:14px"><a class="wa" href="https://wa.me/?text=${encodeURIComponent('Kanlı Okey masasına gel! Oda kodu: '+code+(SRV?'\n'+location.origin+'/?k='+code:''))}" target="_blank" rel="noopener">WhatsApp'ta davet et</a><button id="cp">Kodu paylaş</button></div>
 <div class="slots">${slots}</div>${pairT}${pairH}<div class="form">${ctl}
 <div class="row">${host?`<button class="${admC==='cls'?'danger':''}" id="cls">${admC==='cls'?'Emin misin? Odayı kapat':'Odayı kapat'}</button>`:`<button id="lv">Odadan çık</button>`}<button id="home">Ana ekran</button></div></div>
 ${msg?`<div class="warn">${esc(msg)}</div>`:''}</div>`;
@@ -1940,7 +2017,7 @@ function render0(){
       let ok=false;
       if(dropAt&&Date.now()-dropAt.t<4000){ok=placeTile(x,dropAt);dropAt=null}
       else{const k=order.indexOf(null);if(k>=0){order[k]=x;ok=true}}
-      if(ok)fresh={id:x,t:Date.now()};
+      if(ok){fresh={id:x,t:Date.now()};if(!dealT||Date.now()-dealT>2500)newT={id:x,trn:S.trn,gid:S.gid}}
     }
     const pv=(me+3)%4,pile=S.disc[dk(pv)]||[],top=pile.length?pile[pile.length-1]:null;
     const need=S.mx>0?S.mx+1:17,tot=stTot(stage,O),opened=S.opn['s'+me]>0;
@@ -2001,7 +2078,7 @@ ${i===me?'':orack(r,cnt)}
     if(ended){tag='<span class="tag wait">Bitti</span>';st=finalEnd?'Oyun bitti.':S.win===99?'Deste bitti.':S.win===me?'Eli bitirdin!':esc(S.names[S.win])+' eli bitirdi!'}
     else if(mine){tag='<span class="tag">Sıra sende</span>';st=S.ph==='draw'?'Desteden çek ya da soldaki taşı al.':(S.must>=0?'Yandan taş aldın: onu açmalısın.':'Taş at, aç ya da eli bitir.')}
     else{tag='<span class="tag wait">Bekle</span>';st=esc(S.names[S.turn])+' oynuyor…'}
-    h+=`<div class="panel gstat"><div class="status">${tag}<b>${st}</b><button class="penbtn" id="pen" aria-expanded="${showPen}">Cezalar</button></div>${timerH(mine)}${showPen?penPanel():''}`;
+    h+=`<div class="panel gstat"><div class="status">${tag}<b>${st}</b><button class="rxbtn" id="rxB" aria-label="Hazır mesaj gönder">💬</button><button class="penbtn" id="pen" aria-expanded="${showPen}">Cezalar</button></div>${timerH(mine)}${showPen?penPanel():''}`;
     h+='</div><!--SEC-->';
     /* masa */
     A.classList.add('gm');
@@ -2016,7 +2093,7 @@ ${i===me?'':orack(r,cnt)}
       else if(ah.need)hl=`En iyi ${ah.best} / ${need}`;
     }catch(e){}}
     const isl=SET.hIs&&opened&&md?new Set(myH.filter(x=>{try{return canIsle(x,me)}catch(e){return false}})):null;
-    h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop':''))):''}</div>`).join('')}</div></div>
+    h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw':''))):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
 <div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
@@ -2336,6 +2413,8 @@ $('#app').addEventListener('click',async e=>{
     return;
   }
   if(b&&b.id==='claimX'){claimC=null;render();return}
+  if(b&&b.id==='rxB'){if(rxOpen)closeRx();else openRx();return}
+  if(!b&&S&&S.seats&&S.seats.indexOf(uid)>=0){const z=e.target.closest('#scene .plate,#scene .pers .mini');if(z){const st=z.closest('.seat[data-seat]');if(st){openZoom(+st.dataset.seat);return}}}
   if(b&&b.dataset.pr!=null){try{await db.doc('rooms/'+code).update({pr:+b.dataset.pr})}catch(e){}return}
   if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:+v});return}
   if(b&&b.dataset.ins){
@@ -2348,6 +2427,7 @@ $('#app').addEventListener('click',async e=>{
   if(b&&b.id){
     const id=b.id;
     if(id==='mk')await createRoom();
+    else if(id==='qb'){await quickBots()}
     else if(id==='jn')await joinRoom($('#cd').value);
     else if(id==='resume')await joinRoom(lsGet('okeyRoom'));
     else if(id==='adm'){const v=String(($('#ap')||{}).value||'').trim();

@@ -210,7 +210,11 @@ function hPut(conn,m){
       if(r.st==='playing'&&seatOf(c,u)<0)return deny(conn,m.id,'playing','Bu odada oyun başlamış.');
       if(ms.length>=4)return deny(conn,m.id,'full','Masa dolu.');
     }
-    const av=+d.av;put(p,{name:cleanName(d.name),av:av>=0&&av<8&&(av|0)===av?av:(prev&&prev.av!=null?prev.av:-1),t:prev?prev.t:now()});touch(c);
+    const av=+d.av,ri=d.re&&+d.re.i;
+    let re=prev&&prev.re?prev.re:undefined;
+    if(d.re&&ri>=0&&ri<20&&(ri|0)===ri){if(!allow('react:'+conn.uid,8,20e3))return deny(conn,m.id,'rate','Biraz yavaş.');re={i:ri,t:now()}}
+    const doc={name:cleanName(d.name),av:av>=0&&av<8&&(av|0)===av?av:(prev&&prev.av!=null?prev.av:-1),t:prev?prev.t:now()};if(re)doc.re=re;
+    put(p,doc);touch(c);
     return reply(conn,m.id,{ok:true});
   }
   return deny(conn,m.id);

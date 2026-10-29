@@ -78,6 +78,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] v22: Açılan perler sahibinin önünde (alt: önünde, üst: rafının altında, yanlar: rafın yanında). Istaka kutusunda yalnızca dizdiğin (ayrı ve düzgün sıralı) perlerin puanı görünür, elindeki en yüksek puan gösterilmez. Normal elde yerde yalnızca gösterge görünür. Desteden/yandan taş sürükleme: parmağın üstünde yükselen taş, hedef yuva parlıyor, gelen taş yuvaya "pop" animasyonuyla oturuyor
 - [x] v23: Istakada taşı iki taşın arasına sürükleyip sokma (komşular kayar, boşluk kapanır); yuvalar arası boşluğa bırakınca en yakın yuva seçiliyor, araya sokma yeri altın çizgiyle gösteriliyor. El bitince taşlar masanın ortasında karışıp uçuşuyor (36 taş), rakip ıstakaları, perler ve atılan taşlar da ortaya çöküyor
 - [x] v24: Taşlara daha gerçekçi görünüm (cilalı yüz, iç çerçeve, altında renkli nokta); araya sokunca komşu taşlar kayarak yerine oturuyor. "Açma alanı" masadan kaldırıldı, "Per aç" (çift dizdiyse "Çift aç") ıstakanın altındaki düğme sırasında. Açılamama sebebi uyarı olarak çıkıyor
+- [x] v52 (Mustafa seçti): Masayı yakınlaştır (isim kutusuna ya da perlere dokununca o oyuncunun perleri ve bu elde attığı bütün taşlar büyük görünür), desteden/yandan çekilen taş "YENİ" etiketiyle belirgin, Botlarla hızlı oyun (ana ekranda tek düğme), WhatsApp'ta davet et (bekleme odasında), Hazır mesajlar / emoji (durum çubuğunda 💬; isim kutusunun üstünde balon; herkes görür). Test: ui/t26.py
 - [x] v51: Masadaki perler alanına sığmazsa kendiliğinden küçülür (büyük taş açıkken sol oyuncunun perleri kesiliyordu); büyük taş modunda ıstaka biraz alçaldı, yan perler küçüldü
 - [x] v50: AYARLAR (Mustafa seçti): İpuçları (yandan taş: soldaki taş işine yarıyorsa parlar "al, açarsın / per olur"; açma: ıstaka başlığında "Açabilirsin / En iyi açılış N / Açmak için: şu taşlar"; işleme: açtıktan sonra işlenebilen taşın köşesinde +), Büyük taşlar (ıstaka 2×10), Ses paketi (gerçek / sade), Sıra sende sesi (çan / "Sıra sende" konuşma / kapalı), Kahvehane uğultusu, "Sıra sende" bildirimi (Web Push, sunucuda; uygulama arka plandayken; iPhone'da Ana Ekrana Ekle gerekir), Ekranı açık tut, Oyun geçmişim (bu cihazda son 30 oyun: birinci/sonuncu, ortalama ve en iyi ceza). Test: test/push.test.js, ui/t24.py
 - [x] v49: UYARILAR: oyun içi uyarılar yeni kart görünümünde (sol renk şeridi, simge, kalan süre çizgisi); ✕ düğmesiyle, dokunarak ya da yukarı kaydırarak kapanır; uzun uyarılar daha uzun kalır
@@ -151,6 +152,9 @@ Estetik kararları (Mustafa seçti, toplu güncellemede yapılacak)
 - [x] (v42) Oyun içi: ıstakadaki okey taşında arada altın parıltı, gösterge el başında dönerek açılır
 - [x] (v42) Oyun içi: sıranın son 10 saniyesinde ekran kenarları kırmızı nabız atar
 Cepte (sonra): ana ekranda canlı şerit (şu an kaç masa / bugün kaç el), "son oyunun" kartı, masa teması (keçe rengi), kahvehane uğultusu sesi
+
+## Kolay mod (cepte, Mustafa: "sonra söylersin")
+- [ ] Ayarlarda "Kolay mod": yeni başlayanlar için. İçinde: yanlış atış uyarısı (okeyi ya da ıstakadaki bir perin parçasını atarken bir kez "emin misin?"), ipuçları hep açık, bitirme uyarısı ("bu taşı atınca biter, okeyle ×2")
 
 ## Ayarlar için sonraki fikirler (Mustafa seçti: v50'de yapılanlar işaretli; seçilmeyenler: sol el düzeni, taş teması, masa deseni, ıstaka ahşabı, Almanca, kimlik taşıma kodu)
 - [ ] Sol el düzeni (düğmeler ve ıstaka aynalı)
