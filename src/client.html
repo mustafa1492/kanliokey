@@ -1009,6 +1009,43 @@ body.focus.big .rack,body.focus.big.gmode .rack{--tw:min(54px,calc((100vw - 36px
 .chs .rxs{width:auto;padding:0;background:none;border:0;box-shadow:none;grid-template-columns:repeat(7,1fr);gap:4px}
 .chs .rxs button{min-height:36px;font-size:11.5px;padding:4px 2px}.chs .rxs button.emo{font-size:20px}
 .rxp{align-items:flex-start;padding-top:calc(70px + env(safe-area-inset-top,0px))}
+
+/* ===== v55: masadaki perler büyük ve okunaklı, hiçbir şey üst üste binmez ===== */
+body.gmode .felt3d{grid-template-rows:fit-content(40%) minmax(118px,1fr) fit-content(48%)}
+body.gmode .pers .mini .t,body.gmode .a-top .pers .mini .t,body.gmode .a-me .pers .mini .t{width:22px;height:31px;font-size:16px;margin-bottom:2px}
+body.gmode .a-left .pers .mini .t,body.gmode .a-right .pers .mini .t{width:19px;height:27px;font-size:14px}
+body.big.gmode .pers .mini .t,body.big.gmode .a-top .pers .mini .t,body.big.gmode .a-me .pers .mini .t{width:25px;height:35px;font-size:18px}
+body.big.gmode .a-left .pers .mini .t,body.big.gmode .a-right .pers .mini .t{width:21px;height:30px;font-size:15.5px}
+@media (max-height:620px) and (orientation:portrait){
+ body.gmode .pers .mini .t,body.gmode .a-top .pers .mini .t,body.gmode .a-me .pers .mini .t{width:19px;height:27px;font-size:14px}
+ body.gmode .a-left .pers .mini .t,body.gmode .a-right .pers .mini .t{width:17px;height:24px;font-size:12.5px}
+}
+body.gmode .pers{gap:4px 6px}
+body.gmode .pers .mini{gap:1px;padding:2px}
+.t.jk{justify-content:center;gap:0}
+.t.jk .js{font-size:.72em;line-height:1;font-weight:700}
+.t.jk .jv{font-size:.5em;line-height:1;font-weight:800;color:inherit;margin-top:1px}
+
+/* ===== v55: telefonda masa düzeni: yan oyuncular masanın üst ve orta kısmı boyunca uzanır (yer açılır), karşıdaki ortada ===== */
+@media (max-width:999px) and (orientation:portrait), (orientation:landscape) and (max-height:620px){
+ body.gmode .felt3d{grid-template-areas:"left top right" "left mid right" "me me me";grid-template-columns:minmax(0,1fr) minmax(0,1.45fr) minmax(0,1fr);grid-template-rows:auto minmax(96px,1fr) auto}
+ body.gmode .a-left,body.gmode .a-right{align-self:stretch;justify-self:stretch;min-width:0}
+ body.gmode .a-left .seat,body.gmode .a-right .seat{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:2px 0}
+ body.gmode .a-left .plate,body.gmode .a-right .plate{align-self:center;max-width:100%}
+ body.gmode .a-left .orack,body.gmode .a-right .orack{align-self:center;margin:0}
+ body.gmode .a-left .dpile,body.gmode .a-right .dpile{align-self:center;margin:0;padding:0;border:0}
+ body.gmode .a-left .pers{flex-direction:column;align-items:flex-start;margin:0;padding-top:4px;border-top:1px dashed #ffffff26}
+ body.gmode .a-right .pers{flex-direction:column;align-items:flex-end;margin:0;padding-top:4px;border-top:1px dashed #ffffff26}
+ body.gmode .a-left .pers:empty,body.gmode .a-right .pers:empty{display:none}
+ body.gmode .a-top{align-self:start;min-width:0}
+ body.gmode .a-top .seat{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;column-gap:6px;row-gap:3px}
+ body.gmode .a-top .plate{grid-column:1/-1;grid-row:1;justify-self:center}
+ body.gmode .a-top .dpile{grid-column:1;grid-row:2}
+ body.gmode .a-top .orack{grid-column:2;grid-row:2;transform:none;margin:0;width:auto}
+ body.gmode .a-top .pers{grid-column:1/-1;grid-row:3}
+ body.gmode .orack.hs i{top:3px;width:4px;height:11px;border-radius:1.5px}
+ body.gmode .a-top .orack.h:not(.hs){transform:scale(.62);transform-origin:left center;margin-right:-40px}
+}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -1906,7 +1943,9 @@ function makeGroup(kind){
 }
 const TEA='<svg viewBox="0 0 44 58" aria-hidden="true"><defs><linearGradient id="tg" x1="0" x2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".55"/><stop offset=".25" stop-color="#ffffff" stop-opacity=".08"/><stop offset=".75" stop-color="#ffffff" stop-opacity=".05"/><stop offset="1" stop-color="#ffffff" stop-opacity=".4"/></linearGradient><linearGradient id="tt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0792f"/><stop offset="1" stop-color="#8a2b0c"/></linearGradient><radialGradient id="ts" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfc8b6"/></radialGradient></defs><ellipse cx="22" cy="52" rx="20" ry="5" fill="#0006"/><ellipse cx="22" cy="49" rx="19" ry="5.2" fill="url(#ts)" stroke="#c9a24a" stroke-width="1.2"/><ellipse cx="22" cy="48.5" rx="13" ry="3.2" fill="#e7e1d1"/><path class="st" d="M17 11c-3-3 3-5 0-9"/><path class="st s2" d="M27 11c-3-3 3-5 0-9"/><path d="M8 14Q10 29 16 35Q14 41 14.5 48H29.5Q30 41 28 35Q34 29 36 14Z" fill="url(#tt)"/><path d="M8 14Q10 29 16 35Q14 41 14.5 48H29.5Q30 41 28 35Q34 29 36 14Z" fill="url(#tg)" stroke="#ffffffd0" stroke-width="1.2"/><ellipse cx="22" cy="14" rx="14" ry="3.4" fill="#f09a4a" stroke="#fffffff0" stroke-width="1.3"/><ellipse cx="22" cy="14.6" rx="10.5" ry="2.2" fill="#b4501b"/><path d="M12 18Q13 28 17 33" stroke="#fff" stroke-opacity=".7" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="31" y="46" width="12" height="1.8" rx=".9" fill="#d8d2c4" transform="rotate(-14 31 46)"/></svg>';
 const LAMP='<svg viewBox="0 0 44 50" aria-hidden="true"><line x1="22" y1="0" x2="22" y2="16" stroke="#0009" stroke-width="2"/><path d="M5 38Q22 8 39 38Z" fill="#a9792a"/><path d="M5 38Q22 8 39 38Z" fill="none" stroke="#e9c26b" stroke-width="1.2"/><ellipse cx="22" cy="39" rx="17" ry="4" fill="#fff0b8"/></svg>';
+const FITQ=typeof matchMedia==='function'?matchMedia('(max-width:999px) and (orientation:portrait), (orientation:landscape) and (max-height:620px)'):null;
 const orack=(r,cnt)=>{
+  if(r!==2&&FITQ&&FITQ.matches){const g=5,len=cnt*g+3,tiles=Array.from({length:cnt},(_,k)=>`<i style="left:${k*g+2}px"></i>`).join('');return `<div class="orack h hs" aria-hidden="true" style="width:${len}px;height:17px"><div class="base"></div>${tiles}</div>`}
   const g=r===2?10:6,len=cnt*g+2,wd=18,hz=r===2;
   const tiles=Array.from({length:cnt},(_,k)=>`<i style="${hz?'left':'top'}:${k*g+1}px"></i>`).join('');
   return `<div class="orack ${hz?'h':'v'}" aria-hidden="true" style="width:${hz?len:wd}px;height:${hz?wd:len}px"><div class="base"></div>${tiles}</div>`;
@@ -2082,8 +2121,8 @@ function fitPers(){
     const i=+st.dataset.seat;let z=perZ[i]||1;
     for(let k=0;k<6;k++){
       const ov=a.scrollHeight-a.clientHeight;
-      if(ov<=1||z<=.55)break;
-      const ph=p.getBoundingClientRect().height||1;z=Math.max(.55,Math.floor((z*Math.max(.6,1-(ov+2)/ph))*100)/100);p.style.zoom=z;
+      if(ov<=1||z<=.72)break;
+      const ph=p.getBoundingClientRect().height||1;z=Math.max(.72,Math.floor((z*Math.max(.6,1-(ov+2)/ph))*100)/100);p.style.zoom=z;
     }
     perZ[i]=z;
   });
@@ -2152,7 +2191,7 @@ ${i===me?'':orack(r,cnt)}
     const insOK=mine&&S.ph==='discard'&&opened;
     const insT=insOK&&sel.length===1&&sel[0]!==S.must?sel[0]:null;
     const insP=insOK&&sel.length===2&&!sel.includes(S.must)?prs(sel,O):-1;
-    const jt=(v,k)=>`<div class="t ok c3" data-x="${k}" title="okey = ${v}">★<small style="font-size:10px;color:inherit">${v}</small></div>`;
+    const jt=(v,k)=>`<div class="t ok c3 jk" data-x="${k}" title="okey = ${v}"><b class="js">★</b><small class="jv">${v}</small></div>`;
     const persH=i=>{
       const seenP={};
       return `<div class="pers" style="${perZ[i]&&perZ[i]<1?'zoom:'+perZ[i]:''}">${(S.tbl['t'+i]||[]).map((r,gi)=>{
