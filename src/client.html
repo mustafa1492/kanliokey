@@ -156,9 +156,9 @@ button:disabled{opacity:.38;cursor:default}
 .rack .t.drag,.ghost{transition:none!important}
 .rack .t.drag{animation:none!important;position:fixed;left:0;top:0;z-index:50;pointer-events:none;cursor:grabbing;transform:translate3d(-100px,-100px,0) scale(1.12);will-change:transform;box-shadow:0 8px 10px #0007}
 .dragging{touch-action:none}
-.candrop .scene{box-shadow:inset 0 0 60px #0005,0 0 0 3px var(--gold),0 0 0 8px #e8b93a44}
+
 .scene::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:8;box-shadow:inset 0 0 0 4px var(--gold),inset 0 0 46px #e8b93a99;opacity:0;transition:opacity .12s;will-change:opacity}
-.candrop .scene.hot::before{opacity:1}
+.candrop .scene::before{opacity:.45}.candrop .scene.hot::before{opacity:1}
 .a-me{position:relative}
 .seat .pers{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:flex-start;justify-content:center;min-width:0}
 .a-top .seat{grid-template-columns:auto auto;justify-content:center;align-items:center;column-gap:8px}
@@ -444,7 +444,7 @@ body.lobby .panel .slot.bot small{color:#bfe0cc}
 .mbtn{display:none}
 .xtra .xh,.xtra .xtg,.xtra .xinfo{display:none}
 .xtra{display:block}
-@media (max-width:999px) and (orientation:portrait){
+@media (max-width:999px) and (orientation:portrait), (orientation:landscape) and (max-height:620px){
 html.gmode{height:100%;overflow:hidden;overscroll-behavior:none}
 body.gmode{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;padding:max(6px,env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) max(6px,env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 body.gmode .wrap{height:100%;display:flex;flex-direction:column;gap:6px;max-width:560px}
@@ -730,7 +730,7 @@ body.home .wrap{position:relative;z-index:1;max-width:560px}
 .rulecard:active{transform:scale(.99)}
 
 #rack .t.pv{transition:transform .15s ease-out!important}
-#app.dragging #rack .t{will-change:transform}
+#rack .t.pv{will-change:transform}
 .top h1 .kw{contain:layout paint;transform:translateZ(0)}
 /* v47: kısmi açma, yandan, koltuğa dönüş */
 .rack .t.ag2{box-shadow:0 0 0 2px #7bd88f55,0 2px 0 #c9bb93,0 3px 0 #9f9068,0 5px 6px #0000008c}
@@ -947,6 +947,51 @@ body.big .rack .t{font-size:calc(var(--tw)*.72)}
 .quick small{font:500 11.5px/1 var(--body);text-transform:none;letter-spacing:0;color:#b9d8c3}
 a.wa{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:10px 14px;border-radius:6px;background:#1f8f4e;color:#fff;font-weight:700;text-decoration:none;border:1px solid #2fb86a}
 a.wa::before{content:"";width:18px;height:18px;background:radial-gradient(circle at 50% 50%,#fff 0 3px,transparent 3.5px),radial-gradient(circle,transparent 6px,#fff 6.5px 8px,transparent 8.5px)}
+
+#app.onper .a-me::after{opacity:0}
+/* ===== v53: uç göstergesi, zorluk, odak, bitirme ipucu ===== */
+.mini.e-l,.mini.e-h{position:relative}
+.mini.e-l::after,.mini.e-h::after{content:"";position:absolute;top:-4px;bottom:-4px;width:6px;border-radius:3px;background:#7bd88f;box-shadow:0 0 10px #7bd88f;pointer-events:none;z-index:4}
+.mini.e-l::after{left:-8px}.mini.e-h::after{right:-8px}
+.rack .t.fin{box-shadow:0 0 0 2px #e8b93a,0 0 14px #e8b93acc,0 2px 0 #c9bb93,0 5px 6px #0000008c!important}
+.rack .t.fin:not(.ok)::before{content:"BİTİR";position:absolute;left:50%;top:-9px;transform:translateX(-50%);padding:1px 4px;border-radius:4px;background:#c99a2e;color:#1a1405;font:800 8px/1.1 var(--body);letter-spacing:.06em;z-index:3;pointer-events:none;white-space:nowrap}
+.fcs{min-height:26px;height:26px;width:30px;padding:0;border-radius:7px;font-size:15px;line-height:1;background:#00000033;border-color:#ffffff26;color:#f3e8d8;flex:none}
+.fcs[aria-pressed="true"]{background:#e8b93a;color:#1a1405;border-color:#e8b93a}
+.rlabel{gap:6px}.rlabel .hlab{flex:1 1 auto}
+body.focus .rack,body.focus.gmode .rack{--tw:min(46px,calc((100vw - 40px)/12));--th:calc(var(--tw)*1.72);padding-left:3px!important;padding-right:3px!important;column-gap:1px}
+body.focus .rack .t{font-size:calc(var(--tw)*.82)}
+body.focus.big .rack,body.focus.big.gmode .rack{--tw:min(54px,calc((100vw - 36px)/10))}
+.lvlp{display:flex;gap:6px;align-items:center;font-size:12px;color:#bfae95}
+
+/* ===== v53: yatay ekran (telefon yan): solda masa, sağda durum + ıstaka + düğmeler; kaydırma yok ===== */
+@media (orientation:landscape) and (max-height:620px){
+ body.gmode{padding:max(4px,env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) max(4px,env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+ body.gmode .wrap{max-width:none;gap:4px}
+ body.gmode .top{min-height:0}
+ body.gmode .top h1.kwh .kw-line{height:24px!important}
+ body.gmode .mbtn{min-height:28px;padding:4px 10px}
+ body.gmode #app{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,46%);grid-template-rows:auto auto minmax(0,1fr);gap:4px 8px}
+ body.gmode #app>.sec:nth-child(1){grid-column:1/-1;grid-row:1;display:block}
+ body.gmode #app>.sec:nth-child(1):empty{display:none}
+ body.gmode #app>.sec:nth-child(2){grid-column:2;grid-row:2;display:block;min-width:0}
+ body.gmode #app>.sec:nth-child(3){grid-column:1;grid-row:2/4;min-height:0;display:flex;flex-direction:column}
+ body.gmode #app>.sec:nth-child(4){grid-column:2;grid-row:3;min-height:0;display:flex;flex-direction:column;justify-content:flex-end}
+ body.gmode .gstat{padding:4px 6px 6px}
+ body.gmode .gstat .status{min-height:26px}
+ body.gmode .rackbox{padding:4px 5px 6px;gap:4px}
+ body.gmode .rack{--tw:min(40px,calc((46vw - 70px)/12),calc(100dvh*.105));--rp:6px;--rg:7px;margin-top:2px}
+ body.big.gmode .rack{--tw:min(46px,calc((46vw - 62px)/10),calc(100dvh*.115))}
+ body.focus.gmode .rack{--tw:min(46px,calc((46vw - 40px)/12))}
+ body.gmode .acts3 button{min-height:36px;font-size:14px}
+ body.gmode .felt3d{padding:3px 3px;border-width:6px}
+ body.gmode .a-top{padding-top:2px}
+ body.gmode .a-left .orack,body.gmode .a-right .orack{display:none}
+ body.gmode .a-top .orack{transform:scale(.7)}
+ body.gmode #app{grid-template-columns:minmax(0,1fr) minmax(300px,49%)}
+ body.gmode .rack{--tw:min(40px,calc((49vw - 66px)/12),calc(100dvh*.105))}
+ body.big.gmode .rack{--tw:min(46px,calc((49vw - 60px)/10),calc(100dvh*.115))}
+ body.focus.gmode .rack{--tw:min(46px,calc((49vw - 40px)/12))}
+}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -1128,10 +1173,13 @@ if(typeof document!=='undefined'&&typeof document.addEventListener==='function')
   syncTg();
 }
 /* ===== ayarlar (v48): bu cihaza kaydedilir ===== */
-const SETD={smart:true,auto:false,warn:true,dbl:false,felt:'yesil',cb:false,fx:'tam',vol:2,low10:true,hYan:true,hAc:true,hIs:true,big:false,amb:false,pack:'gercek',turnS:'can',wake:true,push:false};
+const SETD={smart:true,auto:false,warn:true,dbl:false,felt:'yesil',cb:false,fx:'tam',vol:2,low10:true,hYan:true,hAc:true,hIs:true,big:false,lvl:'normal',focus:false,amb:false,pack:'gercek',turnS:'can',wake:true,push:false};
 let SET=(()=>{try{return {...SETD,...JSON.parse(localStorage.getItem('okeySet')||'{}')}}catch(e){return {...SETD}}})();
 let setOpen=false;
-function applySet(){try{setRack(SET.big?10:12)}catch(e){}try{const b=document.body;if(!b)return;b.dataset.felt=SET.felt;b.classList.toggle('cb',!!SET.cb);b.classList.toggle('lowfx',SET.fx==='sade');b.classList.toggle('big',!!SET.big);SFX.setVol(SET.vol);SFX.setPack(SET.pack);syncLive()}catch(e){}}
+/* zorluk: kolay her şeyi kolaylaştırır; zor modda hiçbir ipucu yok */
+const LVL={kolay:{hYan:true,hAc:true,hIs:true,warn:true,smart:true},normal:{hYan:true,hAc:true,hIs:true,warn:true},zor:{hYan:false,hAc:false,hIs:false,warn:false}};
+function setLvl(v){SET.lvl=v;Object.assign(SET,LVL[v]||{});saveSet()}
+function applySet(){try{setRack(SET.big?10:12)}catch(e){}try{const b=document.body;if(!b)return;b.classList.toggle('focus',!!SET.focus);b.dataset.felt=SET.felt;b.classList.toggle('cb',!!SET.cb);b.classList.toggle('lowfx',SET.fx==='sade');b.classList.toggle('big',!!SET.big);SFX.setVol(SET.vol);SFX.setPack(SET.pack);syncLive()}catch(e){}}
 /* oyundayken: kahvehane uğultusu ve ekranı açık tutma */
 let wakeL=null,wakeBusy=false;
 function syncLive(){
@@ -1315,6 +1363,7 @@ function acHint(me,need){
   const key='a|'+h.slice().sort((a,b)=>a-b).join(',')+'|'+need+'|'+O.c+O.n+(S.B?'B':'');
   const best=hcGet(key+'|b',()=>{const p=openPlan(h,O,0,0,30000,1);const pp=pairPlan(h,O);return Math.max(p?Math.floor(p.pts/3):0,pp.pts)});
   if(best>=need)return {ok:true,best};
+  if(SET.lvl!=='kolay')return {ok:false,best,need:[]};
   const got=hc.get(key+'|n');
   if(got===undefined&&needQ!==key){needQ=key;clearTimeout(needT);needT=setTimeout(()=>{try{
     if(!S||needQ!==key)return;B=S.B;const out=[];
@@ -1373,7 +1422,7 @@ function bigAnn(t,s,k,o){
     const sc=document.getElementById('scene');if(!S||!sc)return;
     const el=document.createElement('div');el.className='bigann '+(k||'');el.setAttribute('role','status');el.style.setProperty('--d',dur+'ms');
     el.innerHTML=`<b>${t}</b>${s?`<small>${s}</small>`:''}`;
-    const r=sc.getBoundingClientRect();el.style.top=Math.round(r.top+r.height*(o.y||.42))+'px';
+    const r=sc.getBoundingClientRect();el.style.top=Math.round(r.top+r.height*(o.y||.42))+'px';el.style.left=Math.round(r.left+r.width/2)+'px';el.style.maxWidth=Math.round(Math.min(innerWidth*.92,r.width+30))+'px';
     document.body.appendChild(el);setTimeout(()=>el.remove(),dur+80);
   }catch(e){}},Math.max(0,at-now));
 }
@@ -1688,6 +1737,11 @@ const discard=()=>sel.length===1?act('discard',{t:sel[0]}):false;
 function tryDiscard(id,how){
   if(!canDiscard())return false;
   B=S.B;const me=S.seats.indexOf(uid),h=(S.hands[hk(me)]||[]).filter(x=>x!==id),ends=S.ot!==me&&canEnd(S,me,h);
+  if(SET.lvl==='kolay'&&!ends&&!(warnI.id===id&&Date.now()-warnI.t<8000)){
+    const opm=S.opn['s'+me]>0?(S.opm||{})['s'+me]:'',gs=autoOpen(order,S.okey,-1,opm).groups.flat();
+    const why=isJ(id,S.okey)?'Okeyi atıyorsun!':gs.includes(id)?'Bu taş ıstakandaki bir perin parçası.':'';
+    if(why){warnI={id,t:Date.now()};msg=why+' Emin misin? Atmak için '+(how==='drag'?'tekrar masaya bırak':how==='tap'?'tekrar iki kez dokun':'tekrar At\'a bas')+'.';SFX.play('drop');render();return false}
+  }
   if(SET.warn&&!ends&&ishler(S,id,S.okey)&&!(warnI.id===id&&Date.now()-warnI.t<8000)){
     warnI={id,t:Date.now()};
     const again=how==='drag'?'tekrar masaya bırak':how==='tap'?'tekrar iki kez dokun':'tekrar At\'a bas';
@@ -1890,8 +1944,9 @@ let usrScr=0;
 })();
 const scrY=()=>{try{return window.pageYOffset||document.documentElement.scrollTop||0}catch(_){return 0}};
 function render(){
+  if(drag&&(drag.on||Date.now()-(drag.t0||0)<2500)){pend=true;return}
   const y0=scrY(),A=$('#app'),keep=A&&A.classList&&A.classList.contains&&A.classList.contains('gm');
-  const fitM=typeof matchMedia==='function'&&matchMedia('(max-width:999px) and (orientation:portrait)').matches;
+  const fitM=typeof matchMedia==='function'&&matchMedia('(max-width:999px) and (orientation:portrait), (orientation:landscape) and (max-height:620px)').matches;
   if(A&&keep&&fitM){A._mh=0;A.style.minHeight=''}
   else if(A&&keep){const h=A.offsetHeight;if(h>(A._mh||0)){A._mh=h}A.style.minHeight=(A._mh||0)+'px'}
   let fp=null;try{fp=snapFly()}catch(e){}
@@ -1977,9 +2032,9 @@ function fitPers(){
     const st=a.querySelector('.seat[data-seat]'),p=a.querySelector('.pers');if(!st||!p||!p.children.length)return;
     const i=+st.dataset.seat;let z=perZ[i]||1;
     for(let k=0;k<6;k++){
-      const ov=Math.max(a.scrollHeight-a.clientHeight,a.scrollWidth-a.clientWidth);
-      if(ov<=1||z<=.4)break;
-      const ph=p.getBoundingClientRect().height||1;z=Math.max(.4,Math.floor((z*Math.max(.6,1-(ov+2)/ph))*100)/100);p.style.zoom=z;
+      const ov=a.scrollHeight-a.clientHeight;
+      if(ov<=1||z<=.55)break;
+      const ph=p.getBoundingClientRect().height||1;z=Math.max(.55,Math.floor((z*Math.max(.6,1-(ov+2)/ph))*100)/100);p.style.zoom=z;
     }
     perZ[i]=z;
   });
@@ -2089,11 +2144,14 @@ ${i===me?'':orack(r,cnt)}
     let hl=`Istakan · ${myH.length} taş`;
     if(SET.hAc&&!opened&&!ended){try{const ah=acHint(me,need);
       if(ah.ok)hl=hp>=ah.best?`<span class="hok">✓ Açabilirsin</span>`:`<span class="hok">En iyi açılış ${ah.best}</span>${SET.smart?' · Sırala':''}`;
-      else if(ah.need&&ah.need.length)hl=`<span class="hneed">Açmak için:</span> ${ah.need.map(x=>`<i class="hn c${tv(x,O).c}">${tv(x,O).n}</i>`).join('')}`;
+      else if(SET.lvl==='kolay'&&ah.need&&ah.need.length)hl=`<span class="hneed">Açmak için:</span> ${ah.need.map(x=>`<i class="hn c${tv(x,O).c}">${tv(x,O).n}</i>`).join('')}`;
       else if(ah.need)hl=`En iyi ${ah.best} / ${need}`;
     }catch(e){}}
+    let finS=null;
+    if(SET.lvl==='kolay'&&md&&opened&&S.ot!==me){try{finS=new Set(myH.filter(x=>canEnd(S,me,myH.filter(y=>y!==x))))}catch(e){}
+      if(finS&&finS.size){const okF=[...finS].some(x=>isJ(x,O));hl=`<span class="hok">Bitirebilirsin!${okF?' Okeyle ×2':''}</span>`}}
     const isl=SET.hIs&&opened&&md?new Set(myH.filter(x=>{try{return canIsle(x,me)}catch(e){return false}})):null;
-    h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw':''))):''}</div>`).join('')}</div></div>
+    h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><button class="fcs" id="fcs" aria-pressed="${!!SET.focus}" aria-label="Istakaya odaklan (taşları büyüt)" title="Odak">${SET.focus?'⤡':'⤢'}</button><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':''))):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
 <div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
@@ -2186,7 +2244,7 @@ function sortRack(){
   ids.forEach(x=>{const c=cc(x);if(gap&&pc!==null&&c!==pc)seq.push(null);pc=c;seq.push(x)});
   order=Array.from({length:SL},(_,i)=>i<seq.length?seq[i]:null);
 }
-function dropOnPer(o,gi,id,x,jx){
+function dropOnPer(o,gi,id,x,jx,want){
   B=S.B;const O=S.okey,r=(S.tbl['t'+o]||[])[gi];
   if(!canDiscard()){msg='Taş işlemek için sıranın sende olması ve önce taş çekmiş olman gerekir.';render();return}
   if(!r){render();return}
@@ -2201,16 +2259,18 @@ function dropOnPer(o,gi,id,x,jx){
   }
   const free=all.filter(e=>!(S.ik||[]).includes(o+':'+gi+':'+e));
   const el=document.querySelector(`.mini.grow[data-o="${o}"][data-gi="${gi}"]`);
-  let e=(free.length?free:all)[0];
+  if(!free.length){msg='Bu perin o ucuna bu tur zaten işledin; aynı uca arka arkaya işlenmez.';render();return}
+  if(want&&free.includes(want)){insertTile(o,gi,want);return}
+  let e=free[0];
   if(free.length>1&&el){const rc=el.getBoundingClientRect(),left=x<rc.left+rc.width/2;e=left&&free.includes('l')?'l':free.includes('h')?'h':free[0]}
   insertTile(o,gi,e);
 }
 $('#app').addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
   const t=e.target.closest('#rack .t[data-id]');
-  if(t){drag={kind:'rack',id:+t.dataset.id,el:t,x:e.clientX,y:e.clientY,pid:e.pointerId,on:false,over:null,disc:false,ins:null,from:-1};return}
+  if(t){drag={t0:Date.now(),kind:'rack',id:+t.dataset.id,el:t,x:e.clientX,y:e.clientY,pid:e.pointerId,on:false,over:null,disc:false,ins:null,from:-1};return}
   const b=e.target.closest('#deck,#tk');
-  if(b&&!b.disabled)drag={kind:b.id,el:b,x:e.clientX,y:e.clientY,pid:e.pointerId,on:false,over:null,hot:false};
+  if(b&&!b.disabled)drag={t0:Date.now(),kind:b.id,el:b,x:e.clientX,y:e.clientY,pid:e.pointerId,on:false,over:null,hot:false};
 });
 let hintOpen=false,agOpen=false;
 if(typeof document!=='undefined'&&document.addEventListener)document.addEventListener('toggle',e=>{const t=e.target;if(t&&t.classList){if(t.classList.contains('hint'))hintOpen=t.open;if(t.classList.contains('agate'))agOpen=t.open}},true);
@@ -2310,6 +2370,7 @@ function dragMoveNow(e){
     if(Math.hypot(e.clientX-d.x,e.clientY-d.y)<8)return;
     d.on=true;d.lift=e.pointerType==='mouse'?0:38;SFX.play('pick');
     if(d.kind==='rack'){
+      if(!d.el.isConnected){const n=document.querySelector(`#rack .t[data-id="${d.id}"]`);if(n)d.el=n}
       const el=d.el,r=el.getBoundingClientRect();
       d.ox=d.x-r.left;d.oy=d.y-r.top;d.from=+el.parentNode.dataset.s;
       el.classList.remove('pop');el.classList.add('drag');el.style.width=r.width+'px';el.style.height=r.height+'px';
@@ -2344,16 +2405,22 @@ function dragMoveNow(e){
     d.zc={sc:sc0?sc0.getBoundingClientRect():null,m:[...document.querySelectorAll('.mini.grow')].map(el=>{const ar=el.closest('.area');let r=el.getBoundingClientRect();if(ar)r=inter(r,ar.getBoundingClientRect());const c=fits(el);if(c)el.classList.add('can');return {el,r,c,j:[...el.querySelectorAll('.t[data-x]')].map(t=>({t,r:t.getBoundingClientRect()}))}}).filter(o=>o.r.right>o.r.left&&o.r.bottom>o.r.top).sort((a,b)=>b.c-a.c)};
   }
   const X=e.clientX,inR=(r,p)=>r&&X>=r.left-p&&X<=r.right+p&&hy>=r.top-p&&hy<=r.bottom+p;
-  let mo=null;
-  if(!near)for(const o of d.zc.m)if(inR(o.r,o.c?20:3)){mo=o;break}
+  let mo=null,md=1e9;
+  if(!near)for(const o of d.zc.m){const p=o.c?22:3;if(!inR(o.r,p))continue;const r=o.r,dx=X<r.left?r.left-X:X>r.right?X-r.right:0,dy=hy<r.top?r.top-hy:hy>r.bottom?hy-r.bottom:0,dd=dx*dx+dy*dy-(o.c?1e6:0);if(dd<md){md=dd;mo=o}}
   const mini=mo?mo.el:null;
-  if(d.tgtM&&d.tgtM!==mini)d.tgtM.classList.remove('tgt');
+  if(d.tgtM&&d.tgtM!==mini)d.tgtM.classList.remove('tgt','e-l','e-h');
   if(mini){
     if(d.tgtM!==mini)mini.classList.add('tgt');
     const jo=mo.j.find(q=>inR(q.r,0));
-    d.ins={o:+mini.dataset.o,gi:+mini.dataset.gi,jx:jo?+jo.t.dataset.x:null};
+    let e=null;
+    if(mo.c){const o=+mini.dataset.o,gi=+mini.dataset.gi,r=(S.tbl['t'+o]||[])[gi];if(r){const fr=canAdd(r,d.id,S.okey).filter(x=>!(S.ik||[]).includes(o+':'+gi+':'+x));
+      if(fr.includes('l')&&fr.includes('h'))e=X<mo.r.left+(mo.r.right-mo.r.left)/2?'l':'h';else if(fr.includes('l'))e='l';else if(fr.includes('h'))e='h'}}
+    if(e!==d.insE||d.tgtM!==mini){mini.classList.toggle('e-l',e==='l');mini.classList.toggle('e-h',e==='h')}
+    d.insE=e;
+    d.ins={o:+mini.dataset.o,gi:+mini.dataset.gi,jx:jo?+jo.t.dataset.x:null,e};
   }else d.ins=null;
   d.tgtM=mini;
+  if(!!mini!==!!d.onp){d.onp=!!mini;const ap=$('#app');if(ap)ap.classList.toggle('onper',!!mini)}
   const onTbl=!near&&!mini&&inR(d.zc.sc,0);
   if(onTbl!==d.disc){d.disc=onTbl;const sc=$('#scene');if(sc)sc.classList.toggle('hot',onTbl&&canDiscard())}
 }
@@ -2361,10 +2428,10 @@ function dragEnd(e){
   if(!drag||e.pointerId!==drag.pid)return;
   if(drag.raf){cancelAnimationFrame(drag.raf);drag.raf=0;if(drag.on)dragMoveNow(e)}
   const d=drag;drag=null;slotCache=null;
-  const app=$('#app');app.classList.remove('dragging','candrop');
+  const app=$('#app');app.classList.remove('dragging','candrop','onper');
   const sc=$('#scene');if(sc)sc.classList.remove('hot');
   document.querySelectorAll('.rs.over,.rs.ibl,.rs.ibr').forEach(x=>x.classList.remove('over','ibl','ibr'));
-  document.querySelectorAll('.mini.tgt,.mini.can').forEach(x=>x.classList.remove('tgt','can'));
+  document.querySelectorAll('.mini.tgt,.mini.can').forEach(x=>x.classList.remove('tgt','can','e-l','e-h'));
   const rb=$('.rackbox');if(rb)rb.classList.remove('hot');
   if(d.ghost)d.ghost.remove();
   document.querySelectorAll('.pile.pulled').forEach(x=>x.classList.remove('pulled'));
@@ -2381,7 +2448,7 @@ function dragEnd(e){
         return;
       }
     }else if(ok){
-      if(d.ins){pend=false;dropOnPer(d.ins.o,d.ins.gi,d.id,e.clientX,d.ins.jx);return}
+      if(d.ins){pend=false;dropOnPer(d.ins.o,d.ins.gi,d.id,e.clientX,d.ins.jx,d.ins.e);return}
       if(d.disc){
         if(canDiscard()){tryDiscard(d.id,'drag');return}
         msg='Taşı atmak için sıranın sende olması ve önce taş çekmiş olman gerekir.';
@@ -2414,6 +2481,9 @@ $('#app').addEventListener('click',async e=>{
   }
   if(b&&b.id==='claimX'){claimC=null;render();return}
   if(b&&b.id==='rxB'){if(rxOpen)closeRx();else openRx();return}
+  if(!b&&S&&sel.length===1&&canDiscard()){const mi=e.target.closest('#scene .pers .mini.grow');if(mi){const r=mi.getBoundingClientRect(),o=+mi.dataset.o,gi=+mi.dataset.gi,rec0=(S.tbl['t'+o]||[])[gi];B=S.B;
+    const fr=rec0?canAdd(rec0,sel[0],S.okey).filter(x=>!(S.ik||[]).includes(o+':'+gi+':'+x)):[];const jt=e.target.closest('.t[data-x]');
+    if(fr.length||jt||(rec0&&rec0.g.some((y,k)=>isJ(y,S.okey)&&canSwap(rec0,k,sel[0],S.okey)))){const want=fr.includes('l')&&fr.includes('h')?(e.clientX<r.left+r.width/2?'l':'h'):null;dropOnPer(o,gi,sel[0],e.clientX,jt?+jt.dataset.x:null,want);return}}}
   if(!b&&S&&S.seats&&S.seats.indexOf(uid)>=0){const z=e.target.closest('#scene .plate,#scene .pers .mini');if(z){const st=z.closest('.seat[data-seat]');if(st){openZoom(+st.dataset.seat);return}}}
   if(b&&b.dataset.pr!=null){try{await db.doc('rooms/'+code).update({pr:+b.dataset.pr})}catch(e){}return}
   if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:+v});return}
@@ -2459,6 +2529,7 @@ $('#app').addEventListener('click',async e=>{
     else if(id==='back')await putBack();
     else if(id==='open')await openNow();
     else if(id==='clr'){stage=[];msg='';render()}
+    else if(id==='fcs'){SET.focus=!SET.focus;saveSet();perSig='';render()}
     else if(id==='sort'){B=S.B;sortRack();render()}
     return;
   }
@@ -2506,6 +2577,10 @@ function setH(){
   const sw=(k,t,d,v)=>`<button class="sw" data-sw="${k}" aria-pressed="${!!v}"><span><b>${t}</b>${d?`<small>${d}</small>`:''}</span><i aria-hidden="true"></i></button>`;
   const seg=(k,t,items)=>`<div class="srow"><b>${t}</b><div class="sseg" role="radiogroup">${items.map(([v,l])=>`<button data-sv="${k}:${v}" role="radio" aria-checked="${String(SET[k])===String(v)}" class="${String(SET[k])===String(v)?'on':''}">${l}</button>`).join('')}</div></div>`;
   return `<div class="ssheet" role="dialog" aria-modal="true" aria-label="Ayarlar"><div class="shd"><b>Ayarlar</b><button id="setX">Kapat</button></div><div class="sbody">
+<section><h4>Zorluk</h4>
+${seg('lvl','Oyun modu',[['kolay','Kolay'],['normal','Normal'],['zor','Zor']])}
+<small class="snote">${SET.lvl==='kolay'?'Kolay: bütün ipuçları açık, hangi taş gelirse açacağın görünür, okeyi ya da ıstakandaki bir perin parçasını atarken uyarır, bitirebileceğin taşı gösterir.':SET.lvl==='zor'?'Zor: hiçbir ipucu ve uyarı yok, işler taş uyarısı da kapalı.':'Normal: açma, yandan taş ve işleme ipuçları açık; hangi taş gelirse açacağın görünmez.'}</small>
+</section>
 <section><h4>Istaka</h4>
 ${sw('smart','Akıllı sıralama','"Sırala" taşları en yüksek açılışa göre dizer: açılacak perler yan yana, kalanlar renge göre',SET.smart)}
 ${sw('auto','Taş gelince otomatik diz','Her yeni taşta ıstaka kendiliğinden en yüksek açılışa göre dizilir',SET.auto)}
@@ -2559,7 +2634,7 @@ function setClick(e){
   if(b.dataset.sw){const k=b.dataset.sw;
     if(k==='snd'){SFX.setSnd(!SFX.snd);syncLive()}else if(k==='vib')SFX.setVib(!SFX.vb);else if(k==='push'){pushToggle(!SET.push);return}else{SET[k]=!SET[k];if(k==='auto'){autoK=''}saveSet()}
     syncTg();}
-  else if(b.dataset.sv){const [k,v]=b.dataset.sv.split(':');SET[k]=k==='vol'?+v:v;saveSet();if((k==='vol'||k==='pack')&&SFX.snd)SFX.play(k==='pack'?'discard':'turn');if(k==='turnS')turnCue(0)}
+  else if(b.dataset.sv){const [k,v]=b.dataset.sv.split(':');if(k==='lvl')setLvl(v);else{SET[k]=k==='vol'?+v:v;saveSet()}if((k==='vol'||k==='pack')&&SFX.snd)SFX.play(k==='pack'?'discard':'turn');if(k==='turnS')turnCue(0)}
   else if(b.id==='histClr'){try{localStorage.removeItem('okeyHist')}catch(e){}}
   else if(b.dataset.sav!=null){myAv=+b.dataset.sav;lsSet('okeyAv',String(myAv));SFX.play('pick')}
   else return;
