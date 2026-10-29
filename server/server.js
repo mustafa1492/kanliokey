@@ -73,7 +73,7 @@ function canReadDoc(conn,p){
   const c=roomOf(p);if(!c)return conn.admin;
   if(p==='rooms/'+c)return true;
   if(parentOf(p)==='rooms/'+c+'/members')return true;
-  if(p===gamePath(c))return conn.admin||isMember(c,conn.uid)||seatOf(c,conn.uid)>=0;
+  if(p===gamePath(c)||p==='rooms/'+c+'/chat/main')return conn.admin||isMember(c,conn.uid)||seatOf(c,conn.uid)>=0;
   return false;
 }
 function canReadCol(conn,p){
@@ -106,7 +106,7 @@ const timers=new Map(),endAt=new Map();
 function wipeRoom(c){
   clearTimeout(timers.get(c));timers.delete(c);endAt.delete(c);lastAct.delete(c);
   for(const m of membersOf(c))del('rooms/'+c+'/members/'+m.id);
-  del(gamePath(c));del('rooms/'+c);
+  del(gamePath(c));del('rooms/'+c+'/chat/main');del('rooms/'+c);
 }
 function humansOnline(g){return g.seats.some(u=>!ENG.isBot(u)&&(online.get(u)||0)>0)}
 function applyPatch(c,patch,why){
@@ -304,6 +304,17 @@ function hPush(conn,m){
   d.subs=[{endpoint:ep,keys:{p256dh:String(ks.p256dh),auth:String(ks.auth)}},...d.subs.filter(x=>x.endpoint!==ep)].slice(0,4);
   store.set(p,d);dirty=true;return reply(conn,m.id,{ok:true});
 }
+/* sohbet: odadakiler yazar, son 60 mesaj tutulur */
+function hChat(conn,m){
+  const c=String(m.code||'');if(!CODE_RE.test(c)||!store.get('rooms/'+c))return deny(conn,m.id);
+  if(!isMember(c,conn.uid)&&seatOf(c,conn.uid)<0)return deny(conn,m.id);
+  if(!allow('chat:'+conn.uid,6,10e3))return deny(conn,m.id,'rate','Biraz yavaş yaz.');
+  const x=String(m.text||'').replace(/[\u0000-\u001f\u007f]/g,' ').replace(/\s+/g,' ').trim().slice(0,200);if(!x)return deny(conn,m.id);
+  const g=store.get(gamePath(c)),i=g?g.seats.indexOf(conn.uid):-1,mem=store.get('rooms/'+c+'/members/'+conn.uid)||{};
+  const p='rooms/'+c+'/chat/main',d=store.get(p)||{m:[]};
+  put(p,{m:[...(d.m||[]),{u:conn.uid,n:cleanName(i>=0?g.names[i]:mem.name),t:now(),x}].slice(-60)});touch(c);
+  return reply(conn,m.id,{ok:true});
+}
 function hStart(conn,m,next){
   const c=String(m.code||'');if(!CODE_RE.test(c))return deny(conn,m.id);
   const r=store.get('rooms/'+c);if(!r)return deny(conn,m.id,'not-found','Oda yok.');
@@ -401,6 +412,7 @@ function handle(conn,m){
   if(op==='start')return hStart(conn,m,false);
   if(op==='next')return hStart(conn,m,true);
   if(op==='seats')return hSeats(conn,m);
+  if(op==='chat')return hChat(conn,m);
   if(op==='pushKey')return reply(conn,id,{ok:true,key:vapid().pub});
   if(op==='push')return hPush(conn,m);
   if(op==='vis'){conn.hidden=!!m.hidden;return reply(conn,id,{ok:true})}

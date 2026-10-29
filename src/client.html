@@ -992,6 +992,23 @@ body.focus.big .rack,body.focus.big.gmode .rack{--tw:min(54px,calc((100vw - 36px
  body.big.gmode .rack{--tw:min(46px,calc((49vw - 60px)/10),calc(100dvh*.115))}
  body.focus.gmode .rack{--tw:min(46px,calc((49vw - 40px)/12))}
 }
+
+/* ===== v54: sohbet ===== */
+.rxbtn{position:relative}
+.rxbtn .chn{position:absolute;right:-4px;top:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#d42630;color:#fff;font:800 11px/17px var(--body);font-style:normal;box-shadow:0 0 0 2px #170c09}
+.rxbtn.lob{width:auto;padding:0 12px;min-height:44px;font-size:15px;margin-left:0}
+.chs{display:flex;flex-direction:column;gap:8px;width:min(100%,440px);max-height:min(78dvh,620px);padding:10px;border-radius:14px;background:linear-gradient(180deg,#2c1813,#180d0a);border:1px solid #6a2e24;box-shadow:0 12px 28px #000c}
+.chh{display:flex;justify-content:space-between;align-items:center}.chh b{font:700 17px/1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.chh button{width:34px;height:34px;min-height:34px;padding:0;border-radius:50%}
+.chl{flex:1 1 auto;min-height:120px;max-height:40dvh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:4px 2px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.chm{align-self:flex-start;max-width:85%;display:grid;gap:2px;padding:6px 10px;border-radius:12px 12px 12px 4px;background:#ffffff10;border:1px solid #ffffff14}
+.chm b{font:700 11px/1.1 var(--body);color:#e8b93a}.chm span{font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}.chm small{font-size:10px;color:#a8977f;justify-self:end}
+.chm.me{align-self:flex-end;border-radius:12px 12px 4px 12px;background:#7a1a1f;border-color:#a32a30}.chm.me b{color:#ffd0c8}
+.chempty{margin:auto;color:#a8977f;font-size:13px}
+.chf{display:flex;gap:6px}.chf input{flex:1;min-width:0;min-height:44px;font-size:16px}.chf button{min-height:44px;padding:0 14px}
+.chs .rxs{width:auto;padding:0;background:none;border:0;box-shadow:none;grid-template-columns:repeat(7,1fr);gap:4px}
+.chs .rxs button{min-height:36px;font-size:11.5px;padding:4px 2px}.chs .rxs button.emo{font-size:20px}
+.rxp{align-items:flex-start;padding-top:calc(70px + env(safe-area-inset-top,0px))}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -1299,7 +1316,7 @@ function histH(){
 const RX=['😂','😡','😱','👏','🩸','🙏','🔥','🫖','Haydi!','Yine mi!','Bekle…','İyi oyun','Kan kokusu var','Okey bende 😏'];
 let rxOpen=false,rxSeen={},rxLast=0;
 async function sendRx(i){
-  if(!code||!uid||Date.now()-rxLast<1500)return;rxLast=Date.now();rxOpen=false;closeRx();
+  if(!code||!uid||Date.now()-rxLast<1500)return;rxLast=Date.now();closeRx();
   const m=(L||[]).find(x=>x.id===uid)||{};
   try{await db.doc('rooms/'+code+'/members/'+uid).set({name:m.name||name,av:m.av!=null?m.av:myAv,t:m.t||Date.now(),re:{i,t:Date.now()}})}catch(e){}
 }
@@ -1317,13 +1334,42 @@ function rxBubble(i,txt){
   document.body.appendChild(el);setTimeout(()=>el.remove(),2900);
   if(i!==S.seats.indexOf(uid))SFX.play('pick');
 }
-function openRx(){
-  closeRx();rxOpen=true;const el=document.createElement('div');el.id='rxp';el.className='rxp';
-  el.innerHTML=`<div class="rxs" role="dialog" aria-label="Hazır mesajlar">${RX.map((t,i)=>`<button data-rx="${i}" class="${/^\p{Extended_Pictographic}+$/u.test(t)?'emo':''}">${t}</button>`).join('')}</div>`;
-  el.addEventListener('click',e=>{const b=e.target.closest('[data-rx]');if(b){sendRx(+b.dataset.rx);return}closeRx()});
-  document.body.appendChild(el);
+/* sohbet (v54): masadakiler yazışır; son 60 mesaj odada tutulur */
+let CHAT=[],chatSeen=0,chatLastT=0,chatBusy=false;
+try{chatSeen=+localStorage.getItem('okeyChatSeen')||0}catch(e){}
+const chatUnread=()=>CHAT.filter(x=>x.t>chatSeen&&x.u!==uid).length;
+function onChat(m){
+  const fresh=m.filter(x=>x.t>chatLastT);const first=!chatLastT;chatLastT=m.length?m[m.length-1].t:chatLastT;CHAT=m;
+  if(!first)for(const x of fresh){if(x.u===uid||Date.now()-x.t>15000)continue;if(S&&S.seats){const i=S.seats.indexOf(x.u);if(i>=0)rxBubble(i,x.x.length>42?x.x.slice(0,40)+'…':x.x)}if(!rxOpen)SFX.play('pick')}
+  if(rxOpen){chatSeen=Date.now();try{localStorage.setItem('okeyChatSeen',String(chatSeen))}catch(e){}chatList()}
+  render();
 }
-function closeRx(){rxOpen=false;const e=document.getElementById('rxp');if(e)e.remove()}
+function chatList(){
+  const l=document.getElementById('chl');if(!l)return;const atEnd=l.scrollHeight-l.scrollTop-l.clientHeight<40;
+  const tm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+  l.innerHTML=CHAT.length?CHAT.map(x=>`<div class="chm ${x.u===uid?'me':''}"><b>${esc(x.n)}</b><span>${esc(x.x)}</span><small>${tm(x.t)}</small></div>`).join(''):'<p class="chempty">Henüz mesaj yok. İlk sen yaz!</p>';
+  if(atEnd||!l.dataset.init){l.scrollTop=l.scrollHeight;l.dataset.init='1'}
+}
+async function sendChat(txt){
+  txt=String(txt||'').replace(/\s+/g,' ').trim().slice(0,200);if(!txt||!code||chatBusy)return false;chatBusy=true;
+  try{
+    if(SRV){const r=await SRV.call({op:'chat',code,text:txt});if(!r||!r.ok){msg=(r&&r.msg)||'Mesaj gitmedi.';render();return false}}
+    else{const p=db.doc('rooms/'+code+'/chat/main'),d=await p.get(),m=(d.exists&&d.data().m)||[];const me=S&&S.seats?S.seats.indexOf(uid):-1;
+      m.push({u:uid,n:me>=0?S.names[me]:name,t:Date.now(),x:txt});await p.set({m:m.slice(-60)})}
+    return true;
+  }catch(e){msg='Mesaj gitmedi.';render();return false}finally{chatBusy=false}
+}
+function openRx(){
+  closeRx();rxOpen=true;chatSeen=Date.now();try{localStorage.setItem('okeyChatSeen',String(chatSeen))}catch(e){}
+  const el=document.createElement('div');el.id='rxp';el.className='rxp';
+  el.innerHTML=`<div class="chs" role="dialog" aria-label="Sohbet"><div class="chh"><b>Sohbet</b><button id="chX" aria-label="Kapat">✕</button></div><div class="chl" id="chl"></div>
+<form class="chf" id="chF" autocomplete="off"><input id="chI" maxlength="200" placeholder="Mesaj yaz…" enterkeyhint="send" autocomplete="off"><button class="p" type="submit">Gönder</button></form>
+<div class="rxs">${RX.map((t,i)=>`<button type="button" data-rx="${i}" class="${/^\p{Extended_Pictographic}+$/u.test(t)?'emo':''}">${t}</button>`).join('')}</div></div>`;
+  el.addEventListener('click',e=>{const b=e.target.closest('[data-rx]');if(b){sendRx(+b.dataset.rx);return}if(e.target===el||e.target.closest('#chX'))closeRx()});
+  el.addEventListener('submit',async e=>{e.preventDefault();const i=document.getElementById('chI');if(!i)return;const v=i.value;if(await sendChat(v)){i.value=''}});
+  document.body.appendChild(el);chatList();render();
+}
+function closeRx(){const was=rxOpen;rxOpen=false;const e=document.getElementById('rxp');if(e)e.remove();if(was)render()}
 /* masayı yakınlaştır (v52): bir oyuncunun isim kutusuna ya da perlerine dokununca perleri ve bu elde attığı taşlar büyük görünür */
 function openZoom(i){
   if(!S||!S.seats)return;closeZoom();B=S.B;const O=S.okey,me=S.seats.indexOf(uid);
@@ -1496,6 +1542,8 @@ function enterRoom(c){
     seen=true;const d=s.data(),j=JSON.stringify(d);if(j===rj)return;rj=j;ROOM=d;bots=ROOM.bots||0;render();
   },()=>{}));
   unsubs.push(db.collection('rooms/'+c+'/members').onSnapshot(s=>{const a=s.docs.map(x=>({id:x.id,...x.data()})),j=JSON.stringify(a);if(j===mj)return;mj=j;L=a;render();try{rxCheck()}catch(e){}},()=>{}));
+  CHAT=[];chatLastT=0;
+  unsubs.push(db.doc('rooms/'+c+'/chat/main').onSnapshot(s=>{const d=s.exists?s.data():null;try{onChat((d&&d.m)||[])}catch(e){}},()=>{}));
   unsubs.push(db.doc('rooms/'+c+'/game/main').onSnapshot(s=>{const d=s.exists?s.data():null,j=JSON.stringify(d);if(j===gj)return;gj=j;const pv=S;S=d;try{sfxDiff(pv,d)}catch(e){}render()},()=>{}));
   render();
 }
@@ -1549,6 +1597,7 @@ async function joinRoom(raw){
 async function wipeRoom(c){
   try{const m=await db.collection('rooms/'+c+'/members').get();for(const d of m.docs)await db.doc('rooms/'+c+'/members/'+d.id).delete()}catch(e){}
   try{await db.doc('rooms/'+c+'/game/main').delete()}catch(e){}
+  try{await db.doc('rooms/'+c+'/chat/main').delete()}catch(e){}
   try{await db.doc('rooms/'+c).delete()}catch(e){}
 }
 async function leaveLobby(){
@@ -1600,7 +1649,7 @@ function roomH(){
 ${hq+nb<4?'<small>Başlamak için 4 kişi ya da bot gerekli. Arkadaşların kodla katılsın.</small>':''}`;
   else ctl=`<p class="mut" style="margin:0">${esc(ROOM.hostName||'Kuran')} oyunu başlatınca masa açılır. ${ROOM.R} tur oynanacak.</p>`;
   return `<div class="panel"><h2>Masa</h2><small class="mut">ODA KODU</small><div class="code">${esc(code)}</div>
-<div class="row" style="margin-bottom:14px"><a class="wa" href="https://wa.me/?text=${encodeURIComponent('Kanlı Okey masasına gel! Oda kodu: '+code+(SRV?'\n'+location.origin+'/?k='+code:''))}" target="_blank" rel="noopener">WhatsApp'ta davet et</a><button id="cp">Kodu paylaş</button></div>
+<div class="row" style="margin-bottom:14px"><a class="wa" href="https://wa.me/?text=${encodeURIComponent('Kanlı Okey masasına gel! Oda kodu: '+code+(SRV?'\n'+location.origin+'/?k='+code:''))}" target="_blank" rel="noopener">WhatsApp'ta davet et</a><button id="cp">Kodu paylaş</button><button class="rxbtn lob" id="rxB" aria-label="Sohbet">💬 Sohbet${chatUnread()?`<i class="chn">${Math.min(9,chatUnread())}</i>`:''}</button></div>
 <div class="slots">${slots}</div>${pairT}${pairH}<div class="form">${ctl}
 <div class="row">${host?`<button class="${admC==='cls'?'danger':''}" id="cls">${admC==='cls'?'Emin misin? Odayı kapat':'Odayı kapat'}</button>`:`<button id="lv">Odadan çık</button>`}<button id="home">Ana ekran</button></div></div>
 ${msg?`<div class="warn">${esc(msg)}</div>`:''}</div>`;
@@ -2133,7 +2182,7 @@ ${i===me?'':orack(r,cnt)}
     if(ended){tag='<span class="tag wait">Bitti</span>';st=finalEnd?'Oyun bitti.':S.win===99?'Deste bitti.':S.win===me?'Eli bitirdin!':esc(S.names[S.win])+' eli bitirdi!'}
     else if(mine){tag='<span class="tag">Sıra sende</span>';st=S.ph==='draw'?'Desteden çek ya da soldaki taşı al.':(S.must>=0?'Yandan taş aldın: onu açmalısın.':'Taş at, aç ya da eli bitir.')}
     else{tag='<span class="tag wait">Bekle</span>';st=esc(S.names[S.turn])+' oynuyor…'}
-    h+=`<div class="panel gstat"><div class="status">${tag}<b>${st}</b><button class="rxbtn" id="rxB" aria-label="Hazır mesaj gönder">💬</button><button class="penbtn" id="pen" aria-expanded="${showPen}">Cezalar</button></div>${timerH(mine)}${showPen?penPanel():''}`;
+    h+=`<div class="panel gstat"><div class="status">${tag}<b>${st}</b><button class="rxbtn" id="rxB" aria-label="Sohbet${chatUnread()?', '+chatUnread()+' yeni mesaj':''}">💬${chatUnread()?`<i class="chn">${Math.min(9,chatUnread())}</i>`:''}</button><button class="penbtn" id="pen" aria-expanded="${showPen}">Cezalar</button></div>${timerH(mine)}${showPen?penPanel():''}`;
     h+='</div><!--SEC-->';
     /* masa */
     A.classList.add('gm');
