@@ -874,6 +874,22 @@ body.cb .t.c3::after{border-radius:0;transform:rotate(45deg);width:.26em;height:
 body.lowfx .rack .t.ok::before,body.lowfx .kwfall,body.lowfx .hb-lamp{animation:none!important;display:none}
 body.lowfx .scene.pflash::after{animation-duration:.01s}
 body.lowfx .tpulse{animation:none!important;opacity:.55}
+
+/* ===== v49: uyarılar ===== */
+.tst{position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));z-index:80;transform:translate(-50%,0);width:min(94vw,440px);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:11px 8px 13px 12px;border-radius:14px;color:#f6ecdb;background:linear-gradient(180deg,#2c1813,#180d0a);border:1px solid #6a2e24;box-shadow:0 10px 26px #000b,inset 0 1px 0 #ffffff14;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;overflow:hidden;animation:tstin .32s cubic-bezier(.2,.9,.3,1.2) both;transition:transform .2s,opacity .2s}
+.tst::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#d42630}
+.tst.info{border-color:#6a5222;background:linear-gradient(180deg,#2a2412,#161109)}
+.tst.info::before{background:#e8b93a}
+.tst .ti{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 16px/1 var(--display);font-style:normal;background:radial-gradient(circle at 35% 30%,#ff5a5f,#a10f18);color:#fff;box-shadow:0 0 0 2px #ffffff22,0 2px 6px #0008}
+.tst.info .ti{background:radial-gradient(circle at 35% 30%,#ffe08a,#c99a2e);color:#2a1d05;font-family:Georgia,serif}
+.tst .tm{font:600 14.5px/1.35 var(--body);min-width:0}
+.tst .tx{width:34px;height:34px;min-height:34px;padding:0;border-radius:50%;border:1px solid #ffffff22;background:#ffffff10;color:#f6ecdb;font-size:15px;line-height:1;display:grid;place-items:center}
+.tst .tbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:#d42630;transform-origin:left;animation:tbar linear both}
+.tst.info .tbar{background:#e8b93a}
+.tst .tsw{position:absolute;left:50%;bottom:6px;width:34px;height:3px;margin-left:-17px;border-radius:2px;background:#ffffff26}
+@keyframes tstin{from{transform:translate(-50%,-130%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@keyframes tbar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){.tst{animation:none}.tst .tbar{animation:none}}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -1116,6 +1132,39 @@ function sfxDiff(a,b){
     t+=250;
   }
   if(b.turn===me&&a.turn!==me){SFX.later('turn',t+120);SFX.vib(45)}
+}
+/* uyarılar (v49): ayrı katmanda; ✕ ile, dokunarak ya da yukarı kaydırarak kapanır; kalan süre alttaki çizgide */
+let toastEl=null,toastKey='';
+const TINFO=/ceza (aldı|yazıldı|yazdı)|^Okeyi aldın|^Kod kopyalandı|^Süre doldu|^Koltuğa/;
+const toastDur=m=>TINFO.test(m)?4500:Math.min(9000,4500+m.length*35);
+function toastSync(){
+  if(typeof document==='undefined'||typeof document.createElement!=='function'||!document.body)return;
+  const dur=msg?toastDur(msg):0,el=msg?Date.now()-msgT:0;
+  if(!msg||el>=dur){if(toastEl)hideToast();return}
+  const key=msgT+'|'+msg;
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>{if(msg&&Date.now()-msgT>=dur-100){msg='';lastMsg='';render()}},dur-el+50);
+  if(toastEl&&toastKey===key)return;
+  toastKey=key;
+  if(!toastEl||!toastEl.isConnected){toastEl=document.createElement('div');document.body.appendChild(toastEl);toastGest(toastEl)}
+  const info=TINFO.test(msg);
+  toastEl.className='tst '+(info?'info':'warn');toastEl.setAttribute('role',info?'status':'alert');toastEl.style.transform='';toastEl.style.opacity='';
+  toastEl.innerHTML=`<i class="ti" aria-hidden="true">${info?'i':'!'}</i><span class="tm">${esc(msg)}</span><button class="tx" aria-label="Uyarıyı kapat">✕</button><b class="tbar" style="animation-duration:${dur}ms;animation-delay:-${el}ms"></b><small class="tsw" aria-hidden="true"></small>`;
+}
+function hideToast(now){
+  const e=toastEl;toastEl=null;toastKey='';if(!e)return;
+  if(now||!e.animate){e.remove();return}
+  const a=e.animate([{transform:getComputedStyle(e).transform==='none'?'translate(-50%,0)':getComputedStyle(e).transform,opacity:1},{transform:'translate(-50%,-140%)',opacity:0}],{duration:220,easing:'ease-in'});
+  a.onfinish=()=>e.remove();setTimeout(()=>{try{e.remove()}catch(_){}},400);
+}
+function dismissToast(){msg='';lastMsg='';hideToast();render()}
+function toastGest(e){
+  let y0=null,dy=0,moved=false;
+  e.addEventListener('pointerdown',ev=>{y0=ev.clientY;dy=0;moved=false;try{e.setPointerCapture(ev.pointerId)}catch(_){}e.style.transition='none'});
+  e.addEventListener('pointermove',ev=>{if(y0==null)return;dy=ev.clientY-y0;if(Math.abs(dy)>6)moved=true;const d=Math.min(0,dy)+(dy>0?Math.min(14,dy*.25):0);e.style.transform=`translate(-50%,${d}px)`;e.style.opacity=String(Math.max(.2,1+Math.min(0,dy)/120))});
+  const up=ev=>{if(y0==null)return;const d=dy;y0=null;e.style.transition='';
+    if(d<-28||(!moved&&ev.type==='pointerup')){dismissToast();return}
+    e.style.transform='';e.style.opacity=''};
+  e.addEventListener('pointerup',up);e.addEventListener('pointercancel',up);
 }
 /* büyük anlar: masanın ortasında kısa duyuru (biri açınca, işler taş, okeyle bitirme). Çizimden bağımsız katman. */
 let annAt=0;
@@ -1820,13 +1869,7 @@ ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></d
     h+='<!--SEC-->';
     /* uyarı: ekranın üstünde kısa süre görünür */
     if(msg!==lastMsg){lastMsg=msg;msgT=msg?Date.now():0}
-    if(msg){
-      const el=Date.now()-msgT;
-      if(el<5200){
-        h+=`<div class="toast${/ceza (aldı|yazıldı)|^Okeyi aldın|^Kod kopyalandı|^Süre doldu/.test(msg)?' info':''}" role="${/ceza (aldı|yazıldı)|^Okeyi aldın|^Kod kopyalandı|^Süre doldu/.test(msg)?'status':'alert'}" style="animation-delay:-${el}ms">${esc(msg)}</div>`;
-        clearTimeout(toastTimer);toastTimer=setTimeout(()=>{if(msg&&Date.now()-msgT>=5100){msg='';lastMsg='';render()}},5300-el);
-      }
-    }
+    toastSync();
   }else if(view==='admroom'&&isAdmin){
     h+=admRoomH();
   }else if(view==='admin'&&isAdmin){
@@ -1845,6 +1888,7 @@ ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></d
     for(let i=0;i<parts.length;i++)if(parts[i]!==A._p[i])A.children[i].innerHTML=parts[i];
   }else A.innerHTML=parts.map(p=>`<div class="sec">${p}</div>`).join('');
   A._p=parts;
+  if(!(S&&S.seats&&S.seats.indexOf(uid)>=0)&&toastEl)hideToast(true);
   if(document.body&&document.body.classList)document.body.classList.toggle('home',isHome);
   if(flip)runFlip();
   scheduleBot();
