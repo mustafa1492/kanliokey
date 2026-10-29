@@ -8,6 +8,7 @@
 const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto'),zlib=require('zlib');
 const {WebSocketServer}=require('ws');
 const ENG=require('../src/engine.js');
+const PUSH=require('./push.js');
 
 const ROOT=path.join(__dirname,'..');
 const PORT=+process.env.PORT||8080;
@@ -66,6 +67,7 @@ function send(conn,o){if(conn.ws.readyState===1){try{conn.ws.send(JSON.stringify
 function isMember(c,uid){return store.has('rooms/'+c+'/members/'+uid)}
 function seatOf(c,uid){const g=store.get(gamePath(c));return g?g.seats.indexOf(uid):-1}
 function canReadDoc(conn,p){
+  if(p==='settings/vapid'||/^push\//.test(p))return false;
   if(p==='settings/main')return true;
   if(p==='settings/stats')return conn.admin;
   const c=roomOf(p);if(!c)return conn.admin;
@@ -116,7 +118,9 @@ function applyPatch(c,patch,why){
   for(let i=0;i<4;i++){const h=g.hands['h'+i];if(new Set(h).size!==h.length){log('AYNI TAŞ İKİ KEZ',c,why);return false}}
   store.set(p,g);dirty=true;touch(c);
   if(g0.ph!=='end'&&g.ph==='end')onHandEnd(c,g);
-  notify(p);kick(c);return true;
+  notify(p);kick(c);
+  if(g.ph!=='end'&&g.turn!==g0.turn)pushTurn(c,g);
+  return true;
 }
 function onHandEnd(c,g){
   endAt.set(c,now());
@@ -269,6 +273,33 @@ function hClaim(conn,m){
   log('koltuğa dönüldü',c,g.names[i]);
   return reply(conn,m.id,{ok:true});
 }
+/* ---------- sıra sende bildirimi ---------- */
+function vapid(){
+  if(process.env.VAPID_PUBLIC_KEY&&process.env.VAPID_PRIVATE_KEY)return{pub:process.env.VAPID_PUBLIC_KEY,d:process.env.VAPID_PRIVATE_KEY};
+  let k=store.get('settings/vapid');if(!k||!k.pub){k=PUSH.newKeys();store.set('settings/vapid',k);dirty=true}
+  return k;
+}
+const pushAt=new Map();
+function watching(uid){for(const c of conns)if(c.uid===uid&&!c.hidden&&c.ws.readyState===1)return true;return false}
+function pushTurn(c,g){
+  const u=g.seats[g.turn];if(!u||ENG.isBot(u))return;
+  const d=store.get('push/'+u);if(!d||!d.subs||!d.subs.length)return;
+  if(watching(u))return;
+  const k=u+':'+c;if(now()-(pushAt.get(k)||0)<15000)return;pushAt.set(k,now());
+  const key=vapid(),pl={title:'Kanlı Okey',body:'Sıra sende! Oda '+c,url:'/?k='+c,tag:'turn-'+c};
+  for(const s of d.subs)(PUSH_SEND||PUSH.send)(s,pl,key,{sub:process.env.VAPID_SUBJECT}).then(r=>{if(r==='gone'){const d2=store.get('push/'+u);if(d2){d2.subs=d2.subs.filter(x=>x.endpoint!==s.endpoint);store.set('push/'+u,d2);dirty=true}}});
+}
+let PUSH_SEND=null; /* testler için */
+function hPush(conn,m){
+  if(!conn.uid)return deny(conn,m.id);
+  if(!allow('push:'+conn.uid,20,600e3))return deny(conn,m.id,'rate');
+  const p='push/'+conn.uid,d=store.get(p)||{subs:[]};
+  if(m.off){d.subs=d.subs.filter(x=>x.endpoint!==m.ep);store.set(p,d);dirty=true;return reply(conn,m.id,{ok:true})}
+  const sb=m.sub||{},ep=String(sb.endpoint||''),ks=sb.keys||{};
+  if(!/^https:\/\/[^\s]{8,900}$/.test(ep)||!/^[A-Za-z0-9_-]{80,100}$/.test(String(ks.p256dh||''))||!/^[A-Za-z0-9_-]{16,30}$/.test(String(ks.auth||'')))return deny(conn,m.id,'bad','Geçersiz abonelik.');
+  d.subs=[{endpoint:ep,keys:{p256dh:String(ks.p256dh),auth:String(ks.auth)}},...d.subs.filter(x=>x.endpoint!==ep)].slice(0,4);
+  store.set(p,d);dirty=true;return reply(conn,m.id,{ok:true});
+}
 function hStart(conn,m,next){
   const c=String(m.code||'');if(!CODE_RE.test(c))return deny(conn,m.id);
   const r=store.get('rooms/'+c);if(!r)return deny(conn,m.id,'not-found','Oda yok.');
@@ -366,6 +397,9 @@ function handle(conn,m){
   if(op==='start')return hStart(conn,m,false);
   if(op==='next')return hStart(conn,m,true);
   if(op==='seats')return hSeats(conn,m);
+  if(op==='pushKey')return reply(conn,id,{ok:true,key:vapid().pub});
+  if(op==='push')return hPush(conn,m);
+  if(op==='vis'){conn.hidden=!!m.hidden;return reply(conn,id,{ok:true})}
   if(op==='claim')return hClaim(conn,m);
   if(op==='admin')return hAdmin(conn,m);
   if(op==='adminAct')return hAdminAct(conn,m);
@@ -503,4 +537,4 @@ if(require.main===module){
   if(!ADMIN_PW)log('UYARI: ADMIN_PASSWORD yok, yönetici girişi kapalı');
   server.listen(PORT,()=>log('Kanlı Okey sunucusu çalışıyor: http://localhost:'+PORT));
 }
-module.exports={server,store,stop(){dirty=true;save();clearInterval(saveTimer);clearInterval(hb);clearInterval(sweep);for(const t of timers.values())clearTimeout(t);wss.close();server.close()}};
+module.exports={server,store,setPushSend(f){PUSH_SEND=f},stop(){dirty=true;save();clearInterval(saveTimer);clearInterval(hb);clearInterval(sweep);for(const t of timers.values())clearTimeout(t);wss.close();server.close()}};

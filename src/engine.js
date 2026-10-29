@@ -650,7 +650,8 @@ function timeoutMove(s){
   }
   return r;
 }
-const SL=24,COLS=12; /* ıstaka: 2 sıra × 12 yuva (v43: taşlar büyüdü) */
+let SL=24,COLS=12; /* ıstaka: 2 sıra × 12 yuva (v43); ayarlarda büyük taş: 2 × 10 */
+function setRack(c){COLS=c;SL=c*2}
 function autoOpen(ord,O,must,mode){
   const rows=[];for(let i=0;i<ord.length;i+=COLS)rows.push(ord.slice(i,i+COLS));
   const run=kind=>{

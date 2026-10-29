@@ -46,6 +46,8 @@ Alan adı alınınca Render panelinden **Custom Domain** ile bağlanır.
 | `PORT` | 8080 | Sunucu portu |
 | `ADMIN_PASSWORD` | (boş) | Boşsa yönetici girişi kapalı |
 | `DATA_FILE` | `data/state.json` | Odaların ve oyunların kaydedildiği dosya |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | (otomatik) | "Sıra sende" bildirimi anahtarı. Boşsa sunucu kendisi üretir ve kaydeder; Render'da disk kalıcı olmadığından yeniden başlayınca değişir ve oyuncuların bildirimi yeniden açması gerekir. Kalıcı olsun diye `node -e "console.log(require('./server/push.js').newKeys())"` çıktısındaki `pub` ve `d` değerlerini buraya yaz |
+| `VAPID_SUBJECT` | mailto:kanliokey@example.com | Bildirim sunucularına verilen iletişim adresi |
 
 ## claude.ai sürümü
 `dist/index.html` claude.ai'de sayfa olarak yayınlanınca claude.ai'nin kendi veritabanını kullanır (bu sürümde hile önlemleri yok, eller teknik olarak görülebilir). Kendi sunucumuzda açılınca otomatik olarak sunucuya bağlanır.
