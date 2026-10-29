@@ -23,6 +23,8 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 
 ## Ortaya açma
 - Perlerin değerleri toplanıp 3'e bölünür. Örnek: 3 farklı renkte 11 = 11 puan, 5-6-7 = 6 puan, toplam 17.
+- Artanlar birikir (Mustafa): taşların toplamı 3'e bölünür, her perin artanı ayrı atılmaz. Sonda kalan 1 ya da 2'ye "yandan" denir, puana yetmez. Örnek: dört 11 + 5-6-7 = 44 + 18 = 62 → 20 puan, yandan 2 (dördüncü 11, 11/3 = 3 + yandan 2 olarak eklenir).
+- Elindeki perlerin hepsini açmak zorunda değilsin (Mustafa). Puan şartına (17, katlamalı) sadece açtığın perler sayılır. Oyunda: açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar; seçim yoksa hepsini açar.
 - İlk açılış en az 17 puan olmalıdır.
 - Katlamalı: biri açtıktan sonra diğerleri masadaki en yüksek açılıştan en az 1 fazla açar (biri 18 açarsa sıradaki en az 19).
 - İlk elde açılamaz, önce bir tur dönmesi gerekir.
@@ -98,6 +100,9 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 - İşler taş her zaman işlerdir: sadece eşinin perine işlenebilen taşı atsan da 500 ceza yazılır.
 - Eşinin perlerini ve taşlarını kullanamazsın.
 - Bot eş olabilir. Eşli oyunda botlar en zeki seviyede (Usta) oynar.
+
+## Oyundan çıkma
+- Oyundan çıkan oyuncu tekrar katılabilir (Mustafa). Aynı telefonla oda koduna girince koltuğuna döner. Telefon ya da tarayıcı değiştiyse oda koduyla girince "X olarak dön" çıkar; sadece o an masada bağlı olmayan oyuncuların yerine dönülebilir. Eli, cezaları ve adı aynen kalır.
 
 ## Benim koyduğum varsayımlar
 Hepsi onaylandı. Şu an açık varsayım yok.

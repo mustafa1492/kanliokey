@@ -59,6 +59,8 @@ function slotVal(r,i,O){
 }
 const ishler=(s,t,O)=>[0,1,2,3].some(i=>(s.tbl['t'+i]||[]).some(r=>r&&r.g&&canAdd(r,t,O).length>0));
 const stTot=(st,O)=>st.length&&st.every(g=>g.length===2)?Math.floor(st.reduce((a,g)=>a+prs(g,O),0)*2/3):Math.floor(st.reduce((a,g)=>a+grp(g,O),0)/3);
+/* artan (yandan): taşların toplamı 3'e bölünür, artanlar birikir; kalan 1 ya da 2 puana yetmez, "yandan" diye gösterilir */
+const stRem=(st,O)=>st.length&&st.every(g=>g.length===2)?(st.reduce((a,g)=>a+prs(g,O),0)*2)%3:st.reduce((a,g)=>a+grp(g,O),0)%3;
 function grp(ids,O){
   const n=ids.length,ts=ids.filter(x=>!isJ(x,O)).map(x=>tv(x,O));
   if(n<3||n>13||!ts.length)return -1;
@@ -274,7 +276,7 @@ MOVES.open=(s,me,a)=>{
   }
   if(s.trn<4){emsg='İlk turda açamazsın, herkes bir kez oynamalı.';return}
   const tot=stTot(st,O),need=s.mx>0?s.mx+1:17;
-  if(tot<need){emsg=`Açmak için en az ${need} puan gerekiyor, şu an ${tot}.`;return}
+  if(tot<need){const r=stRem(st,O);emsg=`Açmak için en az ${need} puan gerekiyor, şu an ${tot}${r?' (yandan '+r+')':''}.`;return}
   
   return{hands:{[hk(me)]:h},tbl:{...s.tbl,['t'+me]:recs},opn:{['s'+me]:tot},opm:{...(s.opm||{}),['s'+me]:isC?'c':'p'},mx:tot,ot:me,must:-1};
 };
@@ -671,7 +673,7 @@ function autoOpen(ord,O,must,mode){
       groups.push(...dp[n].g);
     }
     const sum=groups.reduce((a,g)=>a+(kind==='c'?prs(g,O):grp(g,O)),0);
-    return {kind,groups,bad:kind!=='c'&&groups.some(g=>g.length>5),pts:kind==='c'?Math.floor(sum*2/3):Math.floor(sum/3)};
+    return {kind,groups,bad:kind!=='c'&&groups.some(g=>g.length>5),pts:kind==='c'?Math.floor(sum*2/3):Math.floor(sum/3),rem:kind==='c'?(sum*2)%3:sum%3};
   };
   if(mode==='p')return run('p');
   if(mode==='c')return run('c');
@@ -708,5 +710,5 @@ function viewFor(s,me){
 function tileCount(s){let n=s.deck.length+(s.ind>=0?1:0);for(let i=0;i<4;i++){n+=s.hands[hk(i)].length+s.disc[dk(i)].length;for(const r of s.tbl['t'+i]||[])n+=r.g.length}return n}
 /* uzun süre çalışan sunucuda bellek şişmesin */
 function resetCaches(){badSide.clear();hpKey='';hpVal=0}
-var ENG={pairOrder,isMate,resetCaches,run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
+var ENG={stRem,pairOrder,isMate,resetCaches,run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
 if(typeof module!=='undefined'&&module.exports)module.exports=ENG;

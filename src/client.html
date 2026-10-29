@@ -732,6 +732,10 @@ body.home .wrap{position:relative;z-index:1;max-width:560px}
 #rack .t.pv{transition:transform .15s ease-out!important}
 #app.dragging #rack .t{will-change:transform}
 .top h1 .kw{contain:layout paint;transform:translateZ(0)}
+/* v47: kısmi açma, yandan, koltuğa dönüş */
+.rack .t.ag2{box-shadow:0 0 0 2px #7bd88f55,0 2px 0 #c9bb93,0 3px 0 #9f9068,0 5px 6px #0000008c}
+.pbadge .yan{font:600 11px/1 var(--body);color:#ffd36a;letter-spacing:0}
+.claim{display:grid;gap:8px;border-color:#e8b93a88!important}.claim small{color:#d6c7ae}.claim .row button{flex:1 1 auto}
 /* v43: sürüklenen taş işlenebilen perler parlar */
 .mini.can{box-shadow:0 0 0 2px #ffd36a,0 0 12px #ffd36a99!important;border-radius:5px}
 .mini.can.tgt{box-shadow:0 0 0 3px #7bd88f,0 0 16px #7bd88fbb!important}
@@ -1109,7 +1113,7 @@ const APP_BUILD='/*@BUILD@*/';
 let RULES_URL='https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt';
 /* davet bağlantısı: site.com/?k=KOD ile gelen kod giriş kutusuna hazır gelir */
 const INVITE=(()=>{try{return (new URLSearchParams(location.search).get('k')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}catch(e){return ''}})();
-let bots=0,R=9,botKey='',botTimer=null;
+let bots=0,R=9,botKey='',botTimer=null,claimC=null;
 let ROOM=null,code='',view='home',isAdmin=false,unsubs=[],admRooms=[],admC='',admMsg='';
 try{name=localStorage.getItem('okeyName')||''}catch(e){}
 function tile(id,O,cls=''){
@@ -1182,7 +1186,10 @@ async function joinRoom(raw){
     const r=rs.data(),mem=await db.collection('rooms/'+c+'/members').get();
     const already=mem.docs.some(d=>d.id===uid);
     if(!already){
-      if(r.st==='playing'){msg='Bu odada oyun başlamış.';render();return}
+      if(r.st==='playing'){
+        if(SRV){try{const q=await SRV.call({op:'seats',code:c});if(q&&q.ok&&q.mine){enterRoom(c);return}if(q&&q.ok&&q.seats&&q.seats.length){claimC={code:c,seats:q.seats};render();setTimeout(()=>{try{const e=document.querySelector('.claim');if(e)e.scrollIntoView({block:'center',behavior:'smooth'})}catch(_){}},60);return}}catch(e){}
+          msg='Bu masada oyun sürüyor ve bütün oyuncular masada.';render();return}
+        msg='Bu odada oyun başlamış.';render();return}
       if(mem.size>=4){msg='Masa dolu.';render();return}
       await db.doc('rooms/'+c+'/members/'+uid).set({name,av:myAv,t:Date.now()});
     }
@@ -1217,6 +1224,7 @@ ${avOpen?`<div class="avgrid" role="radiogroup" aria-label="Karakterin">${AVN.ma
 <button class="p big" id="mk">Masa kur</button>
 <div class="or"><span>ya da arkadaşının masasına katıl</span></div>
 <div class="row join"><input id="cd" placeholder="KOD" maxlength="5" value="${esc(INVITE)}" autocapitalize="characters" autocomplete="off" aria-label="Oda kodu"><button class="p" id="jn">Katıl</button></div></div>
+${claimC?`<div class="panel claim"><b>Oda ${esc(claimC.code)}: oyun sürüyor</b><small>Oyundan çıktıysan kendi yerine dönebilirsin. Elin ve cezaların aynen duruyor.</small><div class="row">${claimC.seats.map(x=>`<button class="p" data-claim="${x.i}">${esc(x.n)} olarak dön</button>`).join('')}<button id="claimX">Vazgeç</button></div></div>`:''}
 ${saved?`<button id="resume" class="resume">Son masaya dön · <b>${esc(saved)}</b></button>`:''}
 ${msg?`<div class="warn">${esc(msg)}</div>`:''}
 <a class="rulecard" href="${RULES_URL}" target="_blank" rel="noopener"><div class="rc-t"><small>Yöresel · 4 kişilik</small><b>Kanlı okey nasıl oynanır?</b><span>17 ile açılır, katlamalı gider, işlenen pere kan yazılır. Okeyle biten masayı ikiye katlar.</span><em>Kuralları oku →</em></div><div class="rc-tiles" aria-hidden="true"><i class="c0">11</i><i class="c1">11</i><i class="c3">11</i><i class="c2 b">5</i><i class="c2">6</i><i class="c2">7</i></div></a>
@@ -1380,11 +1388,18 @@ const insertTile=(o,gi,e)=>sel.length===1?act('insert',{o,gi,e,t:sel[0]}):false;
 const swapOkey=(o,gi,idx)=>sel.length===1?act('swap',{o,gi,idx,t:sel[0]}):false;
 const insertPair=(o,gi)=>sel.length===2?act('pair',{o,gi,ts:[...sel]}):false;
 const putBack=()=>act('back',{});
+/* kısmi açma (Mustafa onayladı): ıstakada seçili taş varsa sadece o taşların bulunduğu perler/çiftler açılır; seçim yoksa hepsi */
+function pickG(a,O){
+  if(!a||!a.groups||!sel.length)return a;
+  const ch=a.groups.filter(g=>g.some(x=>sel.includes(x)));
+  if(!ch.length||ch.length===a.groups.length)return a;
+  return {...a,groups:ch,pts:stTot(ch,O),rem:stRem(ch,O),part:true};
+}
 const openNow=()=>{
   if(!S)return false;
   const me=S.seats.indexOf(uid);if(me<0)return false;
   B=S.B;const opened=S.opn['s'+me]>0;
-  const groups=stage.length?stage:autoOpen(order,S.okey,S.must,opened?(S.opm||{})['s'+me]:'').groups;
+  const groups=stage.length?stage:pickG(autoOpen(order,S.okey,S.must,opened?(S.opm||{})['s'+me]:''),S.okey).groups;
   if(!groups.length){msg='Rafta açılabilecek bir per ya da çift bulunamadı. Taşları yan yana dizip tekrar dene.';render();return false}
   return act('open',{groups});
 };
@@ -1712,8 +1727,9 @@ ${i===me?'':orack(r,cnt)}
         return `<div class="mini grow" data-o="${i}" data-gi="${gi}">${btn('l','◀ +')}${r.g.map((x,k)=>isJ(x,O)?jt(slotVal(r,k,O),k):tile(x,O)).join('')}${btn('h','+ ▶')}${btn('s','+')}${ex}</div>`}).join('')}</div>`;
     };
     const md=mine&&S.ph==='discard';
-    const auto=md&&!stage.length?autoOpen(order,O,S.must,opened?(S.opm||{})['s'+me]:''):{groups:[],pts:0,kind:'p'};
-    const agSet=new Set(auto.groups.flat());
+    const auto0=md&&!stage.length?autoOpen(order,O,S.must,opened?(S.opm||{})['s'+me]:''):{groups:[],pts:0,kind:'p'};
+    const auto=pickG(auto0,O);
+    const agSet=new Set(auto.groups.flat()),agOff=new Set(auto0.groups.flat().filter(x=>!agSet.has(x)));
     /* "Per aç" düğmesinin durumu: tablo hesabı gösterilmez, sebebi uyarı olarak çıkar */
     let canOk=false;
     if(md){
@@ -1734,12 +1750,12 @@ ${i===me?'':orack(r,cnt)}
     A.classList.add('gm');
     h+=`<div class="scene ${Date.now()-flashPen<1200?'pflash':''}" id="scene" style="--pe:${Math.max(0,Date.now()-flashPen)}ms"><div class="board"><div class="felt3d">${STAMP}<div class="area a-top">${seatH(2)}</div><div class="area a-left">${seatH(3)}</div><div class="area a-mid">${mid}</div><div class="area a-right">${seatH(1)}</div><div class="area a-me">${seatH(0)}</div>${chaosH}</div></div><div class="fxl" aria-hidden="true">${penFx.filter(x=>Date.now()-x.t<2100).map(x=>`<span class="pfloat" data-fs="${x.i}" style="--pe:${Date.now()-x.t}ms">+${x.v}</span>`).join('')}</div>${ended?endH(me,elE,finalEnd):''}</div>`;
     /* ıstaka */
-    const arr=autoOpen(order.map(x=>x!=null&&!staged.includes(x)?x:null),O,-1,opened?(S.opm||{})['s'+me]:''),hp=arr.pts,ptsOk=!opened&&hp>=need;
+    const arr=pickG(autoOpen(order.map(x=>x!=null&&!staged.includes(x)?x:null),O,-1,opened?(S.opm||{})['s'+me]:''),O),hp=arr.pts,ptsOk=!opened&&hp>=need;
     h+='<!--SEC--><div class="rackbox">';
-    h+=`<div><div class="rlabel"><span class="lab">Istakan · ${myH.length} taş</span><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`Dizilen <b>${hp}</b> / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop':'')):''}</div>`).join('')}</div></div>
+    h+=`<div><div class="rlabel"><span class="lab">Istakan · ${myH.length} taş</span><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop':'')):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
-<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><button class="tg" data-tg="vib" aria-pressed="${SFX.vb}">Titreşim</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
+<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><button class="tg" data-tg="vib" aria-pressed="${SFX.vb}">Titreşim</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
     h+='<!--SEC-->';
     /* uyarı: ekranın üstünde kısa süre görünür */
     if(msg!==lastMsg){lastMsg=msg;msgT=msg?Date.now():0}
@@ -2025,6 +2041,12 @@ $('#app').addEventListener('click',async e=>{
     if(b.dataset.av!=null){myAv=+b.dataset.av;lsSet('okeyAv',String(myAv));avOpen=false;SFX.play('pick')}else avOpen=!avOpen;
     render();return;
   }
+  if(b&&b.dataset.claim!=null&&claimC&&SRV){
+    const c=claimC.code;let res=null;try{res=await SRV.call({op:'claim',code:c,i:+b.dataset.claim})}catch(e){}
+    if(res&&res.ok){claimC=null;msg='';lsSet('okeyRoom',c);enterRoom(c)}else{msg=(res&&res.msg)||'Koltuğa dönülemedi.';claimC=null;render()}
+    return;
+  }
+  if(b&&b.id==='claimX'){claimC=null;render();return}
   if(b&&b.dataset.pr!=null){try{await db.doc('rooms/'+code).update({pr:+b.dataset.pr})}catch(e){}return}
   if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:+v});return}
   if(b&&b.dataset.ins){

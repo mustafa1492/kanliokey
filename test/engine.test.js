@@ -122,6 +122,16 @@ const v=E.view(s,0);ok(v.hands.h1.every(x=>x===null)&&v.hands.h0[0]===red(1)&&v.
 ok(E.tileCount(s)===106,'taş sayısı 106');
 const end=Object.assign(JSON.parse(JSON.stringify(s)),{ph:'end'});ok(E.view(end,0).hands.h1[0]!==null,'el bitince eller açılır');
 ok(run(s,'yok',{}).r===null,'bilinmeyen hamle');
+console.log('--- puan: artanlar birikir, yandan (K-puan)');
+{const q=[id(0,11),id(1,11),id(2,11),id(3,11)],p=[id(0,5),id(0,6),id(0,7)];
+ ok(E.stRem([q,p],O)===2,'dört 11 + 5-6-7 = 62: yandan 2');
+ const s3=base([...q,...p,id(1,2),id(2,4)]);const r3=run(s3,'open',{groups:[q,p]});
+ ok(r3.r&&r3.r.opn.s0===20,'dört 11 + 5-6-7 ile 20 açılır (62/3, artan 2 yandan)');
+ const s4=base([...q,id(1,2),id(2,4),id(2,9)],{mx:14});const r4=run(s4,'open',{groups:[q]});
+ ok(!r4.r&&/şu an 14 \(yandan 2\)/.test(r4.msg),'yetmeyince yandan da yazılır: '+r4.msg);
+ console.log('--- kısmi açma: elindeki perlerin hepsini açmak zorunda değilsin');
+ const s5=base([...q,...p,id(1,9),id(2,9),id(3,9),id(1,2)]);const r5=run(s5,'open',{groups:[q,p]});
+ ok(r5.r&&r5.r.hands.h0.length===4&&r5.r.tbl.t0.length===2,'9-9-9 elde kaldı, sadece seçilen perler açıldı');}
 const s2=base([red(1),red(2)],{turn:1});ok(run(s2,'discard',{t:red(1)}).r===null,'sırası olmayan oynayamaz');
 console.log(fails?'FAILED '+fails:'ALL PASSED');
 process.exit(fails?1:0);

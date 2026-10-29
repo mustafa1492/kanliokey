@@ -241,6 +241,34 @@ function hDelete(conn,m){
   }
   return deny(conn,m.id);
 }
+/* oyundan çıkan oyuncu geri dönebilsin: telefon/tarayıcı değişince kimlik değişir; oda kodunu bilen,
+   bağlı olmayan bir insan oyuncunun koltuğuna geçebilir (adı, eli, cezaları aynen kalır) */
+function freeSeats(c,uid){
+  const g=store.get(gamePath(c));if(!g)return null;
+  return g.seats.map((u,i)=>({i,n:g.names[i],free:!ENG.isBot(u)&&u!==uid&&!((online.get(u)||0)>0)})).filter(x=>x.free).map(({i,n})=>({i,n}));
+}
+function hSeats(conn,m){
+  const c=String(m.code||'');if(!CODE_RE.test(c))return deny(conn,m.id);
+  if(!store.get('rooms/'+c))return deny(conn,m.id,'not-found','Böyle bir oda yok.');
+  if(seatOf(c,conn.uid)>=0)return reply(conn,m.id,{ok:true,mine:true,seats:[]});
+  return reply(conn,m.id,{ok:true,seats:freeSeats(c,conn.uid)||[]});
+}
+function hClaim(conn,m){
+  const c=String(m.code||''),i=+m.i;if(!CODE_RE.test(c)||!(i>=0&&i<4&&(i|0)===i))return deny(conn,m.id);
+  if(!allow('claim:'+conn.uid,10,600e3))return deny(conn,m.id,'rate','Çok fazla deneme, biraz bekle.');
+  const r=store.get('rooms/'+c),p=gamePath(c),g=store.get(p);
+  if(!r||!g)return deny(conn,m.id,'not-found','Bu masada oyun yok.');
+  if(g.seats.indexOf(conn.uid)>=0)return reply(conn,m.id,{ok:true});
+  if(!(freeSeats(c,conn.uid)||[]).some(x=>x.i===i))return deny(conn,m.id,'busy','Bu oyuncu şu an masada, onun yerine geçilemez.');
+  const old=g.seats[i],om=store.get('rooms/'+c+'/members/'+old)||{};
+  const n=clone(g);n.seats[i]=conn.uid;store.set(p,n);dirty=true;
+  del('rooms/'+c+'/members/'+old);
+  put('rooms/'+c+'/members/'+conn.uid,{name:cleanName(g.names[i]),av:om.av!=null?om.av:-1,t:om.t||now()});
+  if(r.host===old)put('rooms/'+c,{...r,host:conn.uid,hostName:cleanName(g.names[i])});
+  notify(p);touch(c);try{kick(c)}catch(e){}
+  log('koltuğa dönüldü',c,g.names[i]);
+  return reply(conn,m.id,{ok:true});
+}
 function hStart(conn,m,next){
   const c=String(m.code||'');if(!CODE_RE.test(c))return deny(conn,m.id);
   const r=store.get('rooms/'+c);if(!r)return deny(conn,m.id,'not-found','Oda yok.');
@@ -337,6 +365,8 @@ function handle(conn,m){
   if(op==='act')return hAct(conn,m);
   if(op==='start')return hStart(conn,m,false);
   if(op==='next')return hStart(conn,m,true);
+  if(op==='seats')return hSeats(conn,m);
+  if(op==='claim')return hClaim(conn,m);
   if(op==='admin')return hAdmin(conn,m);
   if(op==='adminAct')return hAdminAct(conn,m);
   return deny(conn,id,'unknown');
