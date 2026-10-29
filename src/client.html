@@ -1579,7 +1579,7 @@ ${saved?`<button id="resume" class="resume">Son masaya dön · <b>${esc(saved)}<
 ${msg?`<div class="warn">${esc(msg)}</div>`:''}
 <a class="rulecard" href="${RULES_URL}" target="_blank" rel="noopener"><div class="rc-t"><small>Yöresel · 4 kişilik</small><b>Kanlı okey nasıl oynanır?</b><span>17 ile açılır, katlamalı gider, işlenen pere kan yazılır. Okeyle biten masayı ikiye katlar.</span><em>Kuralları oku →</em></div><div class="rc-tiles" aria-hidden="true"><i class="c0">11</i><i class="c1">11</i><i class="c3">11</i><i class="c2 b">5</i><i class="c2">6</i><i class="c2">7</i></div></a>
 ${inst?`<nav class="hlinks">${inst}</nav>`:''}
-<details class="agate" ${agOpen?'open':''}><summary>Yönetici girişi</summary><div class="row"><input id="ap" type="password" inputmode="numeric" placeholder="Şifre" autocomplete="off" aria-label="Yönetici şifresi" style="flex:1;min-width:0"><button id="adm">Gir</button></div></details>`;
+<details class="agate" ${agOpen?'open':''}><summary>Yönetici girişi</summary><div class="row"><input id="ap" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Şifre" autocomplete="off" aria-label="Yönetici şifresi" style="flex:1;min-width:0"><button id="adm">Gir</button></div></details>`;
 }
 function roomH(){
   if(!ROOM)return '<div class="panel mut">Oda yükleniyor…</div>';
