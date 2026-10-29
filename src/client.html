@@ -391,7 +391,7 @@ body{background:radial-gradient(130% 70% at 50% -8%,#33100f 0%,#150b0a 46%,#0805
 .chip.tg[aria-pressed="false"]{opacity:.55;text-decoration:line-through}
 .scene{background:repeating-linear-gradient(0deg,var(--grout) 0 2px,transparent 2px 76px),repeating-linear-gradient(90deg,var(--grout) 0 2px,transparent 2px 76px),radial-gradient(70% 55% at 50% 100%,#4a0f12aa,transparent 70%),radial-gradient(80% 60% at 50% 38%,var(--fl1),var(--fl2));border-color:#000;box-shadow:inset 0 0 40px #000a}
 /* masa: koyu çelik çerçeve + bordo iç çerçeve + keçe dokusu */
-.felt3d{background:radial-gradient(#ffffff0a 1px,transparent 1.2px) 0 0/4px 4px padding-box,radial-gradient(90% 75% at 50% 42%,#27774f 0%,var(--felt) 46%,var(--felt-deep) 100%) padding-box,linear-gradient(135deg,#5b5351 0%,#201918 26%,#463d3a 50%,#130e0e 76%,#2e2524 100%) border-box;
+.felt3d{background:radial-gradient(#ffffff0a 1px,transparent 1.2px) 0 0/4px 4px padding-box,radial-gradient(90% 75% at 50% 42%,var(--felt-hi,#27774f) 0%,var(--felt) 46%,var(--felt-deep) 100%) padding-box,linear-gradient(135deg,#5b5351 0%,#201918 26%,#463d3a 50%,#130e0e 76%,#2e2524 100%) border-box;
   box-shadow:inset 0 0 0 3px #090404,inset 0 0 0 7px #84131b,inset 0 0 0 8px #2a0508,inset 0 0 36px #000c,0 3px 0 #1d1716,0 6px 0 #0e0b0b,0 16px 20px -8px #000f}
 .area{position:relative;z-index:1}
 /* masa damgası */
@@ -835,6 +835,45 @@ body.gmode .rack{padding:var(--rp) 9px calc(var(--rp) + 4px)}
 .orack.v .base{background:linear-gradient(90deg,#0000 0,#0000 15px,#ffd6a0aa 15px,#c0824a 16.5px,#7a4520 20px,#3a1f0b 21px),linear-gradient(90deg,#ffffff1a,#0000 40%,#00000040),var(--woodtex) center/80px 240px}
 .a-right .orack.v i{left:auto;right:2px;background:linear-gradient(270deg,#fffcf4 0,#f1e8cf 55%,#d9cba3 100%)}
 .a-right .orack.v .base{background:linear-gradient(270deg,#0000 0,#0000 15px,#ffd6a0aa 15px,#c0824a 16.5px,#7a4520 20px,#3a1f0b 21px),linear-gradient(270deg,#ffffff1a,#0000 40%,#00000040),var(--woodtex) center/80px 240px}
+
+/* ===== v48: ayarlar ===== */
+.chip.setc,.setc{white-space:nowrap}
+body.gmode #setT{display:none}
+.setv{position:fixed;inset:0;z-index:75;display:none;align-items:flex-end;justify-content:center;background:#000b;padding:12px}
+body.set-open .setv{display:flex}
+.ssheet{width:min(100%,520px);max-height:min(88dvh,780px);display:flex;flex-direction:column;border-radius:16px;background:linear-gradient(180deg,#22150f,#140c08);border:1px solid #4a3020;box-shadow:0 -10px 30px #000c;color:var(--fg);overflow:hidden}
+@media (min-height:700px) and (min-width:600px){.setv{align-items:center}}
+.shd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #3a2617}
+.shd b{font:700 20px/1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.sbody{overflow:auto;padding:4px 14px 16px;display:grid;gap:6px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.sbody section{display:grid;gap:8px;padding:12px 0;border-bottom:1px solid #2e1f15}
+.sbody h4{margin:0;font:700 12px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:#e8b93a}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:10px 12px;border-radius:10px;background:#ffffff08;border:1px solid #3a2617;min-height:52px}
+.sw span{display:grid;gap:3px;min-width:0}.sw b{font:600 15px/1.2 var(--body)}.sw small{font-size:12px;line-height:1.35;color:#bfae95}
+.sw i{flex:none;width:46px;height:28px;border-radius:99px;background:#3a2a20;position:relative;box-shadow:inset 0 0 0 1px #5a4030;transition:background .15s}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#d9c9b0;transition:transform .15s;box-shadow:0 1px 3px #0008}
+.sw[aria-pressed="true"] i{background:#2f8a55;box-shadow:inset 0 0 0 1px #7bd88f}
+.sw[aria-pressed="true"] i::after{transform:translateX(18px);background:#fff}
+.srow{display:grid;gap:6px}.srow>b{font:600 15px/1.2 var(--body)}
+.sseg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:3px;border-radius:10px;background:#00000040;border:1px solid #3a2617}
+.sseg button{min-height:38px;padding:6px 4px;border:0;border-radius:7px;background:transparent;font-size:14px;color:#d9c9b0}
+.sseg button.on{background:#e8b93a;color:#1a1405;font-weight:700}
+.snote{color:#a8977f;font-size:12px;line-height:1.35}
+.sabout{display:flex!important;justify-content:space-between;align-items:center;border-bottom:0!important}
+.sabout a{color:#ffd36a}.sabout small{color:#8a7a66}
+#setN{width:100%}
+/* masa renkleri */
+body[data-felt="bordo"] .felt3d{--felt:#6e1a20;--felt-deep:#47090f;--felt-hi:#8f2a30;--felt-line:#a0484c}
+body[data-felt="lacivert"] .felt3d{--felt:#1b3558;--felt-deep:#0f2038;--felt-hi:#2a4f7d;--felt-line:#4a6e9c}
+body[data-felt="kahve"] .felt3d{--felt:#5a3d24;--felt-deep:#3a2614;--felt-hi:#7a5634;--felt-line:#8f6c48}
+/* renk körü işaretleri */
+body.cb .t.c1::after{border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%);width:.4em;height:.36em}
+body.cb .t.c2::after{border-radius:1px;width:.3em;height:.3em}
+body.cb .t.c3::after{border-radius:0;transform:rotate(45deg);width:.26em;height:.26em}
+/* sade efektler */
+body.lowfx .rack .t.ok::before,body.lowfx .kwfall,body.lowfx .hb-lamp{animation:none!important;display:none}
+body.lowfx .scene.pflash::after{animation-duration:.01s}
+body.lowfx .tpulse{animation:none!important;opacity:.55}
 /* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
 .scene{will-change:transform;transform:translateZ(0)}
 .ios-hap{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -844,7 +883,7 @@ body.offline::before{content:"Bağlantı koptu, yeniden bağlanıyor…";positio
 </head><body>
 
 <div class="wrap">
-  <div class="top"><h1 class="kwh" aria-label="Kanlı Okey"><span class="sr">Kanlı Okey</span></h1><div class="chips"><span id="chips" class="chips"></span><button class="chip tg" id="sndT" aria-pressed="true">Ses</button><button class="chip tg" id="vibT" aria-pressed="true">Titreşim</button><a class="chip" href="https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt" target="_blank" rel="noopener" style="text-decoration:none;color:var(--fg)">Kurallar ↗</a><button class="chip tg mbtn" id="menuT" aria-expanded="false" aria-haspopup="dialog">Menü</button></div></div>
+  <div class="top"><h1 class="kwh" aria-label="Kanlı Okey"><span class="sr">Kanlı Okey</span></h1><div class="chips"><span id="chips" class="chips"></span><button class="chip setc" id="setT" aria-haspopup="dialog">⚙ Ayarlar</button><a class="chip" href="https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt" target="_blank" rel="noopener" style="text-decoration:none;color:var(--fg)">Kurallar ↗</a><button class="chip tg mbtn" id="menuT" aria-expanded="false" aria-haspopup="dialog">Menü</button></div></div>
   <div id="app"><div class="splash" role="status"><div class="spl-logo"><svg class="emb" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="kt" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffcf3"/><stop offset=".55" stop-color="#f3ead2"/><stop offset="1" stop-color="#dccfa9"/></linearGradient><linearGradient id="kb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0404c"/><stop offset=".55" stop-color="#c4141f"/><stop offset="1" stop-color="#7d0a12"/></linearGradient></defs><g transform="rotate(-7 60 60)"><rect x="29" y="17" width="64" height="86" rx="10" fill="#8a7a55"/><rect x="29" y="13" width="64" height="86" rx="10" fill="url(#kt)" stroke="#b9ad8a" stroke-width="1.5"/><rect x="34" y="18" width="54" height="76" rx="7" fill="none" stroke="#00000014" stroke-width="1.5"/><path d="M61 27C61 27 44 50 44 62a17 17 0 0 0 34 0C78 50 61 27 61 27Z" fill="url(#kb)"/><ellipse cx="54.5" cy="58" rx="3.6" ry="7" fill="#ffffff70" transform="rotate(18 54.5 58)"/><path d="M47 98.5c1.5 0 2.4 1.2 2.4 3.4v7.6a2.6 2.6 0 0 1-5.2 0v-7.6c0-2.2 1.1-3.4 2.8-3.4z" fill="url(#kb)"/><circle cx="46.8" cy="113.5" r="3.4" fill="#a50f18"/><path d="M71 98.6c1 0 1.6.9 1.6 2.3v3.4a1.7 1.7 0 0 1-3.4 0v-3.4c0-1.4.7-2.3 1.8-2.3z" fill="#b3101a"/></g></svg></div><b>Masa hazırlanıyor…</b><div class="shuf" aria-hidden="true"><i class="c0">7</i><i class="c1">8</i><i class="c2">9</i><i class="c3">10</i></div><small class="slow">Sunucu uyanıyor, ilk açılış bir dakika sürebilir.</small></div></div>
 </div>
 
@@ -872,7 +911,7 @@ function buzz(p){
   }catch(e){}
 }
 const SFX=(()=>{
-  let ctx=null,out=null,sout=null,nb=null,snd=true,vb=true,lastTick=0,loading=false;
+  let ctx=null,out=null,sout=null,nb=null,snd=true,vb=true,lastTick=0,loading=false,VOL=.8;
   const BUF={},lastPick={},SG={tick:1.5,swap:1,turn:1.35,penalty:1.5,win:1.4,lose:1.4,deckend:1.4,drop:1.15,discard:1.2},JIT={pick:1,drop:1,draw:1,discard:1,place:1,tick:1};
   try{snd=localStorage.getItem('ko_snd')!=='0';vb=localStorage.getItem('ko_vib')!=='0'}catch(e){}
   const AC=typeof window!=='undefined'&&(window.AudioContext||window.webkitAudioContext);
@@ -883,7 +922,7 @@ const SFX=(()=>{
         ctx=new AC();out=ctx.createGain();out.gain.value=2.2;
         const cp=ctx.createDynamicsCompressor();cp.threshold.value=-14;cp.ratio.value=5;
         out.connect(cp);cp.connect(ctx.destination);
-        sout=ctx.createGain();sout.gain.value=.8;sout.connect(ctx.destination);
+        sout=ctx.createGain();sout.gain.value=VOL;sout.connect(ctx.destination);
         nb=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);
         const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
       }catch(e){ctx=null;return null}
@@ -980,6 +1019,7 @@ const SFX=(()=>{
     loaded(){return Object.fromEntries(Object.entries(BUF).map(([k,v])=>[k,v.length]))},
     tick(sec){if(sec!==lastTick){lastTick=sec;SFX.play('tick');SFX.vib(30)}},
     get snd(){return snd},get vb(){return vb},
+    setVol(v){VOL=[.35,.55,.8,1.15][v]||.8;if(sout)sout.gain.value=VOL},
     setSnd(v){snd=v;try{localStorage.setItem('ko_snd',v?'1':'0')}catch(e){}if(v){init();SFX.play('turn')}},
     setVib(v){vb=v;try{localStorage.setItem('ko_vib',v?'1':'0')}catch(e){}if(v)buzz([40,40,40])}
   };
@@ -995,6 +1035,13 @@ if(typeof document!=='undefined'&&typeof document.addEventListener==='function')
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('menu-open')){document.body.classList.remove('menu-open')}});
   syncTg();
 }
+/* ===== ayarlar (v48): bu cihaza kaydedilir ===== */
+const SETD={smart:true,auto:false,warn:true,dbl:false,felt:'yesil',cb:false,fx:'tam',vol:2,low10:true};
+let SET=(()=>{try{return {...SETD,...JSON.parse(localStorage.getItem('okeySet')||'{}')}}catch(e){return {...SETD}}})();
+let setOpen=false;
+function applySet(){try{const b=document.body;if(!b)return;b.dataset.felt=SET.felt;b.classList.toggle('cb',!!SET.cb);b.classList.toggle('lowfx',SET.fx==='sade');SFX.setVol(SET.vol)}catch(e){}}
+function saveSet(){try{localStorage.setItem('okeySet',JSON.stringify(SET))}catch(e){}applySet()}
+const fxOn=()=>SET.fx!=='sade'&&(typeof FLYOK==='undefined'||FLYOK);
 const LOGO=`<svg class="emb" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="kt" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffcf3"/><stop offset=".55" stop-color="#f3ead2"/><stop offset="1" stop-color="#dccfa9"/></linearGradient><linearGradient id="kb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0404c"/><stop offset=".55" stop-color="#c4141f"/><stop offset="1" stop-color="#7d0a12"/></linearGradient></defs><g transform="rotate(-7 60 60)"><rect x="29" y="17" width="64" height="86" rx="10" fill="#8a7a55"/><rect x="29" y="13" width="64" height="86" rx="10" fill="url(#kt)" stroke="#b9ad8a" stroke-width="1.5"/><rect x="34" y="18" width="54" height="76" rx="7" fill="none" stroke="#00000014" stroke-width="1.5"/><path d="M61 27C61 27 44 50 44 62a17 17 0 0 0 34 0C78 50 61 27 61 27Z" fill="url(#kb)"/><ellipse cx="54.5" cy="58" rx="3.6" ry="7" fill="#ffffff70" transform="rotate(18 54.5 58)"/><path d="M47 98.5c1.5 0 2.4 1.2 2.4 3.4v7.6a2.6 2.6 0 0 1-5.2 0v-7.6c0-2.2 1.1-3.4 2.8-3.4z" fill="url(#kb)"/><circle cx="46.8" cy="113.5" r="3.4" fill="#a50f18"/><path d="M71 98.6c1 0 1.6.9 1.6 2.3v3.4a1.7 1.7 0 0 1-3.4 0v-3.4c0-1.4.7-2.3 1.8-2.3z" fill="#b3101a"/></g></svg>`;
 /* masa sözleri (Mustafa seçti): ana ekranda sırayla döner */
 const SOZ=[['Çift açan tek kalır, tek kalan içine alır.','Masa sözü'],['Kanlı okeyde dost olmaz.','Masa sözü'],['Bu kurallar kan ile yazıldı.','Masa sözü'],['Kan kanla yıkanmaz; kanlı okeyde el kanla değil, sabırla kazanılır.','Masa sözü'],["Muco'nun sabrını zorlarsan kafana ıstakayı yiyebilirsin.",'Mamika']];
@@ -1074,6 +1121,7 @@ function sfxDiff(a,b){
 let annAt=0;
 function bigAnn(t,s,k,o){
   if(typeof document==='undefined'||typeof document.createElement!=='function'||!document.body)return;
+  if(SET.fx==='sade')return;
   o=o||{};const now=Date.now(),dur=o.dur||1900,at=Math.max(now+(o.delay||0),annAt);annAt=at+dur-300;
   setTimeout(()=>{try{
     const sc=document.getElementById('scene');if(!S||!sc)return;
@@ -1085,7 +1133,7 @@ function bigAnn(t,s,k,o){
 }
 /* el biterken: son taş masaya çakılır, masa hafifçe sarsılır */
 function slamFx(id,O){
-  const sc=document.getElementById('scene');if(!sc||!FLYOK)return;
+  const sc=document.getElementById('scene');if(!sc||!fxOn())return;
   const r=sc.getBoundingClientRect(),el=document.createElement('div');
   el.className='slam';el.innerHTML=tile(id,O);el.style.left=Math.round(r.left+r.width/2)+'px';el.style.top=Math.round(r.top+r.height*.56)+'px';
   document.body.appendChild(el);
@@ -1113,7 +1161,7 @@ const APP_BUILD='/*@BUILD@*/';
 let RULES_URL='https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt';
 /* davet bağlantısı: site.com/?k=KOD ile gelen kod giriş kutusuna hazır gelir */
 const INVITE=(()=>{try{return (new URLSearchParams(location.search).get('k')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}catch(e){return ''}})();
-let bots=0,R=9,botKey='',botTimer=null,claimC=null;
+let bots=0,R=9,botKey='',botTimer=null,claimC=null,autoK='',lastTap={id:-1,t:0};
 let ROOM=null,code='',view='home',isAdmin=false,unsubs=[],admRooms=[],admC='',admMsg='';
 try{name=localStorage.getItem('okeyName')||''}catch(e){}
 function tile(id,O,cls=''){
@@ -1383,6 +1431,18 @@ async function act(name,args){
 const drawDeck=()=>act('draw',{});
 const takeDisc=()=>act('take',{});
 const discard=()=>sel.length===1?act('discard',{t:sel[0]}):false;
+/* atmadan önce: işler taşsa ve ayar açıksa bir kez uyar, ikinci denemede at */
+function tryDiscard(id,how){
+  if(!canDiscard())return false;
+  B=S.B;const me=S.seats.indexOf(uid),h=(S.hands[hk(me)]||[]).filter(x=>x!==id),ends=S.ot!==me&&canEnd(S,me,h);
+  if(SET.warn&&!ends&&ishler(S,id,S.okey)&&!(warnI.id===id&&Date.now()-warnI.t<8000)){
+    warnI={id,t:Date.now()};
+    const again=how==='drag'?'tekrar masaya bırak':how==='tap'?'tekrar iki kez dokun':'tekrar At\'a bas';
+    msg='Bu taş işler! Atarsan 500 ceza yazılır. '+(S.opn['s'+me]>0&&how==='drag'?'İşlemek için parlayan perin üstüne bırak; yine de atmak için '+again+'.':'Yine de atmak için '+again+'.');
+    SFX.play('drop');render();return false;
+  }
+  warnI={id:-1,t:0};sel=[id];pend=false;discard();return true;
+}
 const finish=()=>sel.length===1?act('finish',{t:sel[0]}):false;
 const insertTile=(o,gi,e)=>sel.length===1?act('insert',{o,gi,e,t:sel[0]}):false;
 const swapOkey=(o,gi,idx)=>sel.length===1?act('swap',{o,gi,idx,t:sel[0]}):false;
@@ -1440,7 +1500,7 @@ function paintRing(){
   av.style.setProperty('--p',(f*360).toFixed(1)+'deg');av.classList.toggle('low',rem<=10000);
 }
 function tick(){
-  const on=!!(S&&S.tt&&CFG.tm>0&&S.ph!=='end'&&S.seats&&S.seats[S.turn]===uid&&!isBot(uid)&&S.tt+CFG.tm*1000-Date.now()<=10000&&S.tt+CFG.tm*1000-Date.now()>0);
+  const on=!!(SET.low10&&S&&S.tt&&CFG.tm>0&&S.ph!=='end'&&S.seats&&S.seats[S.turn]===uid&&!isBot(uid)&&S.tt+CFG.tm*1000-Date.now()<=10000&&S.tt+CFG.tm*1000-Date.now()>0);
   try{if(document.body&&document.body.classList.contains('tlow')!==on)document.body.classList.toggle('tlow',on)}catch(e){}
   if(!S||!S.tt||!(CFG.tm>0)||S.ph==='end'||isBot(S.seats[S.turn]))return;
   const tot=CFG.tm*1000,rem=S.tt+tot-Date.now(),el=document.querySelector('.tmr');
@@ -1451,7 +1511,7 @@ function tick(){
   }
   if(rem<=5000&&rem>0&&S.seats[S.turn]===uid){const k=S.gid+':'+S.trn;if(vibK!==k){vibK=k;if(SFX.vb)buzz(80)}}
   paintRing();
-  if(rem<=5000&&rem>0&&S.seats[S.turn]===uid)SFX.tick(Math.ceil(rem/1000));
+  if(SET.low10&&rem<=5000&&rem>0&&S.seats[S.turn]===uid)SFX.tick(Math.ceil(rem/1000));
   checkTimeout(rem);
 }
 if(typeof setInterval==='function')setInterval(tick,500);
@@ -1602,7 +1662,7 @@ const flyNow=()=>({deckN:S.deck.length,turn:S.turn,gid:S.gid,dn:[0,1,2,3].map(i=
 const flyKind=t=>t.closest('#rack')?'r':t.closest('.mini')?'m':t.closest('.dstack')?'d':'o';
 const FLYOK=typeof matchMedia==='function'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
 function snapFly(){
-  if(!FLYOK||!S||!S.seats||S.ph==='end'||typeof document.querySelectorAll!=='function'||!document.getElementById('scene'))return null;
+  if(!fxOn()||!S||!S.seats||S.ph==='end'||typeof document.querySelectorAll!=='function'||!document.getElementById('scene'))return null;
   const m=new Map();
   document.querySelectorAll('#app .t[data-id]').forEach(t=>{if(t.classList.contains('flyc'))return;const r=t.getBoundingClientRect();if(r.width)m.set(+t.dataset.id,{r,k:flyKind(t)})});
   const src={};
@@ -1680,6 +1740,7 @@ function render0(){
       if(!had.length){const half=Math.ceil(myH.length/2);order=Array(SL).fill(null);myH.forEach((x,k)=>{order[k<half?k:COLS+(k-half)]=x})}
       else{order=Array.from({length:SL},(_,k)=>order[k]!=null&&myH.includes(order[k])?order[k]:null)}
     }
+    if(SET.auto&&!(drag&&drag.on)){const ak=gid+':'+myH.slice().sort((a,b)=>a-b).join(',');if(ak!==autoK){autoK=ak;try{order=smartOrder(myH,O,(S.opm||{})['s'+me]||'')}catch(e){}}}
     for(const x of myH)if(!order.includes(x)){
       let ok=false;
       if(dropAt&&Date.now()-dropAt.t<4000){ok=placeTile(x,dropAt);dropAt=null}
@@ -1755,7 +1816,7 @@ ${i===me?'':orack(r,cnt)}
     h+=`<div><div class="rlabel"><span class="lab">Istakan · ${myH.length} taş</span><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop':'')):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
-<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><button class="tg" data-tg="vib" aria-pressed="${SFX.vb}">Titreşim</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
+<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
     h+='<!--SEC-->';
     /* uyarı: ekranın üstünde kısa süre görünür */
     if(msg!==lastMsg){lastMsg=msg;msgT=msg?Date.now():0}
@@ -1805,7 +1866,44 @@ function runFlip(){
   });
 }
 const canDiscard=()=>!!(S&&S.seats&&S.seats[S.turn]===uid&&S.ph==='discard');
+/* akıllı sıralama: en yüksek açılışı veren perler (ya da çiftler) yan yana, aralarında boşluk; kalan taşlar renge göre */
+function arrangeG(g,O){
+  const nat=g.filter(x=>!isJ(x,O)),jk=g.filter(x=>isJ(x,O));
+  if(!nat.length||nat.every(x=>tv(x,O).n===tv(nat[0],O).n))return [...nat,...jk];
+  const a=nat.slice().sort((x,y)=>tv(x,O).n-tv(y,O).n),out=[];let j=[...jk];
+  for(let i=0;i<a.length;i++){if(i){let gap=tv(a[i],O).n-tv(a[i-1],O).n-1;while(gap-->0&&j.length)out.push(j.shift())}out.push(a[i])}
+  while(j.length){if(tv(a[a.length-1],O).n+1<=13)out.push(j.shift());else out.unshift(j.shift())}
+  return out;
+}
+function pairPlan(h,O){
+  const by=new Map(),jk=[];
+  for(const x of h){if(isJ(x,O)){jk.push(x);continue}const k=tv(x,O).c*13+tv(x,O).n;if(!by.has(k))by.set(k,[]);by.get(k).push(x)}
+  const pairs=[],singles=[];
+  for(const [k,v] of by){if(v.length>=2)pairs.push([v[0],v[1]]);else singles.push(v[0])}
+  singles.sort((a,b)=>tv(b,O).n-tv(a,O).n);
+  for(const j of jk){const x=singles.shift();if(x==null)break;pairs.push([x,j])}
+  while(pairs.length&&pairs.flat().length>h.length-1){pairs.sort((a,b)=>prs(b,O)-prs(a,O));pairs.pop()}
+  const sum=pairs.reduce((a,p)=>a+prs(p,O),0);
+  return {groups:pairs,pts:Math.floor(sum*2/3)};
+}
+function smartOrder(h,O,mode){
+  let groups=[],pp=null;
+  if(mode!=='c'){pp=openPlan(h,O,0,0,30000,1);if(pp)groups=pp.map(g=>arrangeG(g,O))}
+  const pPts=pp?Math.floor(pp.pts/3):0;
+  if(mode!=='p'){const cp=pairPlan(h,O);if(mode==='c'||cp.pts>pPts)groups=cp.groups}
+  groups.sort((a,b)=>b.length-a.length);
+  const used=new Set(groups.flat()),rest=h.filter(x=>!used.has(x)).sort((a,c)=>(isJ(a,O)?999:tv(a,O).c*20+tv(a,O).n)-(isJ(c,O)?999:tv(c,O).c*20+tv(c,O).n));
+  const out=Array(SL).fill(null);let pos=0;
+  const put=g=>{let row=Math.floor(pos/COLS),end=(row+1)*COLS;if(pos+g.length>end){pos=end;row++;end=(row+1)*COLS}if(pos+g.length>SL)return false;g.forEach(x=>out[pos++]=x);return true};
+  const left=[];
+  for(const g of groups){if(!put(g))left.push(...g);else if(pos%COLS)pos++}
+  const tail=[...left,...rest];
+  if(tail.length){if(pos%COLS&&pos+tail.length>SL)pos--;}
+  for(const x of tail){while(pos<SL&&out[pos]!=null)pos++;if(pos<SL)out[pos++]=x;else{const k=out.indexOf(null);if(k>=0)out[k]=x}}
+  return out;
+}
 function sortRack(){
+  if(SET.smart){const me=S.seats.indexOf(uid),h=order.filter(x=>x!=null);B=S.B;try{order=smartOrder(h,S.okey,(S.opm||{})['s'+me]||'');return}catch(e){}}
   const O=S.okey,cc=x=>isJ(x,O)?9:tv(x,O).c,k=x=>isJ(x,O)?999:tv(x,O).c*20+tv(x,O).n;
   const ids=order.filter(x=>x!=null).sort((a,c)=>k(a)-k(c));
   let ch=0,pc=null;ids.forEach(x=>{const c=cc(x);if(pc!==null&&c!==pc)ch++;pc=c});
@@ -2010,14 +2108,7 @@ function dragEnd(e){
     }else if(ok){
       if(d.ins){pend=false;dropOnPer(d.ins.o,d.ins.gi,d.id,e.clientX,d.ins.jx);return}
       if(d.disc){
-        if(canDiscard()){
-          B=S.B;const me=S.seats.indexOf(uid),h=(S.hands[hk(me)]||[]).filter(x=>x!==d.id),ends=S.ot!==me&&canEnd(S,me,h);
-          if(!ends&&ishler(S,d.id,S.okey)&&!(warnI.id===d.id&&Date.now()-warnI.t<8000)){
-            warnI={id:d.id,t:Date.now()};
-            msg=S.opn['s'+me]>0?'Bu taş işler! Atarsan 500 ceza yazılır. İşlemek için parlayan perin üstüne bırak; yine de atmak için tekrar masaya bırak.':'Bu taş işler! Atarsan 500 ceza yazılır. Yine de atmak için tekrar masaya bırak.';
-            SFX.play('drop');render();return;
-          }
-          warnI={id:-1,t:0};sel=[d.id];pend=false;discard();return}
+        if(canDiscard()){tryDiscard(d.id,'drag');return}
         msg='Taşı atmak için sıranın sende olması ve önce taş çekmiş olman gerekir.';
       }else if(d.tgt){flip=fl||snapRects();placeTile(d.id,d.tgt);SFX.play('drop')}
     }
@@ -2085,7 +2176,7 @@ $('#app').addEventListener('click',async e=>{
     else if(id==='endo'){endHide=-1;render()}
     else if(id==='deck')await drawDeck();
     else if(id==='tk')await takeDisc();
-    else if(id==='dis')await discard();
+    else if(id==='dis'){if(sel.length===1)tryDiscard(sel[0],'btn')}
     else if(id==='fin')await finish();
     else if(id==='back')await putBack();
     else if(id==='open')await openNow();
@@ -2095,6 +2186,8 @@ $('#app').addEventListener('click',async e=>{
   }
   if(t&&t.closest('#rack')){
     const id=+t.dataset.id,i=sel.indexOf(id);
+    if(SET.dbl&&lastTap.id===id&&Date.now()-lastTap.t<380&&canDiscard()){lastTap={id:-1,t:0};sel=[];tryDiscard(id,'tap');return}
+    lastTap={id,t:Date.now()};
     SFX.play('pick');
     if(i>=0)sel.splice(i,1);else sel.push(id);
     render();
@@ -2107,6 +2200,62 @@ $('#app').addEventListener('click',async e=>{
   }
 });
 try{document.body.insertAdjacentHTML('beforeend',AVSYM+'<div class="tpulse" aria-hidden="true"></div>')}catch(e){}
+/* ayarlar sayfası: çizimden bağımsız katman */
+function setH(){
+  const sw=(k,t,d,v)=>`<button class="sw" data-sw="${k}" aria-pressed="${!!v}"><span><b>${t}</b>${d?`<small>${d}</small>`:''}</span><i aria-hidden="true"></i></button>`;
+  const seg=(k,t,items)=>`<div class="srow"><b>${t}</b><div class="sseg" role="radiogroup">${items.map(([v,l])=>`<button data-sv="${k}:${v}" role="radio" aria-checked="${String(SET[k])===String(v)}" class="${String(SET[k])===String(v)?'on':''}">${l}</button>`).join('')}</div></div>`;
+  return `<div class="ssheet" role="dialog" aria-modal="true" aria-label="Ayarlar"><div class="shd"><b>Ayarlar</b><button id="setX">Kapat</button></div><div class="sbody">
+<section><h4>Istaka</h4>
+${sw('smart','Akıllı sıralama','"Sırala" taşları en yüksek açılışa göre dizer: açılacak perler yan yana, kalanlar renge göre',SET.smart)}
+${sw('auto','Taş gelince otomatik diz','Her yeni taşta ıstaka kendiliğinden en yüksek açılışa göre dizilir',SET.auto)}
+${sw('dbl','İki kez dokunarak at','Sıran gelince taşa art arda iki kez dokununca taş atılır',SET.dbl)}
+${sw('warn','İşler taş uyarısı','İşler taşı atmadan önce "500 ceza" uyarısı çıkar, ikinci denemede atılır',SET.warn)}
+</section>
+<section><h4>Görünüm</h4>
+${seg('felt','Masa rengi',[['yesil','Yeşil'],['bordo','Bordo'],['lacivert','Lacivert'],['kahve','Kahve']])}
+${seg('fx','Efektler',[['tam','Tam'],['sade','Sade']])}
+<small class="snote">Sade: uçan taşlar, duyurular, sarsıntı ve parıltılar kapanır. Yavaş telefonda akıcılık için.</small>
+${sw('cb','Renk körü işaretleri','Taşlardaki noktanın şekli renge göre değişir: kırmızı ●, sarı ▲, mavi ■, siyah ◆',SET.cb)}
+</section>
+<section><h4>Ses ve titreşim</h4>
+${sw('snd','Ses','',SFX.snd)}
+${seg('vol','Ses seviyesi',[[0,'Kısık'],[1,'Orta'],[2,'Normal'],[3,'Yüksek']])}
+${sw('vib','Titreşim','Android telefonlarda çalışır',SFX.vb)}
+${sw('low10','Son 10 saniye uyarısı','Sıranın son 10 saniyesinde ekran kenarı kırmızı atar, son 5 saniye tik sesi',SET.low10)}
+</section>
+<section><h4>Profil</h4>
+<div class="srow"><b>Takma adın</b><input id="setN" maxlength="14" value="${esc(name)}" placeholder="Örn. Mustafa" autocomplete="nickname"></div>
+<div class="avgrid">${AVN.map((n,k)=>`<button class="avo ${k===myAv?'on':''}" data-sav="${k}" role="radio" aria-checked="${k===myAv}">${avI(k)}<small>${n}</small></button>`).join('')}</div>
+<small class="snote">Ad ve karakter bir sonraki masada geçerli olur.</small>
+</section>
+<section class="sabout"><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a><small>Sürüm ${esc(APP_BUILD)}</small></section>
+</div></div>`;
+}
+function openSet(on){
+  setOpen=on;let el=document.getElementById('setv');
+  if(on){if(!el){el=document.createElement('div');el.id='setv';el.className='setv';document.body.appendChild(el);el.addEventListener('click',setClick);el.addEventListener('change',setChange)}el.innerHTML=setH();document.body.classList.add('set-open');document.body.classList.remove('menu-open')}
+  else{document.body.classList.remove('set-open');const n=document.getElementById('setN');if(n)saveName(n.value)}
+}
+function saveName(v){v=String(v||'').trim().slice(0,14);if(v&&v!==name){name=v;lsSet('okeyName',name);const nm=$('#nm');if(nm)nm.value=name}}
+function setChange(e){if(e.target.id==='setN')saveName(e.target.value)}
+function setClick(e){
+  if(e.target.id==='setv'||e.target.closest('#setX')){openSet(false);render();return}
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.sw){const k=b.dataset.sw;
+    if(k==='snd')SFX.setSnd(!SFX.snd);else if(k==='vib')SFX.setVib(!SFX.vb);else{SET[k]=!SET[k];if(k==='auto'){autoK=''}saveSet()}
+    syncTg();}
+  else if(b.dataset.sv){const [k,v]=b.dataset.sv.split(':');SET[k]=k==='vol'?+v:v;saveSet();if(k==='vol'&&SFX.snd)SFX.play('turn')}
+  else if(b.dataset.sav!=null){myAv=+b.dataset.sav;lsSet('okeyAv',String(myAv));SFX.play('pick')}
+  else return;
+  const sb=document.querySelector('#setv .sbody'),y=sb?sb.scrollTop:0;
+  document.getElementById('setv').innerHTML=setH();const sb2=document.querySelector('#setv .sbody');if(sb2)sb2.scrollTop=y;
+  render();
+}
+if(typeof document!=='undefined'&&typeof document.addEventListener==='function'){
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('#setT,#setO');if(t){e.preventDefault();openSet(true)}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&setOpen){openSet(false);render()}});
+}
+applySet();
 /* kanlı yazı: önce düz, yazı tipi yüklenince kanlı haline geçer */
 try{const h=document.querySelector('.top h1');if(h)h.innerHTML=KW.html('line');KW.ready(()=>{const h2=document.querySelector('.top h1');if(h2)h2.innerHTML=KW.html('line');try{A_p_reset()}catch(e){}render()})}catch(e){}
 (async()=>{

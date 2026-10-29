@@ -78,6 +78,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] v22: Açılan perler sahibinin önünde (alt: önünde, üst: rafının altında, yanlar: rafın yanında). Istaka kutusunda yalnızca dizdiğin (ayrı ve düzgün sıralı) perlerin puanı görünür, elindeki en yüksek puan gösterilmez. Normal elde yerde yalnızca gösterge görünür. Desteden/yandan taş sürükleme: parmağın üstünde yükselen taş, hedef yuva parlıyor, gelen taş yuvaya "pop" animasyonuyla oturuyor
 - [x] v23: Istakada taşı iki taşın arasına sürükleyip sokma (komşular kayar, boşluk kapanır); yuvalar arası boşluğa bırakınca en yakın yuva seçiliyor, araya sokma yeri altın çizgiyle gösteriliyor. El bitince taşlar masanın ortasında karışıp uçuşuyor (36 taş), rakip ıstakaları, perler ve atılan taşlar da ortaya çöküyor
 - [x] v24: Taşlara daha gerçekçi görünüm (cilalı yüz, iç çerçeve, altında renkli nokta); araya sokunca komşu taşlar kayarak yerine oturuyor. "Açma alanı" masadan kaldırıldı, "Per aç" (çift dizdiyse "Çift aç") ıstakanın altındaki düğme sırasında. Açılamama sebebi uyarı olarak çıkıyor
+- [x] v48: AYARLAR sayfası (üstte ⚙ Ayarlar, oyunda Menü → Ayarlar; bu cihaza kaydedilir). Istaka: Akıllı sıralama (Sırala en yüksek açılışa göre dizer, açık), Taş gelince otomatik diz (kapalı), İki kez dokunarak at (kapalı), İşler taş uyarısı (açık; artık At düğmesinde de). Görünüm: masa rengi (yeşil/bordo/lacivert/kahve), efektler Tam/Sade, renk körü işaretleri (● ▲ ■ ◆). Ses: ses, ses seviyesi (4 kademe), titreşim, son 10 saniye uyarısı. Profil: takma ad ve karakter. Hakkında: kurallar, sürüm
 - [x] v47: KISMİ AÇMA: açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar (seçim yoksa hepsi; seçilmeyen perler soluk yeşil). PUAN: artanlar birikir, ıstakada "Dizilen 20 +yandan 2" yazar, yetmezse uyarıda da yandan yazar. KOLTUĞA DÖNÜŞ: telefon/tarayıcı değişse de oda koduyla girince bağlı olmayan oyuncunun yerine "X olarak dön" (el, ceza, ad, karakter, kuranlık aynen). Testler: test/claim.test.js, test/claim_e2e.py, engine testine yandan ve kısmi açma
 - [x] v46: ISTAKALAR: kendi ıstakan gerçek ahşap ıstaka gibi (damarlı ahşap, iki kalın raf, taşlar rafın üstünde durur, boş yuva kutuları kalktı); rakiplerin ıstakaları masada küçük ahşap ıstaka, taş sırtları rafın üstünde, ön kenar masaya bakar
 - [x] v45: TELEFON AKICILIĞI: ana ekranda logodan düşen damlalar ayrı katmana alındı (önceden her karede bütün kanlı yazı yeniden çiziliyordu; ana ekranda boşta yeniden çizim 120/sn → 0), arka plan masasındaki bulanıklık kaldırıldı ve arka plan ayrı katmanda, üst çubuktaki kanlı yazı ayrı katmanda (yanındaki yazılar değişince yeniden çizilmez), sürüklerken masanın sarı parlaması masayı yeniden çizmeden açılıp kapanıyor, sürüklerken ıstakadaki taşlar ayrı katmanda kayıyor
@@ -147,6 +148,16 @@ Estetik kararları (Mustafa seçti, toplu güncellemede yapılacak)
 - [x] (v42) Oyun içi: ıstakadaki okey taşında arada altın parıltı, gösterge el başında dönerek açılır
 - [x] (v42) Oyun içi: sıranın son 10 saniyesinde ekran kenarları kırmızı nabız atar
 Cepte (sonra): ana ekranda canlı şerit (şu an kaç masa / bugün kaç el), "son oyunun" kartı, masa teması (keçe rengi), kahvehane uğultusu sesi
+
+## Ayarlar için sonraki fikirler (Mustafa seçecek)
+- [ ] Sol el düzeni (düğmeler ve ıstaka aynalı)
+- [ ] Büyük yazı / büyük taş seçeneği
+- [ ] Sıra sende bildirimi (uygulama arka plandayken telefona bildirim)
+- [ ] Yandan taşı otomatik al uyarısı: yandaki taş per tamamlıyorsa ıstakada parlasın
+- [ ] Açma önerisi: ıstakada "bu taşı atarsan açabilirsin" ipucu
+- [ ] Taş teması (klasik krem / koyu), masa deseni
+- [ ] Ses paketi seçimi, kahvehane uğultusu aç/kapa
+- [ ] Dil (Türkçe / Almanca, yurt dışındaki Türkler için)
 
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
 Giriş ekranı
