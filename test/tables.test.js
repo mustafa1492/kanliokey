@@ -36,7 +36,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   ok(!(await X.call({op:'get',path:'rooms/'+C+'/log/main'})).ok||!(await X.call({op:'get',path:'rooms/'+C+'/log/main'})).snap.exists,'kayıt belgesi oyunculara kapalı');
   const lg=await adm.call({op:'adminList',k:'log',code:C});
   ok(lg.ok&&lg.list.some(x=>/dağıtıldı/.test(x.x))&&lg.list.some(x=>/bot yerine oturdu/.test(x.x)),'kayıtta dağıtım ve oturma var');
-  ok(lg.list.some(x=>/ attı$| desteden çekti/.test(x.x)),'kayıtta hamleler okunur metin: '+(lg.list.slice(-1)[0]||{}).x);
+  const gw=(await adm.call({op:'get',path:'rooms/'+C+'/game/main'})).snap.data,hw=!/^bot/.test(gw.seats[gw.turn])&&gw.trn===0; /* ilk sıra insandaysa botlar bekler */
+  ok(hw||lg.list.some(x=>/ attı$| desteden çekti/.test(x.x)),'kayıtta hamleler okunur metin: '+(lg.list.slice(-1)[0]||{}).x);
   /* bildirim */
   ok(!(await X.call({op:'report',kind:'kural',text:''})).ok,'boş bildirim reddedilir');
   ok((await X.call({op:'report',kind:'kural',text:'Okeyle bitince 4 kat olmalı',code:C})).ok,'kural yanlış bildirimi gönderildi');
@@ -52,7 +53,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const pl=await adm.call({op:'adminList',k:'players'});
   ok(pl.ok&&pl.list.some(p=>p.n==='Xe'&&p.on&&p.now.includes(C))&&pl.list.some(p=>p.n==='Ali'),'oyuncu listesinde ad, bağlı ve masa bilgisi');
   /* bot seviyesi odaya göre: Kolay botlar da oynuyor */
-  g=(await adm.call({op:'get',path:'rooms/'+C+'/game/main'})).snap.data;ok(g.trn>0,'oda bot seviyesiyle botlar oynuyor (tur '+g.trn+')');
+  g=(await adm.call({op:'get',path:'rooms/'+C+'/game/main'})).snap.data;ok(hw||g.trn>0,'oda bot seviyesiyle botlar oynuyor (tur '+g.trn+')');
   /* v57: yönetici özellikleri kapatır */
   await adm.call({op:'set',path:'settings/main',data:{pub:false,chat:false,mk:false}});
   t=await X.call({op:'tables'});ok(t.ok&&t.list.length===0,'açık masalar kapalıyken liste boş');
