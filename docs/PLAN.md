@@ -278,7 +278,7 @@ Ayrıntı: docs/HILE-ONLEMLERI.md
 - Kural toplama: Mustafa'nın henüz söylemediği kurallar için soru listesi tutulur, tahmin edilmez. Sırası gelince sorulacak kenar durumlar:
   - (Cevaplandı, KURALLAR.md) Eli bitiren son taş hem işler taş hem okeyse ne olur?
   - Oyuncu oyundan çıkarsa cezası nasıl yazılır? KARAR (Mustafa, 31 Ekim 2026): şimdilik ceza yok. CEZALARLA İLGİLİ BİR İŞ YAPILDIĞINDA BU KONUYU MUSTAFA'YA TEKRAR SOR.
-  - Katlamalıda biri per, biri çift açarsa puanlar aynı sayıdan mı karşılaştırılır?
+  - (Cevaplandı, KURALLAR.md: evet, 3'e bölmeden önceki toplamla) Katlamalıda biri per, biri çift açarsa puanlar aynı sayıdan mı karşılaştırılır?
   - (Cevaplandı: evet) 9 ve 13 turlu oyunda büyük el sayısı farkı (1, 5, 9, 13) gerçek oyunda da böyle mi?
   - (Cevaplandı, KURALLAR.md) Deste bitince yandan alınan taş / açılmış oyuncuların durumu
 - KURALLAR.md tek doğru kaynak. Her kural değişikliği: KURALLAR.md, motor, test, site, rehber birlikte.
