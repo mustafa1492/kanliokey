@@ -12,7 +12,8 @@ const wm=rd('src/wordmark.js').replace(/<\/script/gi,'<\\/script');
 if(!html.includes('/*@ENGINE@*/')||!html.includes('/*@NET@*/'))throw new Error('client.html yer tutucuları yok');
 html=html.replace('/*@ENGINE@*/',()=>eng).replace('/*@NET@*/',()=>net).replace('/*@WM@*/',()=>wm);
 /* sürüm: içerikten türetilir, sunucu bunu yeni bağlanan sayfaya söyler; eski sayfa kendini yeniler */
-const build=pkg.version+'-'+crypto.createHash('sha1').update(html).digest('hex').slice(0,8);
+const kurSrc=rd('src/kurallar.html');
+const build=pkg.version+'-'+crypto.createHash('sha1').update(html+kurSrc).digest('hex').slice(0,8);
 html=html.replace("'/*@BUILD@*/'",JSON.stringify(build));
 /* sekme simgesi: her ortamda (sunucu, claude.ai sayfası) görünsün diye sayfanın içine gömülür */
 const FAV='<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,'+fs.readFileSync(path.join(root,'src/assets/favicon-32.png')).toString('base64')+'">';
@@ -22,6 +23,10 @@ fs.mkdirSync(out,{recursive:true});
 fs.writeFileSync(path.join(out,'index.html'),html);
 fs.writeFileSync(path.join(out,'build.txt'),build);
 for(const f of ['sw.js','manifest.webmanifest'])if(fs.existsSync(path.join(root,'src',f)))fs.copyFileSync(path.join(root,'src',f),path.join(out,f));
-fs.writeFileSync(path.join(out,'kurallar.html'),rd('src/kurallar.html').replace('/*@WM@*/',()=>wm).replace('<!--@HEAD@-->',()=>FAV+'\n<!--@HEAD@-->'));
+const kur=kurSrc.replace('/*@WM@*/',()=>wm).replace('<!--@HEAD@-->',()=>FAV+'\n<!--@HEAD@-->');
+fs.writeFileSync(path.join(out,'kurallar.html'),kur);
+/* kurallar oyunun içinde de açılır: sayfa index.html'e gömülür (script içinde </ kaçırılır) */
+html=html.replace("'/*@RULES@*/'",()=>JSON.stringify(kur).replace(/<\//g,'<\\/'));
+fs.writeFileSync(path.join(out,'index.html'),html);
 for(const f of fs.readdirSync(path.join(root,'src/assets')))if(/\.(png|jpg|ico)$/.test(f))fs.copyFileSync(path.join(root,'src/assets',f),path.join(out,f));
 console.log('dist/index.html',Math.round(html.length/1024)+' KB · sürüm',build);

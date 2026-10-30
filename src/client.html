@@ -1109,7 +1109,7 @@ body.offline::before{content:"Bağlantı koptu, yeniden bağlanıyor…";positio
 </head><body>
 
 <div class="wrap">
-  <div class="top"><h1 class="kwh" aria-label="Kanlı Okey"><span class="sr">Kanlı Okey</span></h1><div class="chips"><span id="chips" class="chips"></span><button class="chip setc" id="setT" aria-haspopup="dialog">⚙ Ayarlar</button><a class="chip" href="https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt" target="_blank" rel="noopener" style="text-decoration:none;color:var(--fg)">Kurallar ↗</a><button class="chip tg mbtn" id="menuT" aria-expanded="false" aria-haspopup="dialog">Menü</button></div></div>
+  <div class="top"><h1 class="kwh" aria-label="Kanlı Okey"><span class="sr">Kanlı Okey</span></h1><div class="chips"><span id="chips" class="chips"></span><button class="chip setc" id="setT" aria-haspopup="dialog">⚙ Ayarlar</button><a class="chip" href="/kurallar" style="text-decoration:none;color:var(--fg)">Kurallar</a><button class="chip tg mbtn" id="menuT" aria-expanded="false" aria-haspopup="dialog">Menü</button></div></div>
   <div id="app"><div class="splash" role="status"><div class="spl-logo"><svg class="emb" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="kt" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffcf3"/><stop offset=".55" stop-color="#f3ead2"/><stop offset="1" stop-color="#dccfa9"/></linearGradient><linearGradient id="kb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0404c"/><stop offset=".55" stop-color="#c4141f"/><stop offset="1" stop-color="#7d0a12"/></linearGradient></defs><g transform="rotate(-7 60 60)"><rect x="29" y="17" width="64" height="86" rx="10" fill="#8a7a55"/><rect x="29" y="13" width="64" height="86" rx="10" fill="url(#kt)" stroke="#b9ad8a" stroke-width="1.5"/><rect x="34" y="18" width="54" height="76" rx="7" fill="none" stroke="#00000014" stroke-width="1.5"/><path d="M61 27C61 27 44 50 44 62a17 17 0 0 0 34 0C78 50 61 27 61 27Z" fill="url(#kb)"/><ellipse cx="54.5" cy="58" rx="3.6" ry="7" fill="#ffffff70" transform="rotate(18 54.5 58)"/><path d="M47 98.5c1.5 0 2.4 1.2 2.4 3.4v7.6a2.6 2.6 0 0 1-5.2 0v-7.6c0-2.2 1.1-3.4 2.8-3.4z" fill="url(#kb)"/><circle cx="46.8" cy="113.5" r="3.4" fill="#a50f18"/><path d="M71 98.6c1 0 1.6.9 1.6 2.3v3.4a1.7 1.7 0 0 1-3.4 0v-3.4c0-1.4.7-2.3 1.8-2.3z" fill="#b3101a"/></g></svg></div><b>Masa hazırlanıyor…</b><div class="shuf" aria-hidden="true"><i class="c0">7</i><i class="c1">8</i><i class="c2">9</i><i class="c3">10</i></div><small class="slow">Sunucu uyanıyor, ilk açılış bir dakika sürebilir.</small></div></div>
 </div>
 
@@ -1633,7 +1633,23 @@ let lastMsg='',msgT=0,toastTimer=null,dropAt=null,fresh={id:-1,t:0};
 let db=null,uid=null,S=null,L=[],sel=[],order=[],stage=[],name='',msg='',ready=false,busy=false,gid=0;
 let SRV=null; /* sunucu modu: kendi sunucumuza bağlıyken dolu */
 const APP_BUILD='/*@BUILD@*/';
-let RULES_URL='https://claude.ai/artifact/Sh1LDXSeKtgKLZ3yz8tyDt';
+let RULES_URL='/kurallar';
+/* kurallar sayfası oyunun içinde açılır (yeni sekme ya da başka site yok); sayfa derlemede gömülür */
+const RULES_HTML='/*@RULES@*/';
+function openRules(){
+  if(document.getElementById('rulesOv'))return;
+  const ov=document.createElement('div');ov.id='rulesOv';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Kurallar');
+  ov.style.cssText='position:fixed;inset:0;z-index:9999;background:#120d0b;display:flex;flex-direction:column';
+  ov.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;border-bottom:1px solid #ffffff1f"><b style="color:#f3ead2;font-size:16px">Kurallar</b><button id="rulesX" style="min-height:40px">Oyuna dön</button></div>';
+  const fr=document.createElement('iframe');fr.title='Kanlı Okey kuralları';fr.style.cssText='flex:1;width:100%;border:0;background:#120d0b';
+  if(RULES_HTML.length>20)fr.srcdoc=RULES_HTML;else fr.src=RULES_URL;
+  ov.appendChild(fr);document.body.appendChild(ov);
+  ov.querySelector('#rulesX').onclick=closeRules;
+}
+function closeRules(){const ov=document.getElementById('rulesOv');if(ov)ov.remove()}
+window.closeRules=closeRules;
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href="/kurallar"]');if(a){e.preventDefault();e.stopPropagation();openRules()}},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRules()});
 /* davet bağlantısı: site.com/?k=KOD ile gelen kod giriş kutusuna hazır gelir */
 const INVITE=(()=>{try{return (new URLSearchParams(location.search).get('k')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}catch(e){return ''}})();
 let bots=0,R=9,botKey='',botTimer=null,claimC=null,autoK='',lastTap={id:-1,t:0},liveGm=null,newT={id:-1,trn:-1,gid:-1};
@@ -1813,7 +1829,7 @@ ${claimC?`<div class="panel claim"><b>Oda ${esc(claimC.code)}: oyun sürüyor</b
 ${saved?`<button id="resume" class="resume">Son masaya dön · <b>${esc(saved)}</b></button>`:''}
 ${tablesH()}
 ${msg?`<div class="warn">${esc(msg)}</div>`:''}
-<a class="rulecard" href="${RULES_URL}" target="_blank" rel="noopener"><div class="rc-t"><small>Yöresel · 4 kişilik</small><b>Kanlı okey nasıl oynanır?</b><span>17 ile açılır, katlamalı gider, işlenen pere kan yazılır. Okeyle biten masayı ikiye katlar.</span><em>Kuralları oku →</em></div><div class="rc-tiles" aria-hidden="true"><i class="c0">11</i><i class="c1">11</i><i class="c3">11</i><i class="c2 b">5</i><i class="c2">6</i><i class="c2">7</i></div></a>
+<a class="rulecard" href="${RULES_URL}"><div class="rc-t"><small>Yöresel · 4 kişilik</small><b>Kanlı okey nasıl oynanır?</b><span>17 ile açılır, katlamalı gider, işlenen pere kan yazılır. Okeyle biten masayı ikiye katlar.</span><em>Kuralları oku →</em></div><div class="rc-tiles" aria-hidden="true"><i class="c0">11</i><i class="c1">11</i><i class="c3">11</i><i class="c2 b">5</i><i class="c2">6</i><i class="c2">7</i></div></a>
 ${inst||SRV?`<nav class="hlinks">${inst}${SRV?'<button class="lnk" id="repO">Hata ya da kural bildir</button>':''}</nav>`:''}
 <details class="agate" ${agOpen?'open':''}><summary>Yönetici girişi</summary><div class="row"><input id="ap" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Şifre" autocomplete="off" aria-label="Yönetici şifresi" style="flex:1;min-width:0"><button id="adm">Gir</button></div></details>`;
 }
@@ -2444,7 +2460,7 @@ ${i===me?'':orack(r,cnt)}
     h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><button class="fcs" id="fcs" aria-pressed="${!!SET.focus}" aria-label="Istakaya odaklan (taşları büyüt)" title="Odak">${SET.focus?'⤡':'⤢'}</button><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${needS}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':''))):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
-<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${SRV?'<button id="repO">🐞 Bildir</button>':''}${SRV&&CFG.pub&&ROOM&&ROOM.host===uid?`<button class="tg" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık</button>`:''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
+<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}">Kurallar</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${SRV?'<button id="repO">🐞 Bildir</button>':''}${SRV&&CFG.pub&&ROOM&&ROOM.host===uid?`<button class="tg" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık</button>`:''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
     h+='<!--SEC-->';
     /* uyarı: ekranın üstünde kısa süre görünür */
     if(msg!==lastMsg){lastMsg=msg;msgT=msg?Date.now():0}
@@ -2919,7 +2935,7 @@ ${sw('wake','Ekranı açık tut','Oyun sırasında telefon ekranı kararmaz',SET
 <div class="avgrid">${AVN.map((n,k)=>`<button class="avo ${k===myAv?'on':''}" data-sav="${k}" role="radio" aria-checked="${k===myAv}">${avI(k)}<small>${n}</small></button>`).join('')}</div>
 <small class="snote">Ad ve karakter bir sonraki masada geçerli olur.</small>
 </section>
-<section class="sabout"><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a><small>Sürüm ${esc(APP_BUILD)}</small></section>
+<section class="sabout"><a href="${RULES_URL}">Kurallar</a><small>Sürüm ${esc(APP_BUILD)}</small></section>
 </div></div>`;
 }
 function openSet(on){
@@ -2955,7 +2971,7 @@ try{const h=document.querySelector('.top h1');if(h)h.innerHTML=KW.html('line');K
     let u=null,d=null;
     if(typeof claude!=='undefined'&&claude&&claude.use){u=await claude.use('user');d=await claude.use('db')}
     else if(typeof location!=='undefined'&&/^https?:$/.test(location.protocol)&&typeof connectServer==='function'){SRV=await connectServer();if(SRV){d=SRV.db;u={id:async()=>SRV.uid}}}
-    if(SRV){RULES_URL='/kurallar';document.querySelectorAll('a[href*="Sh1LDXSeKtgKLZ3yz8tyDt"]').forEach(a=>a.href=RULES_URL)}
+    
     if(u&&d){db=d;uid=await u.id();watchCfg();
       const sc=lsGet('okeyRoom');
       if(uid&&sc){
