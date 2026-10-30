@@ -22,7 +22,7 @@ async def main():
         # yakınlaştır
         await pg.evaluate("(()=>{"+G+"const L=(me+3)%4;g.tbl['t'+L]=[{g:[g.hands['h'+L][0]],k:'q',lo:1}];g.disc['d'+L]=[5,6,7];return db.doc(k).set(g)})()"); await pg.wait_for_timeout(300)
         await pg.click('#scene .a-left .plate'); await pg.wait_for_timeout(200)
-        z=await pg.evaluate("!!document.getElementById('zoomv')&&document.querySelectorAll('#zoomv .zdis .t').length"); check('isim kutusuna dokununca yakınlaştır açıldı, atılan taşlar görünüyor: '+str(z),z==3)
+        z=await pg.evaluate("!!document.getElementById('zoomv')&&document.querySelectorAll('#zoomv .zdis .t').length"); check('isim kutusuna dokununca yakınlaştır açıldı, sadece son atılan taş görünüyor: '+str(z),z==1)
         await pg.screenshot(path='t26_zoom.png')
         await pg.click('#zoomX'); await pg.wait_for_timeout(100); check('kapandı',await pg.evaluate("!document.getElementById('zoomv')"))
         # tepki

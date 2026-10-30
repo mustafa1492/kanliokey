@@ -1411,7 +1411,7 @@ function mvDiff(a,b){
     const who=o===m?'kendi perine':`${N(o)} perine`;
     out.push({i:m,h:swp?`${N(m)} ${who} ${nw.map(T).join('')} koyup okeyi aldı`:`${N(m)} ${who} ${nw.map(T).join('')} işledi`});
   }
-  if(dB(m).length>dA(m).length){const x=dB(m)[dB(m).length-1],pen=((b.ex||{})['s'+m]||0)-((a.ex||{})['s'+m]||0)>=500;out.push({i:m,h:`${N(m)} ${T(x)} attı${pen?' <em class="mvp">işler! +500</em>':''}`})}
+  if(dB(m).length>dA(m).length){const x=dB(m)[dB(m).length-1],pen=((b.ex||{})['s'+m]||0)-((a.ex||{})['s'+m]||0)>=500;out.push({i:m,d:1,h:`${N(m)} ${T(x)} attı${pen?' <em class="mvp">işler! +500</em>':''}`,h0:`${N(m)} taş attı${pen?' <em class="mvp">işler! +500</em>':''}`})}
   if(b.ph==='end')out.push({i:b.win,h:b.win===99?'Deste bitti, el bitti':b.win>=0&&b.win<4?`${N(b.win)} eli bitirdi`:'El bitti'});
   const t=Date.now();out.forEach(x=>MVL.push({...x,t}));
   if(MVL.length>60)MVL=MVL.slice(-60);
@@ -1421,12 +1421,13 @@ function lmvH(){
   const L=MVL.slice(-1)[0];if(!L)return '';
   return `<button class="lmv sc${L.i>=0&&L.i<4?L.i:0}" id="lmv" aria-label="Son hamleler"><span class="dot"></span><span class="lmt">${L.h}</span><span class="lmc">${MVL.length>1?'geçmiş ›':''}</span></button>`;
 }
-function mvList(){const l=document.getElementById('mvl');if(!l)return;l.innerHTML=MVL.length?MVL.slice().reverse().map(x=>`<div class="mvr sc${x.i>=0&&x.i<4?x.i:0}"><span class="dot"></span><span>${x.h}</span></div>`).join(''):'<p class="mut">Bu elde henüz hamle yok.</p>'}
+/* geçmişte her oyuncunun sadece son attığı taş görünür (Mustafa); eski atışlar taşsız yazılır */
+function mvList(){const l=document.getElementById('mvl');if(!l)return;const lastD={};MVL.forEach((x,k)=>{if(x.d)lastD[x.i]=k});l.innerHTML=MVL.length?MVL.map((x,k)=>({x,k})).reverse().map(({x,k})=>`<div class="mvr sc${x.i>=0&&x.i<4?x.i:0}"><span class="dot"></span><span>${x.d&&lastD[x.i]!==k&&x.h0?x.h0:x.h}</span></div>`).join(''):'<p class="mut">Bu elde henüz hamle yok.</p>'}
 function openMv(){
   closeMv();if(!S||!S.seats)return;B=S.B;const O=S.okey;mvOpen=true;
   const el=document.createElement('div');el.id='mvv';el.className='zoomv';
-  const all=[0,1,2,3].map(i=>{const d=S.disc['d'+i]||[];return d.length?`<div class="mvd sc${i}"><span class="dot"></span><b>${esc(S.names[i])}</b><span class="mvt">${d.map(x=>tile(x,O,'mv')).join('')}</span></div>`:''}).join('');
-  el.innerHTML=`<div class="zsheet" role="dialog" aria-label="Son hamleler"><div class="zh"><b>Son hamleler</b><small>bu el</small><button id="mvX" aria-label="Kapat">✕</button></div><div class="mvl" id="mvl"></div>${all?`<h5>Atılan taşlar</h5><div class="mvds">${all}</div>`:''}</div>`;
+  const all=[0,1,2,3].map(i=>{const d=(S.disc['d'+i]||[]).slice(-1);return d.length?`<div class="mvd sc${i}"><span class="dot"></span><b>${esc(S.names[i])}</b><span class="mvt">${d.map(x=>tile(x,O,'mv')).join('')}</span></div>`:''}).join('');
+  el.innerHTML=`<div class="zsheet" role="dialog" aria-label="Son hamleler"><div class="zh"><b>Son hamleler</b><small>bu el</small><button id="mvX" aria-label="Kapat">✕</button></div><div class="mvl" id="mvl"></div>${all?`<h5>Son atılan taşlar</h5><div class="mvds">${all}</div>`:''}</div>`;
   el.addEventListener('click',e=>{if(e.target===el||e.target.closest('#mvX'))closeMv()});
   document.body.appendChild(el);mvList();
 }
@@ -1506,14 +1507,14 @@ ${CFG.chat?`<form class="chf" id="chF" autocomplete="off"><input id="chI" maxlen
   document.body.appendChild(el);chatList();render();
 }
 function closeRx(){const was=rxOpen;rxOpen=false;const e=document.getElementById('rxp');if(e)e.remove();if(was)render()}
-/* masayı yakınlaştır (v52): bir oyuncunun isim kutusuna ya da perlerine dokununca perleri ve bu elde attığı taşlar büyük görünür */
+/* masayı yakınlaştır (v52): bir oyuncunun isim kutusuna ya da perlerine dokununca perleri ve son attığı taş büyük görünür (Mustafa: geçmişte sadece son taş) */
 function openZoom(i){
   if(!S||!S.seats)return;closeZoom();B=S.B;const O=S.okey,me=S.seats.indexOf(uid);
   const prs0=(S.tbl['t'+i]||[]).filter(r=>r&&r.g),dis=S.disc['d'+i]||[],o=S.opn['s'+i];
   const el=document.createElement('div');el.id='zoomv';el.className='zoomv';
   el.innerHTML=`<div class="zsheet sc${i}" role="dialog" aria-label="${esc(S.names[i])}"><div class="zh"><span class="dot"></span><b>${esc(S.names[i])}${i===me?' · sen':''}</b><small>${S.hands['h'+i].length} taş${o>0?' · açtı '+o+((S.opm||{})['s'+i]==='c'?' (çift)':''):' · açmadı'}${S.scores['s'+i]?' · ceza '+S.scores['s'+i]:''}</small><button id="zoomX" aria-label="Kapat">✕</button></div>
 <h5>Perleri</h5>${prs0.length?`<div class="zpers">${prs0.map(r=>`<div class="zg">${r.g.map((x,k)=>{const ly=r.x&&r.x.includes(x)?' ly':'';return isJ(x,O)?`<div class="t ok c3${ly}">★<small style="font-size:11px">${slotVal(r,k,O)}</small></div>`:tile(x,O,ly)}).join('')}</div>`).join('')}</div>`:'<p class="mut">Henüz per açmadı.</p>'}
-<h5>Bu elde attığı taşlar <small>(${dis.length})</small></h5>${dis.length?`<div class="zdis">${dis.map((x,k)=>`<div class="zd">${tile(x,O)}<small>${k+1}</small></div>`).join('')}</div>`:'<p class="mut">Henüz taş atmadı.</p>'}</div>`;
+<h5>Son attığı taş</h5>${dis.length?`<div class="zdis"><div class="zd">${tile(dis[dis.length-1],O)}</div></div>`:'<p class="mut">Henüz taş atmadı.</p>'}</div>`;
   el.addEventListener('click',e=>{if(e.target===el||e.target.closest('#zoomX'))closeZoom()});
   document.body.appendChild(el);
 }
