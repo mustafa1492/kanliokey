@@ -27,6 +27,7 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 - Elindeki perlerin hepsini açmak zorunda değilsin (Mustafa). Puan şartına (17, katlamalı) sadece açtığın perler sayılır. Oyunda: açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar; seçim yoksa hepsini açar.
 - İlk açılış en az 17 puan olmalıdır.
 - Katlamalı: biri açtıktan sonra diğerleri masadaki en yüksek açılıştan en az 1 fazla açar (biri 18 açarsa sıradaki en az 19).
+- Katlamalıda yandan da sayılır (Mustafa): sıra hep bir yandan artar. 17 → 17 + yandan 1 → 17 + yandan 2 → 18 → 18 + yandan 1 ... Masada 17 + yandan 1 varsa sıradaki en az 17 + yandan 2 açar; masada düz 17 varsa 17 + yandan 1 yeter.
 - İlk elde açılamaz, önce bir tur dönmesi gerekir.
 - Açtığın turda eli bitiremezsin: açtığın turda son taşını atamazsın, açtıktan sonra elinde en az bir taş kalmalıdır (açıp işlerken de).
 - Açamayan oyuncu elini kapalı tutup oynamaya devam eder.

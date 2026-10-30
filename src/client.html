@@ -1531,7 +1531,7 @@ function yanHint(t,me){
   return hcGet('y|'+t+'|'+h.join(',')+'|'+S.opn['s'+me]+'|'+S.mx+'|'+O.c+O.n+(S.B?'B':''),()=>{
     B=S.B;
     if(opened){if(om==='c')return h.some(x=>x!==t&&!isJ(t,O)&&!isJ(x,O)&&tv(x,O).c===tv(t,O).c&&tv(x,O).n===tv(t,O).n)?'çift olur':'';return formsPer(t,h,O)?'per olur':''}
-    const need=S.mx>0?S.mx+1:17;
+    const need=needRaw(S);
     const w=openPlan([...h,t],O,need,0,8000,1);if(!w)return '';
     const wo=openPlan(h,O,need,0,8000,1);
     return (!wo||w.pts>wo.pts)?'al, açarsın':'';
@@ -1541,7 +1541,7 @@ let needQ='',needT=null;
 function acHint(me,need){
   const h=S.hands[hk(me)]||[],O=S.okey;B=S.B;
   const key='a|'+h.slice().sort((a,b)=>a-b).join(',')+'|'+need+'|'+O.c+O.n+(S.B?'B':'');
-  const best=hcGet(key+'|b',()=>{const p=openPlan(h,O,0,0,30000,1);const pp=pairPlan(h,O);return Math.max(p?Math.floor(p.pts/3):0,pp.pts)});
+  const best=hcGet(key+'|b',()=>{const p=openPlan(h,O,0,0,30000,1);const pp=pairPlan(h,O);return Math.max(p?p.pts:0,pp.raw)});
   if(best>=need)return {ok:true,best};
   if(SET.lvl!=='kolay')return {ok:false,best,need:[]};
   const got=hc.get(key+'|n');
@@ -2365,7 +2365,7 @@ function render0(){
       if(ok){fresh={id:x,t:Date.now()};if(!dealT||Date.now()-dealT>2500)newT={id:x,trn:S.trn,gid:S.gid}}
     }
     const pv=(me+3)%4,pile=S.disc[dk(pv)]||[],top=pile.length?pile[pile.length-1]:null;
-    const need=S.mx>0?S.mx+1:17,tot=stTot(stage,O),opened=S.opn['s'+me]>0;
+    const need=needRaw(S),needS=Math.floor(need/3)+(need%3?`<small class="yan"> +yandan ${need%3}</small>`:''),tot=stRaw(stage,O),opened=S.opn['s'+me]>0;
     const canDraw=mine&&S.ph==='draw';
     /* masa */
     const pos=['me','right','top','left'],okeyId=S.B?-1:O.c*26+O.n-1;
@@ -2412,7 +2412,7 @@ ${i===me?'':orack(r,cnt)}
     /* "Per aç" düğmesinin durumu: tablo hesabı gösterilmez, sebebi uyarı olarak çıkar */
     let canOk=false;
     if(md){
-      const have=stage.length>0||auto.groups.length>0,pts=stage.length?tot:auto.pts;
+      const have=stage.length>0||auto.groups.length>0,pts=stage.length?tot:auto.pts*3+(auto.rem||0);
       const mustIn=S.must<0||(stage.length?staged.includes(S.must):agSet.has(S.must));
       canOk=have&&mustIn&&!auto.bad&&!(!opened&&S.trn<4)&&(opened||pts>=need);
     }
@@ -2429,19 +2429,19 @@ ${i===me?'':orack(r,cnt)}
     A.classList.add('gm');
     h+=`<div class="scene ${Date.now()-flashPen<1200?'pflash':''}" id="scene" style="--pe:${Math.max(0,Date.now()-flashPen)}ms"><div class="board"><div class="felt3d">${STAMP}<div class="area a-top">${seatH(2)}</div><div class="area a-left">${seatH(3)}</div><div class="area a-mid">${mid}</div><div class="area a-right">${seatH(1)}</div><div class="area a-me">${seatH(0)}</div>${chaosH}</div></div><div class="fxl" aria-hidden="true">${penFx.filter(x=>Date.now()-x.t<2100).map(x=>`<span class="pfloat" data-fs="${x.i}" style="--pe:${Date.now()-x.t}ms">+${x.v}</span>`).join('')}</div>${ended?endH(me,elE,finalEnd):''}</div>`;
     /* ıstaka */
-    const arr=pickG(autoOpen(order.map(x=>x!=null&&!staged.includes(x)?x:null),O,-1,opened?(S.opm||{})['s'+me]:''),O),hp=arr.pts,ptsOk=!opened&&hp>=need;
+    const arr=pickG(autoOpen(order.map(x=>x!=null&&!staged.includes(x)?x:null),O,-1,opened?(S.opm||{})['s'+me]:''),O),hp=arr.pts,hpr=hp*3+(arr.rem||0),ptsOk=!opened&&hpr>=need;
     h+='<!--SEC--><div class="rackbox">';
     let hl=`Istakan · ${myH.length} taş`;
     if(SET.hAc&&!opened&&!ended){try{const ah=acHint(me,need);
-      if(ah.ok)hl=hp>=ah.best?`<span class="hok">✓ Açabilirsin</span>`:`<span class="hok">En iyi açılış ${ah.best}</span>${SET.smart?' · Sırala':''}`;
+      if(ah.ok)hl=hpr>=ah.best?`<span class="hok">✓ Açabilirsin</span>`:`<span class="hok">En iyi açılış ${fmtP(ah.best)}</span>${SET.smart?' · Sırala':''}`;
       else if(SET.lvl==='kolay'&&ah.need&&ah.need.length)hl=`<span class="hneed">Açmak için:</span> ${ah.need.map(x=>`<i class="hn c${tv(x,O).c}">${tv(x,O).n}</i>`).join('')}`;
-      else if(ah.need)hl=`En iyi ${ah.best} / ${need}`;
+      else if(ah.need)hl=`En iyi ${fmtP(ah.best)} / ${needS}`;
     }catch(e){}}
     let finS=null;
     if(SET.lvl==='kolay'&&md&&opened&&S.ot!==me){try{finS=new Set(myH.filter(x=>canEnd(S,me,myH.filter(y=>y!==x))))}catch(e){}
       if(finS&&finS.size){const okF=[...finS].some(x=>isJ(x,O));hl=`<span class="hok">Bitirebilirsin!${okF?' Okeyle ×2':''}</span>`}}
     const isl=SET.hIs&&opened&&md?new Set(myH.filter(x=>{try{return canIsle(x,me)}catch(e){return false}})):null;
-    h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><button class="fcs" id="fcs" aria-pressed="${!!SET.focus}" aria-label="Istakaya odaklan (taşları büyüt)" title="Odak">${SET.focus?'⤡':'⤢'}</button><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${need}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':''))):''}</div>`).join('')}</div></div>
+    h+=`<div><div class="rlabel"><span class="lab hlab">${hl}</span><button class="fcs" id="fcs" aria-pressed="${!!SET.focus}" aria-label="Istakaya odaklan (taşları büyüt)" title="Odak">${SET.focus?'⤡':'⤢'}</button><span class="pbadge ${ptsOk?'go':''}" role="status">${md&&auto.bad?'<b>6+ taşlık per olmaz: ikiye ayır</b>':opened?`Açtığın <b>${S.opn['s'+me]}</b>`:`${arr.part?'Seçilen':'Dizilen'} <b>${hp}</b>${arr.rem?`<small class="yan"> +yandan ${arr.rem}</small>`:''} / ${needS}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0,Date.now()-fresh.t)}ms">${order.map((id,i)=>`<div class="rs" data-s="${i}">${id!=null&&!staged.includes(id)?(isl&&isl.has(id)?tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':'')).replace(/<\/div>$/,'<b class="isb" aria-label="işlenebilir">+</b></div>'):tile(id,O,(sel.includes(id)?'sel ':'')+(agSet.has(id)?'ag ':agOff.has(id)?'ag2 ':'')+(fresh.id===id&&Date.now()-fresh.t<700?'pop ':'')+(newT.id===id&&newT.gid===S.gid&&newT.trn===S.trn&&mine&&S.ph==='discard'?'nw ':'')+(finS&&finS.has(id)?'fin':''))):''}</div>`).join('')}</div></div>
 ${sgroups}<div class="acts3"><button class="p ${canOk?'':'dim'}" id="open" ${md?'':'disabled'}>${openKind==='c'?'Çift aç':'Per aç'}</button><button class="p" id="dis" ${md&&sel.length===1?'':'disabled'}>At</button><button id="fin" ${md&&sel.length===1?'':'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
 ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></div>':''}
 <div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}" target="_blank" rel="noopener">Kurallar ↗</a>${SRV&&!isStandalone()?'<button id="inst">Telefona ekle</button>':''}${SRV?'<button id="repO">🐞 Bildir</button>':''}${SRV&&CFG.pub&&ROOM&&ROOM.host===uid?`<button class="tg" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık</button>`:''}${newVer?'<button class="p" id="reload">Yeni sürüm: yenile</button>':''}</div><small class="mut xinfo">${code?'Oda <b>'+esc(code)+'</b>':''}${S.dl!=null?' · Dağıtan: '+esc(S.names[S.dl]):''} · El ${S.round+1}/${S.R}</small><details class="hint" ${hintOpen?'open':''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
@@ -2507,7 +2507,7 @@ function pairPlan(h,O){
   for(const j of jk){const x=singles.shift();if(x==null)break;pairs.push([x,j])}
   while(pairs.length&&pairs.flat().length>h.length-1){pairs.sort((a,b)=>prs(b,O)-prs(a,O));pairs.pop()}
   const sum=pairs.reduce((a,p)=>a+prs(p,O),0);
-  return {groups:pairs,pts:Math.floor(sum*2/3)};
+  return {groups:pairs,pts:Math.floor(sum*2/3),raw:sum*2};
 }
 function smartOrder(h,O,mode){
   let groups=[],pp=null;

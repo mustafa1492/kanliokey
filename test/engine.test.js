@@ -45,6 +45,16 @@ ok(!r.r&&/İlk turda/.test(r.msg),'ilk tur dönmeden açılmaz');
 s=base([red(8),red(9),red(10),red(11),red(12),red(13),id(1,2),id(2,5)],{mx:21});
 r=run(s,'open',{groups:[[red(8),red(9),red(10)],[red(11),red(12),red(13)]]});
 ok(!r.r&&/en az 22/.test(r.msg),'katlamalı: masada 21 varsa en az 22 gerekir');
+{ /* katlamalı yandanı da sayar (Mustafa): 17 -> 17+y1 -> 17+y2 -> 18 */
+  const n9=[id(1,9),id(2,9),id(3,9)],fl=[id(1,2),id(2,5)];
+  const g51=[n9,[red(7),red(8),red(9)]],g52=[n9,[red(3),red(4),red(5),red(6),red(7)]],g53=[n9,[red(5),red(6),red(7),red(8)]];
+  const t=(mxr,g)=>run(base([...g.flat(),...fl],{mx:Math.floor(mxr/3),mxr}),'open',{groups:g});
+  r=t(52,g51);ok(!r.r&&/en az 17 \+ yandan 2/.test(r.msg),'katlamalı: masada 17+yandan 1 varsa 17 yetmez');
+  r=t(52,g53);ok(r.r&&r.r.mxr===53&&r.r.mx===17,'katlamalı: 17+yandan 1 üstüne 17+yandan 2 açılır');
+  r=t(51,g52);ok(r.r&&r.r.mxr===52,'katlamalı: düz 17 üstüne 17+yandan 1 açılır');
+  r=t(53,g53);ok(!r.r&&/en az 18 /.test(r.msg),'katlamalı: 17+yandan 2 varsa en az 18 gerekir');
+  r=run(base([...g51.flat(),...fl]),'open',{groups:g51});ok(r.r&&r.r.mxr===51,'ilk açılış düz 17 ile olur');
+}
 r=run(s,'open',{groups:[[red(8),red(8),red(10)]]});ok(!r.r,'aynı taş iki kez kullanılamaz');
 r=run(s,'open',{groups:[[red(8),red(9),99]]});ok(!r.r,'elde olmayan taşla açılmaz');
 r=run(s,'open',{groups:'x'});ok(!r.r,'bozuk açma isteği reddedilir');
@@ -128,7 +138,7 @@ console.log('--- puan: artanlar birikir, yandan (K-puan)');
  const s3=base([...q,...p,id(1,2),id(2,4)]);const r3=run(s3,'open',{groups:[q,p]});
  ok(r3.r&&r3.r.opn.s0===20,'dört 11 + 5-6-7 ile 20 açılır (62/3, artan 2 yandan)');
  const s4=base([...q,id(1,2),id(2,4),id(2,9)],{mx:14});const r4=run(s4,'open',{groups:[q]});
- ok(!r4.r&&/şu an 14 \(yandan 2\)/.test(r4.msg),'yetmeyince yandan da yazılır: '+r4.msg);
+ ok(!r4.r&&/şu an 14 \+ yandan 2/.test(r4.msg),'yetmeyince yandan da yazılır: '+r4.msg);
  console.log('--- kısmi açma: elindeki perlerin hepsini açmak zorunda değilsin');
  const s5=base([...q,...p,id(1,9),id(2,9),id(3,9),id(1,2)]);const r5=run(s5,'open',{groups:[q,p]});
  ok(r5.r&&r5.r.hands.h0.length===4&&r5.r.tbl.t0.length===2,'9-9-9 elde kaldı, sadece seçilen perler açıldı');}

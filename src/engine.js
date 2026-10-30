@@ -61,6 +61,10 @@ const ishler=(s,t,O)=>[0,1,2,3].some(i=>(s.tbl['t'+i]||[]).some(r=>r&&r.g&&canAd
 const stTot=(st,O)=>st.length&&st.every(g=>g.length===2)?Math.floor(st.reduce((a,g)=>a+prs(g,O),0)*2/3):Math.floor(st.reduce((a,g)=>a+grp(g,O),0)/3);
 /* artan (yandan): taşların toplamı 3'e bölünür, artanlar birikir; kalan 1 ya da 2 puana yetmez, "yandan" diye gösterilir */
 const stRem=(st,O)=>st.length&&st.every(g=>g.length===2)?(st.reduce((a,g)=>a+prs(g,O),0)*2)%3:st.reduce((a,g)=>a+grp(g,O),0)%3;
+/* katlamalı yandanı da sayar (Mustafa): ham toplam = puan×3 + yandan. 17+y1'den sonra en az 17+y2, 17+y2'den sonra 18 */
+const stRaw=(st,O)=>st.length&&st.every(g=>g.length===2)?st.reduce((a,g)=>a+prs(g,O),0)*2:st.reduce((a,g)=>a+grp(g,O),0);
+const needRaw=s=>s.mxr>0?s.mxr+1:s.mx>0?s.mx*3+3:51;
+const fmtP=r=>Math.floor(r/3)+(r%3?' + yandan '+r%3:'');
 function grp(ids,O){
   const n=ids.length,ts=ids.filter(x=>!isJ(x,O)).map(x=>tv(x,O));
   if(n<3||n>13||!ts.length)return -1;
@@ -126,7 +130,7 @@ function deal(prev,R,ps,now,opt){
   if(!big){ind=t.splice(t.findIndex(x=>x<104),1)[0];const n0=ind%13+1;O={c:ind/26|0,n:n0===13?1:n0+1}}
   const hands={},disc={},tbl={},opn={};
   for(let i=0;i<4;i++){hands[hk(i)]=t.splice(0,i===st?15:14);disc[dk(i)]=[];tbl['t'+i]=[];opn['s'+i]=0}
-  return{seats:ps.map(x=>x.u),names:ps.map(x=>x.n),scores:prev?prev.scores:{},hands,disc,tbl,opn,mx:0,must:-1,d0,dl,ik:[],ex:{s0:0,s1:0,s2:0,s3:0},opm:{s0:'',s1:'',s2:'',s3:''},trn:0,ot:-1,deck:t,ind,okey:O,B:big,round,R:prev?prev.R:R,turn:st,start:st,ph:'discard',win:-1,last:[0,0,0,0],tt:now,gid:now,pair};
+  return{seats:ps.map(x=>x.u),names:ps.map(x=>x.n),scores:prev?prev.scores:{},hands,disc,tbl,opn,mx:0,mxr:0,must:-1,d0,dl,ik:[],ex:{s0:0,s1:0,s2:0,s3:0},opm:{s0:'',s1:'',s2:'',s3:''},trn:0,ot:-1,deck:t,ind,okey:O,B:big,round,R:prev?prev.R:R,turn:st,start:st,ph:'discard',win:-1,last:[0,0,0,0],tt:now,gid:now,pair};
 }
 function canEnd(s,me,rest){
   if(!(s.opn['s'+me]>0)||s.ot===me)return false;
@@ -276,10 +280,10 @@ MOVES.open=(s,me,a)=>{
     return{hands:{[hk(me)]:h},tbl:{...s.tbl,['t'+me]:[...(s.tbl['t'+me]||[]),...recs]},must:-1};
   }
   if(s.trn<4){emsg='İlk turda açamazsın, herkes bir kez oynamalı.';return}
-  const tot=stTot(st,O),need=s.mx>0?s.mx+1:17;
-  if(tot<need){const r=stRem(st,O);emsg=`Açmak için en az ${need} puan gerekiyor, şu an ${tot}${r?' (yandan '+r+')':''}.`;return}
+  const tot=stTot(st,O),raw=stRaw(st,O),need=needRaw(s);
+  if(raw<need){emsg=`Açmak için en az ${fmtP(need)} gerekiyor, şu an ${fmtP(raw)}.`;return}
   
-  return{hands:{[hk(me)]:h},tbl:{...s.tbl,['t'+me]:recs},opn:{['s'+me]:tot},opm:{...(s.opm||{}),['s'+me]:isC?'c':'p'},mx:tot,ot:me,must:-1};
+  return{hands:{[hk(me)]:h},tbl:{...s.tbl,['t'+me]:recs},opn:{['s'+me]:tot},opm:{...(s.opm||{}),['s'+me]:isC?'c':'p'},mx:tot,mxr:raw,ot:me,must:-1};
 };
 MOVES.finish=(s,me,a)=>{
   const t=toInt(a.t);
@@ -328,7 +332,7 @@ function openPlan(h,O,need,base=0,cap=30000,keep=1){
   let best=null,nodes=0;
   (function go(from,chosen,pts,used,jl){
     if(nodes++>cap)return;
-    if(Math.floor((pts+base)/3)>=need&&used<=h.length-keep&&(!best||pts>best.pts))best={pts,chosen:[...chosen]};
+    if(pts+base>=need&&used<=h.length-keep&&(!best||pts>best.pts))best={pts,chosen:[...chosen]};
     for(let i=from;i<defs.length;i++){
       const d=defs[i];let j=0,u=[],pt=0,sz=0;
       if(d.s){
@@ -458,7 +462,7 @@ function openMove(s,me,h,O){
     return{groups:gs,opened:true};
   }
   if(s.trn<4)return null;
-  const need=s.mx>0?s.mx+1:17;
+  const need=needRaw(s);
   let gs=null;
   if(must>=0){
     const g=findGroupWith(h,must,O);if(!g)return null;
@@ -467,14 +471,14 @@ function openMove(s,me,h,O){
   }else gs=openPlan(h,O,need,0,30000,2);
   if(!gs||!gs.length)return null;
   if(gs.flat().length>=h.length-1)return null;
-  const bp=Math.floor(gs.reduce((a,g)=>a+grp(g,O),0)/3);
-  if(bp<need)return null;
-  return{groups:gs,bp,opened:false};
+  const raw=gs.reduce((a,g)=>a+grp(g,O),0),bp=Math.floor(raw/3);
+  if(raw<need)return null;
+  return{groups:gs,bp,raw,opened:false};
 }
 function applyOpen(s,me,h,O,m){
   const flat=m.groups.flat(),rest=h.filter(x=>!flat.includes(x)),recs=m.groups.map(g=>rec(g,O));
   if(m.opened)return{hands:{[hk(me)]:rest},tbl:{...s.tbl,['t'+me]:[...(s.tbl['t'+me]||[]),...recs]},must:-1};
-  return{hands:{[hk(me)]:rest},tbl:{...s.tbl,['t'+me]:recs},opn:{['s'+me]:m.bp},opm:{...(s.opm||{}),['s'+me]:'p'},mx:m.bp,ot:me,must:-1};
+  return{hands:{[hk(me)]:rest},tbl:{...s.tbl,['t'+me]:recs},opn:{['s'+me]:m.bp},opm:{...(s.opm||{}),['s'+me]:'p'},mx:m.bp,mxr:m.raw,ot:me,must:-1};
 }
 function botSwapPlan(s,me,h,O){
   let best=null,bs=-1;
@@ -564,11 +568,11 @@ function botPlan0(s,me){
     }
   }
   if(!opened&&s.trn>=4){
-    const need=s.mx>0?s.mx+1:17,plan=openPlan(h,O,need,0,30000,2);
+    const need=needRaw(s),plan=openPlan(h,O,need,0,30000,2);
     if(plan){
       const flat=plan.flat(),rest=h.filter(x=>!flat.includes(x));
-      const bp=Math.floor(plan.reduce((a,g)=>a+grp(g,O),0)/3);
-      return{hands:{[hk(me)]:rest},tbl:{...s.tbl,['t'+me]:plan.map(g=>rec(g,O))},opn:{['s'+me]:bp},opm:{...(s.opm||{}),['s'+me]:'p'},mx:bp,ot:me,must:-1};
+      const raw=plan.reduce((a,g)=>a+grp(g,O),0),bp=Math.floor(raw/3);
+      return{hands:{[hk(me)]:rest},tbl:{...s.tbl,['t'+me]:plan.map(g=>rec(g,O))},opn:{['s'+me]:bp},opm:{...(s.opm||{}),['s'+me]:'p'},mx:bp,mxr:raw,ot:me,must:-1};
     }
   }
   let worst=null,ws=1e9;
@@ -712,5 +716,5 @@ function viewFor(s,me){
 function tileCount(s){let n=s.deck.length+(s.ind>=0?1:0);for(let i=0;i<4;i++){n+=s.hands[hk(i)].length+s.disc[dk(i)].length;for(const r of s.tbl['t'+i]||[])n+=r.g.length}return n}
 /* uzun süre çalışan sunucuda bellek şişmesin */
 function resetCaches(){badSide.clear();hpKey='';hpVal=0}
-var ENG={stRem,pairOrder,isMate,resetCaches,run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
+var ENG={stRem,stRaw,needRaw,fmtP,pairOrder,isMate,resetCaches,run:runMove,deal,botMove,timeoutMove,merge:mergePatch,view:viewFor,tileCount,isBot,fillBots,valid,grp,prs,rec,canAdd,canSwap,autoOpen,fin,canEnd,setB:b=>{B=!!b}};
 if(typeof module!=='undefined'&&module.exports)module.exports=ENG;
