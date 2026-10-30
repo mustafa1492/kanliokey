@@ -123,6 +123,15 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Animasyon ve ses (taş sesi, ceza anında "kanlı" efekt). Kapatılabilir.
 - [ ] PWA: telefon ana ekranına uygulama gibi eklenebilsin
 
+## Mustafa'nın istekleri (31 Ekim 2026, sırayla yapılacak)
+- [ ] Hediye gönderme: oyunda bir oyuncuya çay, kahve, öpücük vb. hediye gönderilir (isim kutusuna dokun → hediye seç, masada animasyonla gider, herkes görür).
+- [ ] Rakip ıstakaları: masadaki küçük ahşap ıstakalar "adi" duruyor, yeni bir görünüm bulunacak (örnek: sadece taş sırtları ve taş sayısı rozeti, ya da ince, daha gerçekçi ıstaka).
+- [ ] Telefonda (Safari) masa düzeni: diğer oyuncular yan yana duruyor. Her oyuncu masanın kendi kenarında dursun (sağdaki sağ kenarda, soldaki sol kenarda, karşıdaki üstte), masada hiçbir şey iç içe geçmesin (t29/t30 ile ölç).
+- [ ] Geçmiş sekmesi: hamle geçmişinde herkesin attığı bütün taşlar görünmesin, her oyuncunun sadece attığı son taş görünsün.
+- [ ] Hesap: misafir girişi (şimdiki gibi) + en basit kayıt: kullanıcı adı ve şifre, doğrulama yok. Profil (ad, karakter, oyun geçmişi) hesaba bağlanır, başka telefondan girince aynen gelir. Şifre sunucuda tuzlu hash ile saklanır.
+- [ ] Mustafa'ya özel GM profili: profilde "GM" rozeti, oyun içinde sadece ona özel ayrıcalıklar (liste Mustafa'ya sunuldu, seçecek).
+- [ ] Menü ikiye ayrılsın: "Genel ayarlar" (ses, titreşim, bildirim, ekran, profil, hesap) ve "Oyun ayarları" (ıstaka, ipuçları, zorluk, masa görünümü, büyük taş vb.), içleri ayrı ayrı doldurulacak.
+
 ## İlk izlenim (cepte, Mustafa onaylayınca)
 - [x] Bekleme ekranı: sunucu uyanırken boş sayfa yerine "Masa hazırlanıyor" (taşlar karılıyor) açılışı
 - [x] WhatsApp paylaşım kartı: görselli önizleme ("… seni masaya çağırıyor, oda kodu …")
