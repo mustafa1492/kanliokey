@@ -944,7 +944,7 @@ body.big .rack .t {
 .ftog small {
   font-size: 12.5px;
 }
-.sw {
+.ftog .sw {
   box-sizing: border-box;
   width: 52px;
   min-height: 30px;
@@ -955,7 +955,7 @@ body.big .rack .t {
   flex: none;
   background: #3a2a22;
 }
-.sw i {
+.ftog .sw i {
   position: absolute;
   top: 50%;
   margin-top: -11px;
@@ -966,11 +966,11 @@ body.big .rack .t {
   background: #cbb9a0;
   transition: left 0.15s;
 }
-.sw.on {
+.ftog .sw.on {
   background: #2f8f55;
   border-color: #3fb36d;
 }
-.sw.on i {
+.ftog .sw.on i {
   left: calc(100% - 25px);
   background: #fff;
 }
