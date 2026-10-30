@@ -931,6 +931,10 @@ $('#app').addEventListener('click', async e => {
     } else if (id === 'go') await start(null, (ROOM && ROOM.R) || 9);
     else if (id === 'again') await start(S);
     else if (id === 'inst') await installApp();
+    else if (id === 'instLater') {
+      lsSet('okeyInstLater', String(Date.now() + 3 * 864e5));
+      render();
+    }
     else if (id === 'reload') location.reload();
     else if (id === 'endx') {
       endHide = S ? S.gid : -1;

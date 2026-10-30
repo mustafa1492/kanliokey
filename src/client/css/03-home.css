@@ -772,3 +772,36 @@ body.home .wrap {
     0 0 0 3px #7bd88f,
     0 0 16px #7bd88fbb !important;
 }
+.instcard {
+  border-color: #e8b93a66;
+  background: linear-gradient(180deg, #2a1d10, #1a120c);
+}
+.instcard .ich {
+  display: grid;
+  gap: 4px;
+}
+.instcard .ich b {
+  font: 700 16px/1.25 var(--body);
+  color: #f5dca0;
+}
+.instcard .ich small {
+  color: #cdbb9f;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.instcard .isteps {
+  margin: 10px 0 8px;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.instcard .ishare {
+  display: inline-flex;
+  vertical-align: -3px;
+  color: #6fb3ff;
+}
+.instcard .row {
+  gap: 8px;
+}

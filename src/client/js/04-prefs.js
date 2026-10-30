@@ -228,6 +228,20 @@ async function installApp() {
     : 'Tarayıcının menüsünden (⋮) "Ana ekrana ekle" ya da "Uygulamayı yükle"yi seç.';
   render();
 }
+/* ana ekrana ekle önerisi (Mustafa): ana ekrandan açılınca tam ekran, her şey yerine oturur.
+   Telefonda ve tarayıcıda açılmışsa ana ekranda kart çıkar; "Sonra" 3 gün gizler. */
+const isPhone = () => /iphone|ipod|android/i.test(navigator.userAgent || '');
+function instCardH() {
+  if (!SRV || isStandalone() || !isPhone()) return '';
+  if (+(lsGet('okeyInstLater') || 0) > Date.now()) return '';
+  const ios = /iphone|ipod/i.test(navigator.userAgent || '');
+  const steps = ios
+    ? `<ol class="isteps"><li>Alttaki <b>Paylaş</b> düğmesine bas <span class="ishare" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v12M7 8l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span> (Chrome'da sağ üstteki paylaş)</li><li><b>Ana Ekrana Ekle</b>'yi seç</li><li>Oyunu ana ekrandaki <b>Kanlı Okey</b> simgesinden aç</li></ol>`
+    : instEv
+      ? ''
+      : `<ol class="isteps"><li>Tarayıcının menüsünü (⋮) aç</li><li><b>Ana ekrana ekle</b> ya da <b>Uygulamayı yükle</b>'yi seç</li></ol>`;
+  return `<div class="panel instcard" role="note"><div class="ich"><b>📲 Ana ekrana ekle, tam ekran oyna</b><small>Uygulama gibi açılır: tarayıcı çubukları kalkar, masa ve ıstaka ekrana tam oturur.</small></div>${steps}<div class="row">${!ios && instEv ? '<button class="p" id="inst">Ana ekrana ekle</button>' : ''}<button id="instLater">Sonra</button></div></div>`;
+}
 /* yeni sürüm: sunucu yeni sürümdeyse ana ekrandayken sayfa kendini yeniler, oyundayken menüde haber verir */
 let newVer = false;
 if (typeof window !== 'undefined' && window.addEventListener)

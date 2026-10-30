@@ -1,7 +1,7 @@
 function homeH() {
   const saved = lsGet('okeyRoom');
   const inst = SRV && !isStandalone() ? `<button class="lnk" id="inst">Telefona uygulama gibi ekle</button>` : '';
-  return `${HOMEBG}<section class="hero2"><h2 class="wm">${KW.html('stack', 'kw-hero')}</h2>${QUOTES}</section>
+  return `${HOMEBG}<section class="hero2"><h2 class="wm">${KW.html('stack', 'kw-hero')}</h2>${QUOTES}</section>${instCardH()}
 <div class="panel card2"><label class="flab" for="nm">Takma adın</label><div class="nmrow"><button class="avbtn" id="avb" aria-expanded="${avOpen}" aria-label="Karakterini seç: ${AVN[myAv]}">${avI(myAv)}</button><input id="nm" placeholder="Örn. Mustafa" maxlength="14" value="${esc(name)}" autocomplete="nickname"></div>
 ${avOpen ? `<div class="avgrid" role="radiogroup" aria-label="Karakterin">${AVN.map((n, k) => `<button class="avo ${k === myAv ? 'on' : ''}" data-av="${k}" role="radio" aria-checked="${k === myAv}">${avI(k)}<small>${n}</small></button>`).join('')}</div>` : ''}
 <button class="p big" id="mk">Masa kur</button>
