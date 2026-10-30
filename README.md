@@ -6,7 +6,7 @@
 | Yol | Ne |
 |---|---|
 | `src/engine.js` | Kural motoru: per/çift, açma, işleme, okey değiştirme, bitirme, cezalar, botlar. Hem tarayıcıda hem sunucuda aynı kod. |
-| `src/client.html` | Oyun ekranı (masa, ıstaka, lobi, yönetim paneli, sesler). |
+| `src/client/` | Oyun ekranı, bölümlere ayrılı: `shell.html` iskelet, `css/` stiller, `js/` masa, ıstaka, lobi, yönetim paneli, sesler (ayrıntı CLAUDE.md). |
 | `src/net.js` | Sunucu bağlantısı (claude.ai dışında açılınca devreye girer). |
 | `src/kurallar.html` | Kurallar / tanıtım sayfası (`/kurallar`). |
 | `server/server.js` | Sunucu: sayfayı sunar, odaları ve oyunu yönetir, kuralları sunucuda uygular. |

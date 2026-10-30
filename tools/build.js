@@ -1,15 +1,19 @@
-/* src/client.html içine motoru ve ağ katmanını gömüp tek dosya üretir:
+/* src/client/ (iskelet + css + js parçaları) içine motoru ve ağ katmanını gömüp tek dosya üretir:
    dist/index.html  -> hem sunucuda hem claude.ai sayfası olarak aynı dosya çalışır.
    Ayrıca sunucunun dağıttığı simgeleri, paylaşım görselini, manifest ve service worker'ı dist'e kopyalar. */
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const root=path.join(__dirname,'..');
 const rd=f=>fs.readFileSync(path.join(root,f),'utf8');
 const pkg=JSON.parse(rd('package.json'));
-let html=rd('src/client.html');
+/* arayüz kaynağı src/client/ altında bölümlere ayrılmıştır: shell.html iskelet, css/*.css ve js/*.js dosya adı sırasıyla birleştirilir */
+const cat=d=>fs.readdirSync(path.join(root,d)).filter(f=>/\.(css|js)$/.test(f)).sort().map(f=>rd(d+'/'+f)).join('');
+let html=rd('src/client/shell.html');
+if(!html.includes('<!--@CSS@-->\n')||!html.includes('<!--@JS@-->\n'))throw new Error('shell.html yer tutucuları yok');
+html=html.replace('<!--@CSS@-->\n',()=>cat('src/client/css')).replace('<!--@JS@-->\n',()=>cat('src/client/js'));
 const eng=rd('src/engine.js').replace(/<\/script/gi,'<\\/script');
 const net=rd('src/net.js').replace(/<\/script/gi,'<\\/script');
 const wm=rd('src/wordmark.js').replace(/<\/script/gi,'<\\/script');
-if(!html.includes('/*@ENGINE@*/')||!html.includes('/*@NET@*/'))throw new Error('client.html yer tutucuları yok');
+if(!html.includes('/*@ENGINE@*/')||!html.includes('/*@NET@*/'))throw new Error('arayüz yer tutucuları yok');
 html=html.replace('/*@ENGINE@*/',()=>eng).replace('/*@NET@*/',()=>net).replace('/*@WM@*/',()=>wm);
 /* sürüm: içerikten türetilir, sunucu bunu yeni bağlanan sayfaya söyler; eski sayfa kendini yeniler */
 const kurSrc=rd('src/kurallar.html');

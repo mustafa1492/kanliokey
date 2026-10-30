@@ -140,6 +140,9 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Istaka düğmeleri: "Per aç" yerine "Seri aç" ve "Çift aç"; ayrıca "Seri diz" ve "Çift diz" (ıstakayı serilere ya da çiftlere göre dizer).
 - [ ] Süre kaçıran oyuncu: arka arkaya 3 kez süresi dolan masadan çıkar, yerine bot geçer, dönünce koltuğunu geri alır; sayı panelden (2/3/5). Kural KURALLAR.md "Sıra süresi"nde.
 - [ ] Yeni bot seviyesi: Zor'dan (Usta) bir seviye daha iyi bot (adı sonra). Seviyeye göre tecrübe puanı için gerekli.
+- [ ] Son hamle şeridi kalkacak (masada anlık "X 10 attı" gösteren şerit); sadece geçmiş kalacak (menüden ya da bir düğmeyle açılır).
+- [ ] MASA DÜZENİNE KÖKTEN ÇÖZÜM: oyun telefonda YATAY oynanacak (Mustafa). Dikey düzen yerine yatay için baştan tasarım: masa, dört oyuncu kenarlarda, ıstaka altta; dikey tutulunca "telefonu yan çevir" uyarısı. v53'teki yatay düzen temel alınabilir.
+- [ ] Ses paketi değişecek: başka bir ses paketi denenecek (kaynak ve lisans birlikte seçilecek; şimdiki paket Mustafa'nın kayıtları, js/02-sound-data).
 - [ ] Sırala için geri al: ıstakayı elle düzenledikten sonra yanlışlıkla Sırala'ya basan, "Geri al" ile önceki dizilişine döner.
 
 ## Uzun vadeli eksikler (31 Ekim 2026, Claude'un değerlendirmesi)
@@ -148,7 +151,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Hesaplar gelince: KVKK için kısa gizlilik metni, şifreler hash ile, "şifremi unuttum" (yönetici sıfırlar)
 - [ ] Oyuncu kazanma: alan adı, "kanlı okey kuralları" araması, WhatsApp gruplarında paylaşım, ilk 20 kullanıcının nereden geleceği
 - [ ] Ölçüm: kaç kişi oynuyor, kaçı geri geliyor, oyunlar nerede bırakılıyor
-- [ ] Kod bakımı: client.html tek dosyada ~3000 sıkışık satır; büyüdükçe bölümlere ayrılmalı
+- [x] (v60) Kod bakımı: client.html src/client/ altında 1 iskelet + 6 CSS + 19 JS dosyasına bölündü (önce bayt bayt aynı çıktıyla bölündü, sonra Prettier ile okunur biçime açıldı: ~11.700 satır); dosya haritası CLAUDE.md'de. Testler: npm test, ui t26/t27/t28/t29/t30/menu geçti, t24/t32 öncekiyle aynı sonuç
 - [ ] Gerçek cihaz testi: her sürümden önce 2-3 iPhone + 1-2 Android ile küçük test grubu (Playwright Chrome'la ölçüyor, Safari farkı kaçabiliyor)
 
 ## İlk izlenim (cepte, Mustafa onaylayınca)

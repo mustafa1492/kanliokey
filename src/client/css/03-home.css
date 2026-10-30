@@ -1,0 +1,774 @@
+/* ===== v41: logo, açılış ekranı, yeni ana ekran, koyu lobi ===== */
+.splash {
+  min-height: 70vh;
+  min-height: 70dvh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+  color: #f3e8d8;
+}
+.spl-logo .emb {
+  width: 110px;
+  height: 110px;
+  filter: drop-shadow(0 14px 24px #000c);
+  animation: sbob 2.4s ease-in-out infinite;
+}
+@keyframes sbob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(2deg);
+  }
+}
+.splash b {
+  font: 700 20px/1 var(--display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.shuf {
+  position: relative;
+  width: 132px;
+  height: 44px;
+}
+.shuf i {
+  position: absolute;
+  top: 4px;
+  width: 28px;
+  height: 38px;
+  border-radius: 5px;
+  background: linear-gradient(165deg, #fffcf3, #f3ead2 55%, #dccfa9);
+  box-shadow:
+    0 3px 0 #b5a97f,
+    0 5px 6px #0008;
+  display: grid;
+  place-items: center;
+  font: 700 17px/1 var(--display);
+  font-style: normal;
+  animation: shf 1.6s ease-in-out infinite;
+}
+.shuf .c0 {
+  left: 0;
+  color: #d3241b;
+}
+.shuf .c1 {
+  left: 34px;
+  color: #1b54d6;
+  animation-delay: -0.4s;
+}
+.shuf .c2 {
+  left: 68px;
+  color: #c27600;
+  animation-delay: -0.8s;
+}
+.shuf .c3 {
+  left: 102px;
+  color: #1b1b1b;
+  animation-delay: -1.2s;
+}
+@keyframes shf {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  25% {
+    transform: translateY(-12px) rotate(-8deg);
+  }
+  50% {
+    transform: translate(8px, 0) rotate(6deg);
+  }
+  75% {
+    transform: translate(-6px, -4px) rotate(-3deg);
+  }
+}
+.splash .slow {
+  display: none;
+  max-width: 260px;
+  color: #b09f8d;
+}
+.slowconn .splash .slow {
+  display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spl-logo .emb,
+  .shuf i {
+    animation: none;
+  }
+}
+/* koyu lobi (ana ekran, masa bekleme, yönetim) */
+body.lobby {
+  background-color: #080505;
+  background: radial-gradient(130% 60% at 50% -10%, #4a1412 0%, #1a0b09 48%, #080505 100%) fixed;
+  color: var(--fg);
+}
+body.lobby .panel {
+  background: linear-gradient(180deg, #1f1513, #170f0e);
+  color: var(--fg);
+  border-color: #3f2c26;
+}
+body.lobby .panel .mut,
+body.lobby .panel small,
+body.lobby .flab {
+  color: var(--mut);
+}
+body.lobby .slot {
+  background: #ffffff08;
+  border-color: #3f2c26;
+}
+body.lobby .slot.sc0,
+body.lobby .slot.sc1,
+body.lobby .slot.sc2,
+body.lobby .slot.sc3 {
+  border-left: 4px solid var(--sc);
+}
+body.lobby .slot.sc3 {
+  border-left-color: #cfc6b0;
+}
+body.lobby .slot.bot {
+  background: #ffffff0d;
+  color: var(--fg);
+  border-color: #3f2c26;
+  border-style: solid;
+}
+body.lobby .panel .slot.bot small {
+  color: var(--mut);
+}
+body.lobby .slot.empty {
+  color: var(--mut);
+  border-left-width: 1px;
+}
+body.home .top h1,
+body.home .top a.chip {
+  display: none;
+}
+body.home .top {
+  justify-content: flex-end;
+}
+body.home .top .chips {
+  justify-content: flex-end;
+}
+.hero2 {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: 2px 0 4px;
+}
+.hlogo .emb {
+  width: min(116px, 26vw);
+  height: auto;
+  filter: drop-shadow(0 16px 26px #000c);
+  animation: sbob 4s ease-in-out infinite;
+}
+.hero2 .wm {
+  font: 700 clamp(40px, 12.5vw, 66px) / 0.95 var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 10px 0 0;
+  white-space: nowrap;
+}
+.hero2 .wm .ok {
+  color: #f6eed4;
+}
+.hero2 .wm .bleed {
+  color: #e0242f;
+}
+.hero2 .tagl {
+  margin: calc(30px + 0.5em) 0 0;
+  color: #d8c8b2;
+  max-width: 22em;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.card2 {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+.card2 input {
+  width: 100%;
+  min-height: 50px;
+  font-size: 18px;
+}
+.card2 .big {
+  min-height: 56px;
+  font-size: 20px;
+}
+.or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--mut);
+  font-size: 13px;
+  margin: 2px 0;
+}
+.or::before,
+.or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #3f2c26;
+}
+.join {
+  flex-wrap: nowrap;
+}
+.join input {
+  flex: 1;
+  min-width: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  text-align: center;
+  font: 700 22px/1 var(--display);
+}
+.join button {
+  min-width: 96px;
+}
+.resume {
+  width: 100%;
+  min-height: 50px;
+  background: #ffffff0a;
+  border-color: #5b3a24;
+}
+.resume b {
+  letter-spacing: 0.15em;
+  color: #e8b93a;
+}
+.hlinks {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.hlinks a,
+.lnk {
+  color: #e8d9c2;
+  font: 600 14px/1 var(--body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: 0;
+  padding: 10px 4px;
+  min-height: 44px;
+  cursor: pointer;
+}
+body.lobby .agate {
+  color: var(--mut);
+}
+
+/* eşli oyun */
+.pairT {
+  width: 100%;
+  margin: 0 0 8px;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+}
+.pairT.on {
+  border-color: #e8b93a;
+  box-shadow: inset 0 0 0 1px #e8b93a55;
+}
+.pairs {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.pairo {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+}
+.pairo span,
+.pairinfo span {
+  color: var(--mut);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 6px;
+}
+.pairo.on {
+  border-color: #e8b93a;
+  background: #e8b93a1a;
+  box-shadow: inset 0 0 0 1px #e8b93a88;
+}
+.pairinfo {
+  margin: 0 0 12px;
+  color: var(--fg);
+}
+.teams {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ffffff22;
+}
+.teams .tm {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.teams .tm span {
+  display: grid;
+  font-weight: 700;
+}
+.teams .tm small {
+  font-weight: 400;
+  opacity: 0.75;
+  font-size: 11px;
+}
+.teams .tm b {
+  font: 700 18px/1 var(--display);
+}
+.teams .tm.mine b {
+  color: #7ee2a0;
+}
+.endteams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 8px;
+}
+.et2 {
+  border-radius: 9px;
+  padding: 7px 9px;
+  background: #ffffff0a;
+  display: grid;
+  gap: 2px;
+  text-align: center;
+}
+.et2 small {
+  color: var(--mut);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.et2 b {
+  font: 700 14px/1.15 var(--display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.et2 span {
+  font-size: 12px;
+  color: #d8c9b4;
+}
+.et2.mine {
+  box-shadow: inset 0 0 0 1px #7ee2a055;
+}
+.et2.lose {
+  background: #c1121f26;
+  box-shadow: inset 0 0 0 1px #ff6b6b88;
+}
+.et2 em {
+  font-style: normal;
+  color: #ff6b6b;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ===== v42: kanlı yazı ===== */
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.kw {
+  display: block;
+  overflow: visible;
+}
+.top h1.kwh {
+  padding: 0;
+  line-height: 0;
+}
+.top h1.kwh .kw-line {
+  height: clamp(40px, 11vw, 58px);
+  width: auto;
+}
+body.gmode .top h1.kwh .kw-line {
+  height: 36px;
+}
+@media (max-height: 720px) {
+  body.gmode .top h1.kwh .kw-line {
+    height: 31px;
+  }
+}
+.hero2 .wm {
+  white-space: normal;
+  margin: 6px 0 0;
+  line-height: 0;
+}
+.hero2 .kw-hero {
+  width: min(74vw, 320px);
+  height: auto;
+  margin: 0 auto;
+}
+.hero2 .tagl {
+  margin-top: 10px;
+}
+.kwbox {
+  position: relative;
+  display: block;
+  contain: layout paint;
+  transform: translateZ(0);
+}
+.kwbox .kwsvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.kwfall {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
+  background: radial-gradient(circle at 35% 30%, #d42630, #8f0a13 60%, #5c030a);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: kwfall 7s cubic-bezier(0.55, 0, 1, 0.45) infinite;
+  z-index: 2;
+}
+@keyframes kwfall {
+  0% {
+    opacity: 0;
+    transform: translateY(-40%) scale(0.3);
+  }
+  14% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  62% {
+    opacity: 1;
+    transform: translateY(0) scale(1.05, 1.18);
+  }
+  88% {
+    opacity: 0.9;
+    transform: translateY(1400%) scale(0.85, 1.35);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(1650%) scale(0.8, 1.4);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kwfall {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ===== v42: ana ekran: masa sözleri, arka plan, kurallar kartı ===== */
+.homebg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+  will-change: transform;
+}
+body.home .wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+}
+.hb-table {
+  position: absolute;
+  left: 50%;
+  top: 41%;
+  width: 175vw;
+  height: 150vh;
+  max-width: 1200px;
+  max-height: 860px;
+  transform: translateX(-50%);
+  border-radius: 44% 44% 40% 40%;
+  background: radial-gradient(60% 55% at 50% 40%, #2a7a52 0%, #18533b 55%, #0c3225 100%);
+  box-shadow:
+    0 0 0 14px #2a0508,
+    0 0 0 22px #6d1017,
+    0 0 90px 30px #000;
+  opacity: 0.5;
+}
+.hb-tiles i {
+  position: absolute;
+  width: 26px;
+  height: 36px;
+  margin: -18px 0 0 -13px;
+  border-radius: 5px;
+  background: linear-gradient(165deg, #fffcf3, #f3ead2 55%, #dccfa9);
+  box-shadow:
+    0 3px 0 #b5a97f,
+    0 5px 8px #000a;
+  display: grid;
+  place-items: center;
+  font: 700 16px/1 var(--display);
+  font-style: normal;
+  transform: rotate(var(--r));
+  filter: blur(1.4px);
+  opacity: 0.42;
+}
+.hb-tiles .c0 {
+  color: #d3241b;
+}
+.hb-tiles .c1 {
+  color: #1b54d6;
+}
+.hb-tiles .c2 {
+  color: #c27600;
+}
+.hb-tiles .c3 {
+  color: #1b1b1b;
+}
+.hb-tiles .c4 {
+  color: #1b1b1b;
+}
+.hb-lamp {
+  position: absolute;
+  left: 50%;
+  top: -18vh;
+  width: 150vw;
+  height: 95vh;
+  transform: translateX(-50%);
+  background: radial-gradient(45% 50% at 50% 30%, #ffcf7a3d 0%, #ff9d3a17 45%, transparent 75%);
+  animation: lamp 7s infinite;
+}
+@keyframes lamp {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0.82;
+  }
+  9% {
+    opacity: 1;
+  }
+  46% {
+    opacity: 0.94;
+  }
+  47% {
+    opacity: 0.7;
+  }
+  48% {
+    opacity: 0.96;
+  }
+  72% {
+    opacity: 0.9;
+  }
+}
+.hb-vig {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 85% at 50% 35%, transparent 40%, #000c 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hb-lamp {
+    animation: none;
+  }
+}
+.qs {
+  position: relative;
+  width: min(100%, 360px);
+  min-height: 4.4em;
+  margin: 6px auto 0;
+}
+.qs .q {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  opacity: 0;
+  animation: qrot calc(var(--n) * 7s) infinite;
+  animation-delay: calc(var(--i) * 7s);
+}
+.qs blockquote {
+  margin: 0;
+  font: italic 500 16px/1.35 var(--body);
+  color: #f1e5d0;
+  text-shadow: 0 1px 6px #000;
+}
+.qs figcaption {
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #e8b93a;
+}
+@keyframes qrot {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  3% {
+    opacity: 1;
+    transform: none;
+  }
+  17% {
+    opacity: 1;
+    transform: none;
+  }
+  20% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qs .q {
+    animation: none;
+  }
+  .qs .q:first-child {
+    opacity: 1;
+  }
+}
+.rulecard {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 16px 14px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #ecf4ee;
+  background: radial-gradient(90% 120% at 20% 0%, #27774f 0%, #18533b 55%, #0c3225 100%);
+  border: 1px solid #0a2a1e;
+  box-shadow:
+    inset 0 0 0 2px #2a0508,
+    inset 0 0 0 4px #84131b,
+    0 10px 24px #000a;
+  overflow: hidden;
+}
+.rulecard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 34px;
+  background: var(--dripU) repeat-x top left/520px 34px;
+  pointer-events: none;
+}
+.rc-t {
+  display: grid;
+  gap: 4px;
+  padding-top: 12px;
+  position: relative;
+}
+.rc-t small {
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #e8b93a;
+}
+.rc-t b {
+  font: 700 21px/1.05 var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+.rc-t span {
+  font-size: 13px;
+  line-height: 1.35;
+  color: #d6e8dc;
+}
+.rc-t em {
+  font: 700 13px/1 var(--display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: #ffd36a;
+  margin-top: 4px;
+}
+.rc-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 22px);
+  gap: 4px 3px;
+  padding-top: 12px;
+}
+.rc-tiles i {
+  width: 22px;
+  height: 30px;
+  border-radius: 4px;
+  background: linear-gradient(165deg, #fffcf3, #f3ead2 55%, #dccfa9);
+  box-shadow:
+    0 2px 0 #b5a97f,
+    0 4px 5px #0008;
+  display: grid;
+  place-items: center;
+  font: 700 14px/1 var(--display);
+  font-style: normal;
+}
+.rc-tiles .c0 {
+  color: #d3241b;
+}
+.rc-tiles .c1 {
+  color: #1b54d6;
+}
+.rc-tiles .c2 {
+  color: #c27600;
+}
+.rc-tiles .c3 {
+  color: #1b1b1b;
+}
+.rulecard:active {
+  transform: scale(0.99);
+}
+
+#rack .t.pv {
+  transition: transform 0.15s ease-out !important;
+}
+#rack .t.pv {
+  will-change: transform;
+}
+.top h1 .kw {
+  contain: layout paint;
+  transform: translateZ(0);
+}
+/* v47: kısmi açma, yandan, koltuğa dönüş */
+.rack .t.ag2 {
+  box-shadow:
+    0 0 0 2px #7bd88f55,
+    0 2px 0 #c9bb93,
+    0 3px 0 #9f9068,
+    0 5px 6px #0000008c;
+}
+.pbadge .yan {
+  font: 600 11px/1 var(--body);
+  color: #ffd36a;
+  letter-spacing: 0;
+}
+.claim {
+  display: grid;
+  gap: 8px;
+  border-color: #e8b93a88 !important;
+}
+.claim small {
+  color: #d6c7ae;
+}
+.claim .row button {
+  flex: 1 1 auto;
+}
+/* v43: sürüklenen taş işlenebilen perler parlar */
+.mini.can {
+  box-shadow:
+    0 0 0 2px #ffd36a,
+    0 0 12px #ffd36a99 !important;
+  border-radius: 5px;
+}
+.mini.can.tgt {
+  box-shadow:
+    0 0 0 3px #7bd88f,
+    0 0 16px #7bd88fbb !important;
+}

@@ -1,4 +1,4 @@
-# Islak, parlak kan akıntıları ve sıçramaları (SVG) üretir; client.html ve kurallar.html'deki
+# Islak, parlak kan akıntıları ve sıçramaları (SVG) üretir; src/client/css/*.css ve kurallar.html'deki
 # --dripT, --dripU, --dripA/B/C, --sp1..4 değişkenlerini yenileriyle değiştirir.
 # Kullanım: python3 tools/blood.py
 import math,random,re,os
@@ -65,7 +65,8 @@ def uri(svg):return 'url("data:image/svg+xml,'+quote(svg,safe=" /:=,.-()'")+'")'
 NEW={'dripT':uri(edge(300,90,13,13,31,66,2.4,6)),'dripU':uri(edge(520,34,9,24,32,22,1.6,4)),
      'dripA':uri(edge(720,120,22,20,41,88,3,8.5)),'dripB':uri(edge(720,120,20,18,42,92,3,8.5)),'dripC':uri(edge(720,120,21,22,43,84,2.6,8)),
      'sp1':uri(splat(1)),'sp2':uri(splat(2)),'sp3':uri(splat(3)),'sp4':uri(splat(4))}
-for fn in ['src/client.html','src/kurallar.html']:
+import glob
+for fn in sorted(glob.glob(os.path.join(ROOT,'src/client/css/*.css')))+['src/kurallar.html']:
     p=os.path.join(ROOT,fn);s=open(p,encoding='utf8').read();n=0
     for k,v in NEW.items():
         pat=re.compile(r'--'+k+r':url\("data:image/svg\+xml,[^"]*"\)')

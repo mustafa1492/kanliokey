@@ -1,0 +1,553 @@
+/* ===== v53: uç göstergesi, zorluk, odak, bitirme ipucu ===== */
+.mini.e-l,
+.mini.e-h {
+  position: relative;
+}
+.mini.e-l::after,
+.mini.e-h::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 6px;
+  border-radius: 3px;
+  background: #7bd88f;
+  box-shadow: 0 0 10px #7bd88f;
+  pointer-events: none;
+  z-index: 4;
+}
+.mini.e-l::after {
+  left: -8px;
+}
+.mini.e-h::after {
+  right: -8px;
+}
+.rack .t.fin {
+  box-shadow:
+    0 0 0 2px #e8b93a,
+    0 0 14px #e8b93acc,
+    0 2px 0 #c9bb93,
+    0 5px 6px #0000008c !important;
+}
+.rack .t.fin:not(.ok)::before {
+  content: 'BİTİR';
+  position: absolute;
+  left: 50%;
+  top: -9px;
+  transform: translateX(-50%);
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #c99a2e;
+  color: #1a1405;
+  font: 800 8px/1.1 var(--body);
+  letter-spacing: 0.06em;
+  z-index: 3;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.fcs {
+  min-height: 26px;
+  height: 26px;
+  width: 30px;
+  padding: 0;
+  border-radius: 7px;
+  font-size: 15px;
+  line-height: 1;
+  background: #00000033;
+  border-color: #ffffff26;
+  color: #f3e8d8;
+  flex: none;
+}
+.fcs[aria-pressed='true'] {
+  background: #e8b93a;
+  color: #1a1405;
+  border-color: #e8b93a;
+}
+.rlabel {
+  gap: 6px;
+}
+.rlabel .hlab {
+  flex: 1 1 auto;
+}
+body.focus .rack,
+body.focus.gmode .rack {
+  --tw: min(46px, calc((100vw - 40px) / 12));
+  --th: calc(var(--tw) * 1.72);
+  padding-left: 3px !important;
+  padding-right: 3px !important;
+  column-gap: 1px;
+}
+body.focus .rack .t {
+  font-size: calc(var(--tw) * 0.82);
+}
+body.focus.big .rack,
+body.focus.big.gmode .rack {
+  --tw: min(54px, calc((100vw - 36px) / 10));
+}
+.lvlp {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  color: #bfae95;
+}
+
+/* ===== v53: yatay ekran (telefon yan): solda masa, sağda durum + ıstaka + düğmeler; kaydırma yok ===== */
+@media (orientation: landscape) and (max-height: 620px) {
+  body.gmode {
+    padding: max(4px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px))
+      max(4px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+  }
+  body.gmode .wrap {
+    max-width: none;
+    gap: 4px;
+  }
+  body.gmode .top {
+    min-height: 0;
+  }
+  body.gmode .top h1.kwh .kw-line {
+    height: 24px !important;
+  }
+  body.gmode .mbtn {
+    min-height: 28px;
+    padding: 4px 10px;
+  }
+  body.gmode #app {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(290px, 46%);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 4px 8px;
+  }
+  body.gmode #app > .sec:nth-child(1) {
+    grid-column: 1/-1;
+    grid-row: 1;
+    display: block;
+  }
+  body.gmode #app > .sec:nth-child(1):empty {
+    display: none;
+  }
+  body.gmode #app > .sec:nth-child(2) {
+    grid-column: 2;
+    grid-row: 2;
+    display: block;
+    min-width: 0;
+  }
+  body.gmode #app > .sec:nth-child(3) {
+    grid-column: 1;
+    grid-row: 2/4;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  body.gmode #app > .sec:nth-child(4) {
+    grid-column: 2;
+    grid-row: 3;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  body.gmode .gstat {
+    padding: 4px 6px 6px;
+  }
+  body.gmode .gstat .status {
+    min-height: 26px;
+  }
+  body.gmode .rackbox {
+    padding: 4px 5px 6px;
+    gap: 4px;
+  }
+  body.gmode .rack {
+    --tw: min(40px, calc((46vw - 70px) / 12), calc(100dvh * 0.105));
+    --rp: 6px;
+    --rg: 7px;
+    margin-top: 2px;
+  }
+  body.big.gmode .rack {
+    --tw: min(46px, calc((46vw - 62px) / 10), calc(100dvh * 0.115));
+  }
+  body.focus.gmode .rack {
+    --tw: min(46px, calc((46vw - 40px) / 12));
+  }
+  body.gmode .acts3 button {
+    min-height: 36px;
+    font-size: 14px;
+  }
+  body.gmode .felt3d {
+    padding: 3px 3px;
+    border-width: 6px;
+  }
+  body.gmode .a-top {
+    padding-top: 2px;
+  }
+  body.gmode .a-left .orack,
+  body.gmode .a-right .orack {
+    display: none;
+  }
+  body.gmode .a-top .orack {
+    transform: scale(0.7);
+  }
+  body.gmode #app {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 49%);
+  }
+  body.gmode .rack {
+    --tw: min(40px, calc((49vw - 66px) / 12), calc(100dvh * 0.105));
+  }
+  body.big.gmode .rack {
+    --tw: min(46px, calc((49vw - 60px) / 10), calc(100dvh * 0.115));
+  }
+  body.focus.gmode .rack {
+    --tw: min(46px, calc((49vw - 40px) / 12));
+  }
+}
+
+/* ===== v54: sohbet ===== */
+.rxbtn {
+  position: relative;
+}
+.rxbtn .chn {
+  position: absolute;
+  right: -4px;
+  top: -5px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #d42630;
+  color: #fff;
+  font: 800 11px/17px var(--body);
+  font-style: normal;
+  box-shadow: 0 0 0 2px #170c09;
+}
+.rxbtn.lob {
+  width: auto;
+  padding: 0 12px;
+  min-height: 44px;
+  font-size: 15px;
+  margin-left: 0;
+}
+.chs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 440px);
+  max-height: min(78dvh, 620px);
+  padding: 10px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #2c1813, #180d0a);
+  border: 1px solid #6a2e24;
+  box-shadow: 0 12px 28px #000c;
+}
+.chh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chh b {
+  font: 700 17px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.chh button {
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border-radius: 50%;
+}
+.chl {
+  flex: 1 1 auto;
+  min-height: 120px;
+  max-height: 40dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 2px;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.chm {
+  align-self: flex-start;
+  max-width: 85%;
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 12px 12px 12px 4px;
+  background: #ffffff10;
+  border: 1px solid #ffffff14;
+}
+.chm b {
+  font: 700 11px/1.1 var(--body);
+  color: #e8b93a;
+}
+.chm span {
+  font-size: 14.5px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.chm small {
+  font-size: 10px;
+  color: #a8977f;
+  justify-self: end;
+}
+.chm.me {
+  align-self: flex-end;
+  border-radius: 12px 12px 4px 12px;
+  background: #7a1a1f;
+  border-color: #a32a30;
+}
+.chm.me b {
+  color: #ffd0c8;
+}
+.chempty {
+  margin: auto;
+  color: #a8977f;
+  font-size: 13px;
+}
+.chf {
+  display: flex;
+  gap: 6px;
+}
+.chf input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  font-size: 16px;
+}
+.chf button {
+  min-height: 44px;
+  padding: 0 14px;
+}
+.chs .rxs {
+  width: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.chs .rxs button {
+  min-height: 36px;
+  font-size: 11.5px;
+  padding: 4px 2px;
+}
+.chs .rxs button.emo {
+  font-size: 20px;
+}
+.rxp {
+  align-items: flex-start;
+  padding-top: calc(70px + env(safe-area-inset-top, 0px));
+}
+
+/* ===== v55: masadaki perler büyük ve okunaklı, hiçbir şey üst üste binmez ===== */
+body.gmode .felt3d {
+  grid-template-rows: fit-content(40%) minmax(118px, 1fr) fit-content(48%);
+}
+body.gmode .pers .mini .t,
+body.gmode .a-top .pers .mini .t,
+body.gmode .a-me .pers .mini .t {
+  --tw: 22px;
+  --th: 31px;
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+body.gmode .a-left .pers .mini .t,
+body.gmode .a-right .pers .mini .t {
+  --tw: 19px;
+  --th: 27px;
+  font-size: 14px;
+}
+body.big.gmode .pers .mini .t,
+body.big.gmode .a-top .pers .mini .t,
+body.big.gmode .a-me .pers .mini .t {
+  --tw: 25px;
+  --th: 35px;
+  font-size: 18px;
+}
+body.big.gmode .a-left .pers .mini .t,
+body.big.gmode .a-right .pers .mini .t {
+  --tw: 21px;
+  --th: 30px;
+  font-size: 15.5px;
+}
+@media (max-height: 620px) and (orientation: portrait) {
+  body.gmode .pers .mini .t,
+  body.gmode .a-top .pers .mini .t,
+  body.gmode .a-me .pers .mini .t {
+    --tw: 19px;
+    --th: 27px;
+    font-size: 14px;
+  }
+  body.gmode .a-left .pers .mini .t,
+  body.gmode .a-right .pers .mini .t {
+    --tw: 17px;
+    --th: 24px;
+    font-size: 12.5px;
+  }
+}
+body.gmode .pers {
+  gap: 4px 6px;
+}
+body.gmode .pers .mini {
+  gap: 1px;
+  padding: 2px;
+}
+.t.jk {
+  justify-content: center;
+  gap: 0;
+}
+.t.jk .js {
+  font-size: 0.72em;
+  line-height: 1;
+  font-weight: 700;
+}
+.t.jk .jv {
+  font-size: 0.5em;
+  line-height: 1;
+  font-weight: 800;
+  color: inherit;
+  margin-top: 1px;
+}
+
+/* ===== v55: telefonda masa düzeni: yan oyuncular masanın üst ve orta kısmı boyunca uzanır (yer açılır), karşıdaki ortada ===== */
+@media (max-width: 999px) and (orientation: portrait), (orientation: landscape) and (max-height: 620px) {
+  body.gmode .felt3d {
+    grid-template-areas: 'left top right' 'left mid right' 'me me me';
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(96px, 1fr) auto;
+  }
+  body.gmode .a-left,
+  body.gmode .a-right {
+    align-self: stretch;
+    justify-self: stretch;
+    min-width: 0;
+  }
+  body.gmode .a-left .seat,
+  body.gmode .a-right .seat {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 4px;
+    padding: 2px 0;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  /* her oyuncu kendi kenarında (Mustafa): yanlar masanın sol/sağ kenarında dikey ortada, karşıdaki üstte */
+  body.gmode .a-left,
+  body.gmode .a-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  body.gmode .a-left .plate,
+  body.gmode .a-right .plate {
+    align-self: center;
+    max-width: 100%;
+  }
+  body.gmode .a-left .orack,
+  body.gmode .a-right .orack {
+    align-self: center;
+    margin: 0;
+  }
+  body.gmode .a-left .dpile,
+  body.gmode .a-right .dpile {
+    align-self: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  body.gmode .a-left .pers {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+    padding-top: 4px;
+    border-top: 1px dashed #ffffff26;
+  }
+  body.gmode .a-right .pers {
+    flex-direction: column;
+    align-items: flex-end;
+    margin: 0;
+    padding-top: 4px;
+    border-top: 1px dashed #ffffff26;
+  }
+  body.gmode .a-left .pers:empty,
+  body.gmode .a-right .pers:empty {
+    display: none;
+  }
+  body.gmode .a-top {
+    align-self: start;
+    min-width: 0;
+  }
+  body.gmode .a-top .seat {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    column-gap: 6px;
+    row-gap: 3px;
+  }
+  body.gmode .a-top .plate {
+    grid-column: 1/-1;
+    grid-row: 1;
+    justify-self: center;
+  }
+  body.gmode .a-top .dpile {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  body.gmode .a-top .orack {
+    grid-column: 2;
+    grid-row: 2;
+    transform: none;
+    margin: 0;
+    width: auto;
+  }
+  body.gmode .a-top .pers {
+    grid-column: 1/-1;
+    grid-row: 3;
+  }
+  body.gmode .orack.hs i {
+    top: 3px;
+    width: 4px;
+    height: 11px;
+    border-radius: 1.5px;
+  }
+  body.gmode .a-top .orack.h:not(.hs) {
+    transform: scale(0.62);
+    transform-origin: left center;
+    margin-right: -40px;
+  }
+}
+/* sürüklerken masa ayrı katmanda: ıstakadaki değişiklik masayı yeniden boyatmasın */
+.scene {
+  will-change: transform;
+  transform: translateZ(0);
+}
+.ios-hap {
+  position: fixed;
+  left: -200px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+/* sunucu bağlantısı koptuğunda üstte uyarı */
+body.offline::before {
+  content: 'Bağlantı koptu, yeniden bağlanıyor…';
+  position: fixed;
+  left: 50%;
+  top: calc(8px + env(safe-area-inset-top, 0px));
+  transform: translateX(-50%);
+  z-index: 90;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #b3202a;
+  color: #fff;
+  font: 600 13px/1.2 var(--body);
+  box-shadow: 0 4px 14px #000a;
+  white-space: nowrap;
+}
