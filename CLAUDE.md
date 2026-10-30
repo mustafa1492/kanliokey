@@ -8,6 +8,7 @@ Mustafa'nın yöresel 4 kişilik "kanlı okey" oyunu. Canlı adres: https://kanl
 - **Yükleme izni:** Mustafa "yükle" demeden main'e push etme. Render main'e her push'ta otomatik deploy eder ve **deploy süren bütün oyunları siler** (disk kalıcı değil). Oyunu etkilemeyen değişiklikte (doküman, test) commit mesajına `[skip render]` ekle.
 - Cevaplar kısa ve Türkçe. Mustafa iPhone kullanıyor (Safari ve Chrome), ekran görüntüsüyle hata gösterir.
 - Unutulmayacak iş: **Aşama 5.5 "oyunu öğreten rehber"** (PLAN.md).
+- Cezalarla ilgili bir iş yapılınca Mustafa'ya hatırlat: oyundan çıkan oyuncunun cezası henüz yok (şimdilik ceza yok kararı, PLAN.md "Sürekli işler").
 - Telefonda "hiçbir şey üst üste binmesin", taşlar okunaklı olsun: arayüz değişikliğinden sonra test/ui/t29.py ve t30.py ile ölç.
 
 ## Gizli bilgiler (depoya ASLA yazılmaz, depo herkese açık)

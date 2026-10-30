@@ -133,10 +133,11 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Mustafa'ya özel GM profili: profilde "GM" rozeti, oyun içinde sadece ona özel ayrıcalıklar (liste Mustafa'ya sunuldu, seçecek).
 - [ ] Menü ikiye ayrılsın: "Genel ayarlar" (ses, titreşim, bildirim, ekran, profil, hesap) ve "Oyun ayarları" (ıstaka, ipuçları, zorluk, masa görünümü, büyük taş vb.), içleri ayrı ayrı doldurulacak.
 - [ ] ACİL: Safari'de (telefon) bütün oyuncular masanın üstünde görünüyor, yerleşim kaçmış. Sağdaki sağ kenara, soldaki sol kenara dönmeli (yukarıdaki masa düzeni maddesiyle birlikte, gerçek iPhone ölçüleriyle denenecek).
-- [ ] Profil sayfasının içi dolsun: toplam maç, galibiyet, mağlubiyet, galibiyet oranı, seviye. İstatistikler tekli ve eşli diye ayrı tutulur (Mustafa): tekli: oynanan oyun, galibiyet = birinci olmak, mağlubiyet = sonuncu olmak, oran; eşli: oynanan, kazanılan, kaybedilen, oran. Seviye: tecrübe puanı sistemi onaylandı (Mustafa: mantıklı), unvan adları sonra birlikte gözden geçirilecek. Tecrübe puanı (bitirilen oyun +10, tekli 1. +30 / 2. +15 / 3. +5, eşli kazanan +25, okeyle ya da tek başına bitirme +5, yarıda bırakma 0; botlu oyunda yarım TP önerildi) ve unvanlar: Çaycı 0, Çırak 100, Müdavim 300, Taşçı 700, Usta 1500, Kahve Ağası 3000, Kanlı Usta 6000, Efsane 12000.
+- [ ] Profil sayfasının içi dolsun: toplam maç, galibiyet, mağlubiyet, galibiyet oranı, seviye. İstatistikler tekli ve eşli diye ayrı tutulur (Mustafa): tekli: oynanan oyun, galibiyet = birinci olmak, mağlubiyet = sonuncu olmak, oran; eşli: oynanan, kazanılan, kaybedilen, oran. Seviye: tecrübe puanı sistemi onaylandı (Mustafa: mantıklı), unvan adları sonra birlikte gözden geçirilecek. Tecrübe puanı (bitirilen oyun +10, tekli 1. +30 / 2. +15 / 3. +5, eşli kazanan +25, okeyle ya da tek başına bitirme +5, yarıda bırakma 0; botlu oyunda TP botların seviyesine göre (Mustafa): yeni, Zor'dan bir seviye üstün bir bot yapılacak, onunla oynanan oyunda tam TP; diğer seviyelerde azalır (öneri: Kolay %25, Orta %50, Zor %75, yeni bot %100; Mustafa onaylayacak)) ve unvanlar: Çaycı 0, Çırak 100, Müdavim 300, Taşçı 700, Usta 1500, Kahve Ağası 3000, Kanlı Usta 6000, Efsane 12000.
 - [ ] İlk kayıt olan 20 kullanıcıya özel rozet. Mustafa rozet tasarımını seçenekler arasından seçecek.
 - [ ] Istaka düğmeleri: "Per aç" yerine "Seri aç" ve "Çift aç"; ayrıca "Seri diz" ve "Çift diz" (ıstakayı serilere ya da çiftlere göre dizer).
 - [ ] Süre kaçıran oyuncu: arka arkaya 3 kez süresi dolan masadan çıkar, yerine bot geçer, dönünce koltuğunu geri alır; sayı panelden (2/3/5). Kural KURALLAR.md "Sıra süresi"nde.
+- [ ] Yeni bot seviyesi: Zor'dan (Usta) bir seviye daha iyi bot (adı sonra). Seviyeye göre tecrübe puanı için gerekli.
 - [ ] Sırala için geri al: ıstakayı elle düzenledikten sonra yanlışlıkla Sırala'ya basan, "Geri al" ile önceki dizilişine döner.
 
 ## İlk izlenim (cepte, Mustafa onaylayınca)
@@ -276,7 +277,7 @@ Ayrıntı: docs/HILE-ONLEMLERI.md
 ## Sürekli işler (her aşamayla birlikte)
 - Kural toplama: Mustafa'nın henüz söylemediği kurallar için soru listesi tutulur, tahmin edilmez. Sırası gelince sorulacak kenar durumlar:
   - (Cevaplandı, KURALLAR.md) Eli bitiren son taş hem işler taş hem okeyse ne olur?
-  - Oyuncu oyundan çıkarsa cezası nasıl yazılır?
+  - Oyuncu oyundan çıkarsa cezası nasıl yazılır? KARAR (Mustafa, 31 Ekim 2026): şimdilik ceza yok. CEZALARLA İLGİLİ BİR İŞ YAPILDIĞINDA BU KONUYU MUSTAFA'YA TEKRAR SOR.
   - Katlamalıda biri per, biri çift açarsa puanlar aynı sayıdan mı karşılaştırılır?
   - (Cevaplandı: evet) 9 ve 13 turlu oyunda büyük el sayısı farkı (1, 5, 9, 13) gerçek oyunda da böyle mi?
   - (Cevaplandı, KURALLAR.md) Deste bitince yandan alınan taş / açılmış oyuncuların durumu
