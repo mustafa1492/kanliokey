@@ -18,17 +18,19 @@ Hedef: Kanlı okeyi gerçek kurallarıyla, herkesin web üzerinden oynayabildiğ
 - [x] Oyun kur / koda katıl (5 harfli oda kodu), her oda ayrı kayıt
 - [x] Yönetim paneli ilk sürüm (sadece sahibe görünür): odaları listele, sil, eskileri temizle
 - [x] Aşama 1: Kurallar toplandı (KURALLAR.md), varsayımların hepsi onaylandı
-- [x] Aşama 4 ilk sürüm (v40): kendi sunucumuz hazır (kanli-okey-app klasörü). Kurallar sunucuda çalışıyor, eller gizli, botlar ve süre sunucuda. İnternete yüklenmeyi bekliyor (GitHub + Render, bkz. README)
-- [ ] Aşağıdaki aşamalar
+- [x] Aşama 4: kendi sunucumuz (v40) yayında: https://kanli-okey.onrender.com (Render, ücretsiz plan, GitHub main'e her gönderişte otomatik deploy; deploy süren oyunları siler)
+- [x] Canlıdaki sürüm: v58 (31 Ekim 2026). v57 Render'da .dockerignore yüzünden derlenemiyordu (simge png'leri dışarıda kalıyordu), v58 ile düzeldi; v56 ve v57 de v58 ile canlıya çıktı
+- [~] Aşama 5 (oynama hissi): büyük kısmı yapıldı (v20-v58). Şu anki iş: "Mustafa'nın istekleri" listesi (aşağıda), önce Safari masa düzeni
+- [ ] Aşama 5.5 rehber, 6 beta, 7 yayın, 8 büyüme, 9 cila
 
 ## Bilinen eksikler ve riskler (dürüst liste)
 1. claude.ai sürümünde bütün eller tek kayıtta duruyor, teknik bilen biri başkasının elini görebilir. Sunucu sürümünde (v40) bu kapandı: herkese sadece kendi eli gider, deste sırası kimseye gitmez, hamleleri sunucu doğrular.
-2. claude.ai sürümünde arkadaşlar Paylaş menüsünden erişim almak zorunda. Sunucu sürümünde herkes adrese girip kodla (ya da davet bağlantısıyla) katılıyor; yüklenince geçerli olacak.
+2. (Çözüldü) Sunucu sürümü yayında: herkes adrese girip kodla ya da davet bağlantısıyla katılıyor. claude.ai sürümü artık kullanılmıyor.
 2b. claude.ai sürümünde yönetim paneli sadece ekranda gizli (şifre 1234 sayfanın içinde). Sunucu sürümünde şifre sunucuda (ADMIN_PASSWORD), yetkisiz silme ve ayar değiştirme reddediliyor.
 3. Kuralların hepsini bilmiyoruz. Mustafa "oyunun daha çok kuralı var" dedi. Kural toplama bir aşama değil, sürekli bir iş (aşağıda "Sürekli işler").
 4. (Çözüldü, v40) Oyun mantığı ayrı dosyada: src/engine.js. Aynı kod hem tarayıcıda hem sunucuda çalışıyor.
-5. Bağlantı koparsa: sunucu sürümünde oyuncu aynı cihazdan geri girince aynı koltuğa döner (cihazda saklanan anahtar), ekranda "Bağlantı koptu" uyarısı çıkar, süre dolarsa taşı otomatik atılır. Masada kimse kalmazsa oyun bekler. Kalıcı ayrılma (botun devralması) henüz yok.
-6. Telefonda tek ekran düzeni (v39) bilgisayarda 375×600 ile 430×800 arası denendi; gerçek telefonda denenmedi. Çok küçük ekranlarda yan oyuncuların perleri kendi alanında kaydırılarak görülüyor. Yatay telefonda tek ekran düzeni yok.
+5. Bağlantı koparsa: sunucu sürümünde oyuncu aynı cihazdan geri girince aynı koltuğa döner (cihazda saklanan anahtar), ekranda "Bağlantı koptu" uyarısı çıkar, süre dolarsa taşı otomatik atılır. Masada kimse kalmazsa oyun bekler. Kalıcı ayrılma (botun devralması) henüz yok; yönetici "botla değiştir" yapabilir, açık masada yabancı botun yerine oturabilir.
+6. Telefon düzeni bilgisayarda (Playwright, t29/t30) ölçülüyor, gerçek iPhone'da farklı çıkabiliyor: Mustafa'nın iPhone Safari'sinde bütün oyuncular masanın üstünde görünüyor (ACİL, "Mustafa'nın istekleri"). Yatay ekran düzeni v53'te yapıldı.
 
 ## Aşama 2: Kural motorunu ayır ve test et  (büyük kısmı v40'ta yapıldı)
 Amaç: oyunun beyni ekrandan ve veritabanından bağımsız, tek dosyada, hem tarayıcıda hem sunucuda çalışan saf bir kod olsun.
@@ -41,16 +43,16 @@ Amaç: oyunun beyni ekrandan ve veritabanından bağımsız, tek dosyada, hem ta
 - [x] Hamle gelir, yeni durum ya da "geçersiz hamle: sebep" döner. Sebep metni Türkçe, oyuncuya gösterilebilir. (ENG.run)
 
 ## Aşama 3: Botlar ve otomatik oyun testi
-- [ ] Botlar akıllansın: açabiliyorsa en iyi açılış, işleyebiliyorsa işle, işler taş atmaktan kaçın, okey değiştirebiliyorsa değiştir
-- [ ] Zorluk seviyeleri: kolay (kurallı ama basit), normal, zor (elini ve rakibin atıklarını izler)
-- [ ] 1 kişi + 3 bot, 2 kişi + 2 bot, vb. Arkadaşı eksikse bot doldursun.
-- [ ] Bot, oyuncu koparsa onun yerine oynayabilsin ("oyuncu geri gelince devam eder")
-- [ ] Otomatik simülasyon: 10.000 bot oyunu arka arkaya oynatılır. Yakalanacaklar: kilitlenme, sonsuz döngü, geçersiz durum, puanların tutmaması (toplam taş sayısı hep 106 mı), motor hatası. Elle denemenin bulamayacağı hataları bulur.
+- [x] (v27) Botlar akıllansın: açabiliyorsa en iyi açılış, işleyebiliyorsa işle, işler taş atmaktan kaçın, okey değiştirebiliyorsa değiştir
+- [x] (v27, v56) Zorluk seviyeleri: Saf/Orta/Usta; masa kurarken Kolay/Orta/Zor seçilir
+- [x] (v52, v56) 1 kişi + 3 bot, 2 kişi + 2 bot, vb. Eksik koltuğu bot doldurur; "Botlarla hızlı oyun"
+- [~] Bot, oyuncu koparsa onun yerine oynayabilsin (şimdilik süre dolunca otomatik atma ve yöneticinin "botla değiştir"i var) ("oyuncu geri gelince devam eder")
+- [~] (npm test 300 el, test/sim.test.js istenen sayıda) Otomatik simülasyon: 10.000 bot oyunu arka arkaya oynatılır. Yakalanacaklar: kilitlenme, sonsuz döngü, geçersiz durum, puanların tutmaması (toplam taş sayısı hep 106 mı), motor hatası. Elle denemenin bulamayacağı hataları bulur.
 - [ ] Simülasyon istatistiği: ortalama kaç turda biter, kaç el deste biterek biter. Çok uçuk çıkarsa kural yanlış uygulanmış olabilir, Mustafa'ya sorulur.
 
-## Aşama 4: Gerçek proje ve kendi sunucu  ← şu an buradayız (ilk sürüm hazır, yükleme bekliyor)
+## Aşama 4: Gerçek proje ve kendi sunucu  (tamam, yayında)
 Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, ses gibi işleri tek HTML dosyasında yapıp sonra sunucuya taşımak, ikinci kez yazmak demek. Önce doğru zemini kuralım.
-- [x] Proje klasörü: motor, sunucu, istemci ayrı dosyalar. Git ile sürüm geçmişi. (kanli-okey-app)
+- [x] Proje klasörü: motor, sunucu, istemci ayrı dosyalar. Git ile sürüm geçmişi. (GitHub: mustafa1492/kanliokey)
 - [x] Sunucu otoriter: her hamle sunucuda motorla doğrulanır. İstemci sadece kendi elini görür (hile önleme).
 - [x] Gerçek zamanlı bağlantı (WebSocket, Node + ws). Tek sunucu hem sayfayı hem oyunu sunar.
 - [x] Oda kodu sistemi sunucuda, davet linki (site/?k=KOD: link açınca kod hazır gelir, "Kodu paylaş" linki de gönderir)
@@ -62,13 +64,13 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] Hız sınırı, geçersiz istek koruması, koltuk kimlik doğrulaması, başka siteden bağlantı engeli, taş sayısı denetimi
 
 ## Aşama 5: Oynama hissi (telefon önce)
-- [ ] Taşları sürükleyerek dizme, büyük dokunma alanı
-- [ ] Otomatik diz: renge göre, sayıya göre, "per olabilecekleri yan yana getir"
-- [ ] Açma önerisi: elinden en yüksek açılışı ve puanını göster. Katlamalıda "en az X açman lazım" uyarısı.
-- [ ] İşleme ipuçları: seçili taşın nereye işlenebildiği, okey değiştirme fırsatı yanıp söner
-- [ ] "Bu hamleyi yaparsan" uyarıları: işler taş atıyorsan "500 ceza yazılır" onayı
+- [x] (v20-v44) Taşları sürükleyerek dizme, büyük dokunma alanı
+- [~] (v48 Sırala / akıllı sıralama; "Seri diz / Çift diz" istekler listesinde) Otomatik diz: renge göre, sayıya göre, "per olabilecekleri yan yana getir"
+- [x] (v50, v58) Açma önerisi: elinden en yüksek açılışı ve puanını göster. Katlamalıda "en az X açman lazım" uyarısı.
+- [x] (v43, v50) İşleme ipuçları: seçili taşın nereye işlenebildiği, okey değiştirme fırsatı yanıp söner
+- [x] (v43, v48) "Bu hamleyi yaparsan" uyarıları: işler taş atıyorsan "500 ceza yazılır" onayı
 - [ ] Hamle geri alma (sıra geçmediyse, taş çekme ve açma hariç)
-- [ ] Her oyuncunun attığı taşlar yığını
+- [x] (v52, v56) Her oyuncunun attığı taşlar yığını (yakınlaştırma ve hamle geçmişi; Mustafa geçmişte sadece son taşı istiyor, istekler listesinde)
 - [x] Kahvehane havası: ahşap duvar, lamba, çay bardakları, eğik çuha masa, 3 boyutlu taşlar ve ıstaka, rakiplerin ıstakaları (ilk sürüm yapıldı, telefonda gerçek denemeyle ince ayar gerekecek)
 - [x] Otomatik okey masası (şampanya metal gövde, siyah çerçeve, ortada göbek, ahşap sandalyeler, fayans zemin). El bitince taşlar masaya çekilip karılıyor, sonra yeni el dağıtılıp kendiliğinden başlıyor (ilk sürüm; ses ve daha gerçekçi animasyon sonraya)
 - [x] Masa oyuncunun gözünden (alçak bakış açısı), 3D çay bardakları, daha kalın taşlar ve gerçekçi ıstakalar, "Cezalar" düğmesi (herkesin ceza puanları)
@@ -80,8 +82,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] v24: Taşlara daha gerçekçi görünüm (cilalı yüz, iç çerçeve, altında renkli nokta); araya sokunca komşu taşlar kayarak yerine oturuyor. "Açma alanı" masadan kaldırıldı, "Per aç" (çift dizdiyse "Çift aç") ıstakanın altındaki düğme sırasında. Açılamama sebebi uyarı olarak çıkıyor
 - [x] v55: Telefonda masa düzeni: yan oyuncular masanın üst ve orta kısmı boyunca uzanır (karşıdaki oyuncu ortada), yan ıstaka çubukları yatay ve küçük; masadaki per taşları büyüdü (alt/üst 22×31, yanlar 19×27; büyük taş modunda 25×35 / 21×30), sığmazsa en fazla %72'ye küçülür; okey taşındaki ★ ve sayı taşın içinde; hiçbir taş başka bir şeyin üstüne binmez (ui/t29.py ölçer). GitHub'a Mustafa "yükle" deyince gönderilecek (oyun sürerken güncelleme yok)
 - [x] v56: İşlenen taşlar perde yatay görünür. Deste bitince yandan taş alınamaz. Masayı takip: durum satırının altında tek satırlık son hamle şeridi (dokununca bu elin hamle geçmişi ve herkesin attığı taşlar), açmış ve 3 ya da daha az taşı kalan oyuncuda "bitiyor!" rozeti. Hata / kural yanlış / öneri bildirimi (menüden ve ana ekrandan; masadaysa durum ve son hamleler otomatik eklenir), yöneticide bildirim listesi (durumu gör, okundu, sil). Yöneticide oyuncu listesi (bağlı mı, son görülme, masası) ve her odanın hamle kaydı (son 400 hamle, okunur metin). Herkese açık masa: kuran açar, ana ekranda "Masa seç" listesi; bekleyene katılınır, oyundakinde bot yerine oturulur. Masa kurarken bot seviyesi (Kolay / Orta / Zor). Kurallar: büyük el 1-5-9-13, son taş işler+okey değişmez, süre dolunca otomatik atma, botlar çift açmaz (Mustafa onayladı). GitHub'a Mustafa söyleyince gönderilecek
-- [x] v58: Katlamalıda yandan sayılır (Mustafa): 17 → 17+y1 → 17+y2 → 18. Motor ham toplamı (puan×3+yandan) karşılaştırır (mxr), ıstaka rozeti ve uyarı "17 + yandan 2" gösterir, botlar da uyar. Test: engine.test.js katlamalı yandan. İşlenen taşın yatay görünmesi kodda çalışıyor (t30 ölçtü); canlıda görünmüyorsa Render eski sürümde kalmıştır
-- [x] v58: Kurallar sayfası oyunun içinde açılır (üstte tam ekran pencere, "Oyuna dön"); claude.ai bağlantıları ve yeni sekme kalktı. Sayfa derlemede index.html'e gömülü, çevrimdışı da açılır; /kurallar adresi de çalışmaya devam eder
+- [x] v58: Katlamalıda yandan sayılır (Mustafa): 17 → 17+y1 → 17+y2 → 18; motor ham toplamı (puan×3+yandan, mxr) karşılaştırır, ıstaka rozeti ve uyarı "17 + yandan 2" gösterir, botlar da uyar (test: engine.test.js). Kurallar sayfası oyunun içinde açılır (tam ekran pencere, "Oyuna dön"); claude.ai bağlantıları ve yeni sekme kalktı, sayfa index.html'e gömülü. Render derlemesi: .dockerignore simge png'lerini artık dışarıda bırakmıyor (v57 bu yüzden canlıya çıkamamıştı)
 - [x] v57: iOS 26 Safari'de alttaki yüzen araç çubuğu ıstakanın ve düğmelerin üstüne biniyordu: oyunda alta boşluk bırakılır (sadece Safari 26+, ana ekrana eklenmiş uygulamada değil). Sekme simgesi (favicon) sayfaya gömüldü, ayrıca favicon.ico. Yönetim paneli sekmeli: Odalar, Bildirimler, Oyuncular, Özellikler (herkese açık masalar / sohbet / yeni masa kurma aç-kapa), Bot ve süre, Duyuru (hazır güncelleme uyarısı), İstatistik. Eşli oyunda eş seçimi: "Eşin kim?" diye 3 oyuncudan biri seçilir, altında Takım 1 - Takım 2 kartları. Yönetici şifresi Render'daki ADMIN_PASSWORD'dan değişir
 - [x] v54: SOHBET: oyunda 💬 (okunmamış sayısı kırmızı rozet), bekleme odasında "💬 Sohbet"; mesajlar herkeste anında görünür, oyunda yazanın isminin üstünde balon çıkar; son 60 mesaj odada tutulur; hazır mesajlar ve emojiler aynı pencerede; sunucuda sadece odadakiler okur/yazar, hız sınırı, 200 karakter. Test: test/chat.test.js, test/chat_e2e.py
 - [x] v53: Sağ/sol perler okunur boyutta (sadece yükseklik sığmazsa küçülür, en az %55). Taşı perin soluna/sağına sürükleyerek istenen uca işleme (yeşil uç çizgisi gösterir; okey iki uca da gidebiliyorsa bıraktığın taraf), en yakın pere yapışma, taşı seçip pere dokunarak işleme. Zorluk modu (Ayarlar: Kolay / Normal / Zor): Kolay her ipucu + "hangi taş gelirse açarsın" + okeyi ya da perin parçasını atarken uyarı + bitirebileceğin taşta BİTİR; Normal ipuçları var ama hangi taş gelirse yok; Zor ipucu ve uyarı yok. Odak düğmesi (ıstaka başlığında ⤢): taşlar büyür, masa küçülür. Yatay ekran düzeni (telefon yan: solda masa, sağda durum + ıstaka + düğmeler, kaydırma yok; yan oyuncuların ıstaka çubukları gizli). Akıcılık: sürüklerken hiç yeniden çizim yok (taşa dokunduğun an dahil), sürükleme başında 15 katman açılmıyor, masa parlaması yeniden çizim yapmıyor. Uzun bot denemeleri: ui/botplay.py (ben de sürükleyerek çekip açıp uçlara işleyip atıyorum; dikey ve yatayda 9'ar el, hata yok)
@@ -114,14 +115,14 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [x] v26: Performans (ağır gölgeler/katmanlar azaltıldı, fixed arka plan kaldırıldı), ceza bildirimi sakin koyu kutu (kırmızı sadece hata), yönetici girişi şifreli (1234, istemci tarafı), site v7: kan sözü, ana ekran başlığı sadeleşti
 - [x] v25: Altın oranlı simetrik masa (sütunlar 1:φ:1, oran 1:1.272, yan ıstakalar kenar ortasında), çaylar kaldırıldı, taş parlaması kaldırıldı (mat taş), sıra göstergesi sadece isim rozetinde, plaket yerine ince "Dizilen N/17" rozeti, deste+gösterge küçüldü; ana ekran temalı/detaylı (hero, adımlar), kurallar sitesi v6 çuha temalı
 - [x] Per yap ve çift yap ayrı düğmeler, açılış puanı canlı hesaplanıyor, açılacak perler alt alta, tek tek geri alınabiliyor
-- [ ] Anlık ceza bildirimi: "Ali sana 70 ceza yazdı"
-- [ ] El sonu özeti: her ceza kalemi satır satır açıklanır (açıp bitirmeyen 15 × 5 = 75, elde okey 250, okeyle bitirme ×2...). Kuralları karışık bir oyunda en çok fark yaratacak ekran bu.
+- [~] (v41 isim üstünde +N, v42 büyük anlar duyurusu) Anlık ceza bildirimi: "Ali sana 70 ceza yazdı"
+- [x] (v41) El sonu özeti: her ceza kalemi satır satır açıklanır (açıp bitirmeyen 15 × 5 = 75, elde okey 250, okeyle bitirme ×2...). Kuralları karışık bir oyunda en çok fark yaratacak ekran bu.
 - [ ] Tur tur skor tablosu, el geçmişi
-- [ ] Sıra bildirimi: titreşim, ses, sekme başlığı, isteğe bağlı push bildirim
-- [ ] Yatay/dikey ekran, küçük telefon testi, büyük yazı seçeneği
-- [ ] Erişilebilirlik: renk körü için taşlarda renk dışında işaret, yüksek kontrast
-- [ ] Animasyon ve ses (taş sesi, ceza anında "kanlı" efekt). Kapatılabilir.
-- [ ] PWA: telefon ana ekranına uygulama gibi eklenebilsin
+- [x] (v35, v50) Sıra bildirimi: titreşim, ses, isteğe bağlı push bildirim
+- [x] (v50, v53) Yatay/dikey ekran, küçük telefon testi, büyük yazı seçeneği
+- [x] (v48) Erişilebilirlik: renk körü için taşlarda renk dışında işaret, yüksek kontrast
+- [x] (v35, v36, v42) Animasyon ve ses (taş sesi, ceza anında "kanlı" efekt). Kapatılabilir.
+- [x] (v41) PWA: telefon ana ekranına uygulama gibi eklenebilsin
 
 ## Mustafa'nın istekleri (31 Ekim 2026, sırayla yapılacak)
 - [ ] Hediye gönderme: oyunda bir oyuncuya çay, kahve, öpücük vb. hediye gönderilir (isim kutusuna dokun → hediye seç, masada animasyonla gider, herkes görür).
@@ -189,13 +190,13 @@ Cepte (sonra): ana ekranda canlı şerit (şu an kaç masa / bugün kaç el), "s
 
 ## Giriş ekranı ve yönetim paneli fikirleri (v41 sonrası, Mustafa seçecek)
 Giriş ekranı
-- [ ] Botlarla hızlı oyun: tek dokunuşla 3 botlu masa açılır, hemen başlar (yalnızken deneme ve öğrenme)
+- [x] (v52) Botlarla hızlı oyun: tek dokunuşla 3 botlu masa açılır, hemen başlar (yalnızken deneme ve öğrenme)
 - [ ] İlk kez gelene "3 dakikada öğren" kartı → Aşama 5.5 rehberi
-- [ ] Masa ekranında WhatsApp'a doğrudan gönder düğmesi (davet bağlantısıyla)
-- [ ] Kimliği başka telefona taşıma kodu (hesap açmadan: telefon değişince koltuk ve geçmiş kaybolmasın)
-- [ ] Son oyunlarım: son 5 oyun, kendi cezan, sonuncu kim
+- [x] (v52) Masa ekranında WhatsApp'a doğrudan gönder düğmesi (davet bağlantısıyla)
+- [~] (v47 koltuğa dönüş; hesap sistemi istekler listesinde) Kimliği başka telefona taşıma kodu (hesap açmadan: telefon değişince koltuk ve geçmiş kaybolmasın)
+- [x] (v50 "Oyun geçmişim", bu cihazda) Son oyunlarım: son 5 oyun, kendi cezan, sonuncu kim
 - [~] Bekleme odasında: oda başına bot seviyesi var (v56); "Hazırım" ve kuranın oyuncu çıkarması yok
-- [ ] Ayarlar: büyük yazı, renk körü işaretleri, sol el düzeni
+- [~] (v48, v50) Ayarlar: büyük yazı, renk körü işaretleri yapıldı; sol el düzeni yok
 - [x] (v56) Açık masalar: yabancılarla oynama (kuran açar, "Masa seç" listesi, bot yerine oturma). Hile ve küfür önlemi hâlâ açık: Hile ve küfür önlemi gerektirir
 Yönetim paneli
 - [x] (v56) Hata / "kural yanlış" bildirim kutusu: oyuncu menüden yazar, oyunun o anki durumu otomatik eklenir, panelde listelenir
@@ -229,41 +230,41 @@ Hedef: kuralı hiç bilmeyen biri 10 dakikada oyunu oynayabilsin.
 
 ## Aşama 7: Yayına al
 - [ ] Alan adı, HTTPS, barındırma
-- [ ] Tanıtım sitesi ve oyun aynı adreste
+- [x] (v41, v58) Tanıtım sitesi ve oyun aynı adreste; kurallar oyunun içinde açılır
 - [ ] Gizlilik metni ve kısa kullanım şartları (KVKK'ya uygun, az veri toplanır)
 - [ ] Arama motoru için: "kanlı okey kuralları", "kanlı okey nasıl oynanır" sayfaları
-- [ ] Paylaşım önizlemesi (WhatsApp'ta link atılınca güzel kart çıksın)
+- [x] (v41) Paylaşım önizlemesi (WhatsApp'ta link atılınca güzel kart çıksın)
 - [ ] Hata ve sunucu izleme (çökerse haber gelsin), yedekleme
 
 ## Hile önlemleri
-Ayrıntı: kanli-okey-app/docs/HILE-ONLEMLERI.md
+Ayrıntı: docs/HILE-ONLEMLERI.md
 - [x] Sunucu sürümünde: başkasının eli ve deste sırası istemciye hiç gitmiyor, her hamle sunucuda kurallarla doğrulanıyor, oyun kaydına istemci yazamıyor, taş sayısı (106) ve aynı taşın iki kez bulunması her hamlede denetleniyor, hız sınırı, başka siteden bağlantı engeli, yönetici şifresi sunucuda
 - [ ] Aynı kişinin iki koltuğa oturması / anlaşmalı oynama (arkadaş masasında düşük risk; yabancılarla eşleştirme açılırsa gerekir)
-- [ ] Hamle kaydı (anlaşmazlıkta "ne oldu" bakılır) ve şüpheli hamle raporu
+- [~] (v56 hamle kaydı) Hamle kaydı (anlaşmazlıkta "ne oldu" bakılır); şüpheli hamle raporu yok
 - [ ] Bot devralmasında "oyuncu bilerek çıkıyor" kötüye kullanımı
 
 ## Yönetim paneli (Admin)
 İlk sürüm yapıldı (oyunun içinde, sadece sahibe görünür). Gelişim:
 - [x] Oda listesi: kod, kuran, durum (bekliyor / oyunda), el, yaş, oyuncular
 - [x] Odayı sil, 24 saatten eskileri sil, hepsini sil, eski kayıtları temizle (çift dokunma onayı)
-- [ ] Oyuncu atma / odadan çıkarma
+- [~] (v27 botla değiştir, sırayı atlat) Oyuncu atma / odadan çıkarma
 - [ ] Odayı izleme: kimin sırası, deste durumu (eller görünmez, hile olmasın)
 - [x] (v56) Hata ve şikayet kutusu: oyuncuların "kural yanlış" ve hata bildirimleri burada toplanır
 - [ ] İstatistik: günlük oyun sayısı, ortalama süre, kaç oyun bitti, nerede bırakıldı
 - [ ] Kural sorusu listesi: Mustafa'ya sorulacak açık konular burada görünür ve cevaplandıkça kapanır
 - [ ] Yasaklı takma ad / kullanıcı engelleme (yabancı eşleştirme açılınca şart)
-- [ ] Sunucuda gerçek yetki: admin girişi, kayıt tutma (kim neyi sildi)
+- [~] (v40) Sunucuda gerçek yetki: admin girişi yapıldı; kayıt tutma (kim neyi sildi) yok
 
 ## Aşama 8: Büyüme ve fark yaratan özellikler
 - [ ] Ev kuralları: oda kurarken seçenekler. Bölgeden bölgeye değişen oyun olduğu için büyük fark yaratır. Seçenekler sadece Mustafa'nın söylediği varyasyonlarla sınırlı olur, tahminle eklenmez.
-- [ ] İsteğe bağlı hesap (Google/Apple girişi): istatistikler cihazlar arası kalır. (Karar: sonra düşünülecek. Takma adla girişle başlıyoruz.)
+- [ ] Hesap: Mustafa kullanıcı adı + şifre ile en basit kaydı istedi (istekler listesinde). Google/Apple girişi sonra.
 - [ ] İstatistikler: en çok sonuncu olan, en çok işleme cezası yazdıran, en çok okeyle bitiren, "kanlı" ödüller
 - [ ] Arkadaş listesi, aynı masayla yeni oyun
-- [ ] Hızlı tepkiler (emoji, "eyvah", "yine mi"), isteğe bağlı sohbet
+- [x] (v52, v54) Hızlı tepkiler (emoji, hazır mesajlar) ve sohbet
 - [ ] İzleyici modu ve maç tekrar izleme
 - [ ] Oyun sonu paylaşım kartı ("Bu oyunda 840 ceza yedim") WhatsApp'ta paylaşılsın
 - [ ] Arkadaş grubuna sezonluk skor tablosu / lig
-- [ ] İki masa türü: "Arkadaş masası" (kodla, sadece davetli) ve "Herkese açık masa" (yabancılarla eşleştirme). Karar: ikisi de olacak, arkadaş masası her zaman kalır. Yabancı eşleştirme için gerekenler: bekleme havuzu, boş koltuğu bot doldurma, ayrılana ceza yok, takma ad filtresi, şikayet, yönetim panelinde engelleme.
+- [~] (v56 herkese açık masa) İki masa türü: "Arkadaş masası" (kodla, sadece davetli) ve "Herkese açık masa" (yabancılarla eşleştirme). Karar: ikisi de olacak, arkadaş masası her zaman kalır. Yabancı eşleştirme için gerekenler: bekleme havuzu, boş koltuğu bot doldurma, ayrılana ceza yok, takma ad filtresi, şikayet, yönetim panelinde engelleme.
 - [ ] Çok dilli (önce Türkçe, ileride Almanca/İngilizce, yurt dışındaki Türkler için)
 
 ## Aşama 9: Birleştirme ve cila
@@ -273,11 +274,11 @@ Ayrıntı: kanli-okey-app/docs/HILE-ONLEMLERI.md
 
 ## Sürekli işler (her aşamayla birlikte)
 - Kural toplama: Mustafa'nın henüz söylemediği kurallar için soru listesi tutulur, tahmin edilmez. Sırası gelince sorulacak kenar durumlar:
-  - Eli bitiren son taş hem işler taş hem okeyse ne olur?
+  - (Cevaplandı, KURALLAR.md) Eli bitiren son taş hem işler taş hem okeyse ne olur?
   - Oyuncu oyundan çıkarsa cezası nasıl yazılır?
   - Katlamalıda biri per, biri çift açarsa puanlar aynı sayıdan mı karşılaştırılır?
-  - 9 ve 13 turlu oyunda büyük el sayısı farkı (1, 5, 9, 13) gerçek oyunda da böyle mi?
-  - Deste bitince yandan alınan taş / açılmış oyuncuların durumu
+  - (Cevaplandı: evet) 9 ve 13 turlu oyunda büyük el sayısı farkı (1, 5, 9, 13) gerçek oyunda da böyle mi?
+  - (Cevaplandı, KURALLAR.md) Deste bitince yandan alınan taş / açılmış oyuncuların durumu
 - KURALLAR.md tek doğru kaynak. Her kural değişikliği: KURALLAR.md, motor, test, site, rehber birlikte.
 - Her aşamanın sonunda çalıştığı denenir, Mustafa'ya gösterilir, onay alınır.
 - Değişiklikler toplu ve tek oturumdan yapılır (çakışmayı önlemek için).
@@ -287,7 +288,7 @@ Ayrıntı: kanli-okey-app/docs/HILE-ONLEMLERI.md
 
 ## Verilen kararlar
 - Tanıtım sitesi sadece okunan bir sayfa olarak kalır (kural sayfası). Oyundan "Kurallar" bağlantısıyla her an açılabilir. Siteye oyun kurma, hesaplayıcı, geri bildirim gibi özellikler eklenmeyecek. İleride kendi sunucuya geçerken site KURALLAR.md'den üretilecek.
-- Giriş: başta sadece takma ad. Google/Apple girişi sonra düşünülecek.
+- Giriş: misafir (takma ad) kalır; yanına kullanıcı adı + şifre ile basit kayıt gelecek, doğrulama yok (Mustafa, 31 Ekim 2026). Google/Apple girişi sonra.
 - Beta: sadece davetle (oda kodu ile).
 - Yönetim paneli olacak (ilk sürüm yapıldı).
 - Oda kur / kodla katıl sistemi olacak (ilk sürüm yapıldı).
