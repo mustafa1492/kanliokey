@@ -26,7 +26,7 @@ for(const f of ['sw.js','manifest.webmanifest'])if(fs.existsSync(path.join(root,
 const kur=kurSrc.replace('/*@WM@*/',()=>wm).replace('<!--@HEAD@-->',()=>FAV+'\n<!--@HEAD@-->');
 fs.writeFileSync(path.join(out,'kurallar.html'),kur);
 /* kurallar oyunun içinde de açılır: sayfa index.html'e gömülür (script içinde </ kaçırılır) */
-html=html.replace("'/*@RULES@*/'",()=>JSON.stringify(kur).replace(/<\//g,'<\\/'));
+html=html.replace("'/*@RULES@*/'",()=>JSON.stringify(kur.replace('<!--@HEAD@-->','')).replace(/<\//g,'<\\/'));
 fs.writeFileSync(path.join(out,'index.html'),html);
 for(const f of fs.readdirSync(path.join(root,'src/assets')))if(/\.(png|jpg|ico)$/.test(f))fs.copyFileSync(path.join(root,'src/assets',f),path.join(out,f));
 console.log('dist/index.html',Math.round(html.length/1024)+' KB · sürüm',build);
