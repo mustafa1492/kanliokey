@@ -61,6 +61,15 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   ok(!(await Y.call({op:'set',path:'rooms/'+D,data:{hostName:'Ye'}})).ok,'yeni masa kurma kapalıyken masa kurulmaz');
   await adm.call({op:'set',path:'settings/main',data:{pub:true,chat:true,mk:true}});
   ok((await X.call({op:'chat',code:C,text:'selam'})).ok&&(await Y.call({op:'set',path:'rooms/'+D,data:{hostName:'Ye'}})).ok,'açınca yine çalışır');
+  /* v59: bakım modu: yeni masa ve yeni oyun kapalı, süren oyun devam eder */
+  const g0=(await adm.call({op:'get',path:'rooms/'+C+'/game/main'})).snap.data;
+  await adm.call({op:'set',path:'settings/main',data:{bk:true}});
+  ok(!(await Y.call({op:'set',path:'rooms/BKM23',data:{hostName:'Ye'}})).ok,'bakımda yeni masa kurulmaz');
+  const st=await Y.call({op:'start',code:D});ok(!st.ok&&/Bakım/.test(st.msg||''),'bakımda yeni oyun başlamaz: '+(st.msg||''));
+  await sleep(1500);
+  const g1=(await adm.call({op:'get',path:'rooms/'+C+'/game/main'})).snap.data;ok(g1&&g1.gid===g0.gid&&g1.seats.join()===g0.seats.join(),'bakımda süren oyun yerinde duruyor');
+  await adm.call({op:'set',path:'settings/main',data:{bk:false}});
+  ok((await Y.call({op:'set',path:'rooms/BKM23',data:{hostName:'Ye'}})).ok,'bakım kapanınca masa kurulur');
   for(const c of [A,X,Y,adm])c.close();await sleep(100);S.stop();try{fs.unlinkSync(process.env.DATA_FILE)}catch(e){}
   console.log(fails?'FAILED '+fails:'ALL PASSED');process.exit(fails?1:0);
 })().catch(e=>{console.error(e);process.exit(1)});

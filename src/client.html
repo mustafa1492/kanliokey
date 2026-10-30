@@ -1903,12 +1903,12 @@ async function admRep(a){
   try{await SRV.call({op:'adminList',k:k==='del'?'repDel':'repSeen',rid:id})}catch(e){}
   await admLoad();
 }
-const cfgSave=()=>db.doc('settings/main').set({bot:CFG.bot,ms:CFG.ms,ann:CFG.ann,tm:CFG.tm,pub:!!CFG.pub,chat:!!CFG.chat,mk:!!CFG.mk});
+const cfgSave=()=>db.doc('settings/main').set({bot:CFG.bot,ms:CFG.ms,ann:CFG.ann,tm:CFG.tm,pub:!!CFG.pub,chat:!!CFG.chat,mk:!!CFG.mk,bk:!!CFG.bk});
 async function setCfg(p){CFG={...CFG,...p};try{await cfgSave();admMsg='Kaydedildi.'}catch(e){admMsg='Kaydedilemedi: '+(e.code||'')}render()}
 let cfgU=null,cfgJ='';
 function watchCfg(){
   try{if(cfgU)cfgU();cfgU=db.doc('settings/main').onSnapshot(s=>{
-    const d=s.exists?s.data():{},n={bot:d.bot!=null?+d.bot:2,ms:+d.ms||1100,ann:String(d.ann||''),tm:d.tm!=null?+d.tm:45,pub:d.pub!==false,chat:d.chat!==false,mk:d.mk!==false},j=JSON.stringify(n);
+    const d=s.exists?s.data():{},n={bot:d.bot!=null?+d.bot:2,ms:+d.ms||1100,ann:String(d.ann||''),tm:d.tm!=null?+d.tm:45,pub:d.pub!==false,chat:d.chat!==false,mk:d.mk!==false,bk:d.bk===true},j=JSON.stringify(n);
     if(j===cfgJ)return;cfgJ=j;CFG=n;render();
   },()=>{})}catch(e){}
 }
@@ -1998,7 +1998,7 @@ function adminH(){
   const worst=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
   const hl=hist.slice(0,8).map(e=>{const top=Math.max(...e.p.map(x=>x.s));return `<div class="hr2"><small class="mut">${age(e.t)} önce</small>${e.p.map(x=>`<span class="${x.s===top?'lose':''}">${esc(x.n)} <b>${x.s}</b></span>`).join('')}</div>`}).join('');
   const nRep=(admR||[]).filter(r=>!r.ok).length,nOn=admP?admP.online||0:0;
-  const TABS=[['genel','Odalar',rs.length],['bildirim','Bildirimler',nRep],['oyuncu','Oyuncular',nOn],['ozellik','Özellikler',0],['ayar','Bot ve süre',0],['duyuru','Duyuru',CFG.ann?1:0],['istat','İstatistik',0]];
+  const TABS=[['genel','Odalar',rs.length],['bildirim','Bildirimler',nRep],['oyuncu','Oyuncular',nOn],['bakim','Bakım',CFG.bk?1:0],['ozellik','Özellikler',0],['ayar','Bot ve süre',0],['duyuru','Duyuru',CFG.ann?1:0],['istat','İstatistik',0]];
   if(!TABS.some(t=>t[0]===admTab))admTab='genel';
   const tabs=`<nav class="atabs" role="tablist" aria-label="Yönetim bölümleri">${TABS.map(([k,l,n])=>`<button role="tab" class="${admTab===k?'on':''}" data-at="${k}" aria-selected="${admTab===k}">${l}${n?`<i class="${k==='bildirim'?'':'n'}">${n}</i>`:''}</button>`).join('')}</nav>`;
   let body='';
@@ -2007,6 +2007,13 @@ function adminH(){
 <div class="row" style="margin-top:12px">${cb('old','24 saatten eskileri sil')}${cb('all','Hepsini sil')}${cb('legacy','Eski kayıtları temizle')}</div></div>`;
   else if(admTab==='bildirim')body=SRV?admRepH():'<div class="panel"><p class="mut" style="margin:0">Bildirimler sadece sunucudaki oyunda var.</p></div>';
   else if(admTab==='oyuncu')body=SRV?(admPlH()||'<div class="panel"><p class="mut" style="margin:0">Yükleniyor…</p></div>'):'<div class="panel"><p class="mut" style="margin:0">Oyuncu listesi sadece sunucudaki oyunda var.</p></div>';
+  else if(admTab==='bakim'){
+    const live=rs.filter(r=>r.st==='playing'),ready=!live.length;
+    body=`<div class="panel"><h2>Bakım modu</h2><p class="mut" style="margin:0 0 6px;font-size:13px">Güncellemeden (GitHub'a yüklemeden) önce aç. Açıkken kimse yeni masa kuramaz ve yeni oyun başlatamaz, herkese "güncelleme var" duyurusu çıkar. Süren oyunlar sonuna kadar oynanır. Hepsi bitince yükle; Render deploy süren oyunları siler.</p>
+${tog('bk','Bakım modu','Yeni masa ve yeni oyun kapalı, herkese duyuru.')}
+<div class="res" style="margin-top:10px"><div><span>Süren oyun</span><b>${live.length}</b></div><div><span>Bekleyen oda</span><b>${rs.length-live.length}</b></div></div>
+${CFG.bk?(ready?'<div class="note" style="margin-top:10px">✓ Süren oyun yok: güncellemeye hazır. Yükledikten sonra bakım modunu kapatmayı unutma.</div>':`<div class="note" style="margin-top:10px">${live.length} oyun sürüyor, bitmesini bekle: ${live.map(r=>esc(r.id)+(r.rd!=null?' (el '+(r.rd+1)+'/'+r.R+')':'')).join(', ')}</div>`):''}</div>`;
+  }
   else if(admTab==='ozellik')body=`<div class="panel"><h2>Özellikler</h2><p class="mut" style="margin:0 0 6px;font-size:13px">Oyuna eklenenleri buradan açıp kapatırsın. Değişiklik herkeste hemen geçerli olur.</p>
 ${tog('pub','Herkese açık masalar','Ana ekrandaki "Masa seç" listesi ve yabancıların bot yerine oturması.')}
 ${tog('chat','Sohbet','Masada yazılı sohbet. Kapalıyken hazır tepkiler yine çalışır.')}
@@ -2480,7 +2487,7 @@ ${md&&S.must>=0?'<div class="acts"><button id="back">Taşı geri koy</button></d
   if(false){
     /* eski masa kaldırıldı */
   }
-  h=(CFG.ann?`<div class="ann" role="status"><b>Duyuru</b> ${esc(CFG.ann)}</div>`:'')+'<!--SEC-->'+h;
+  h=(CFG.bk?`<div class="ann" role="status"><b>🔧 Bakım</b> Kısa süre sonra güncelleme var. Yeni oyun başlatılamıyor, süren oyunlar devam ediyor.</div>`:'')+(CFG.ann?`<div class="ann" role="status"><b>Duyuru</b> ${esc(CFG.ann)}</div>`:'')+'<!--SEC-->'+h;
   const parts=h.split('<!--SEC-->');
   if(A._p&&A._p.length===parts.length&&A.children.length===parts.length&&A.firstElementChild.className==='sec'){
     for(let i=0;i<parts.length;i++)if(parts[i]!==A._p[i])A.children[i].innerHTML=parts[i];
@@ -2801,7 +2808,7 @@ $('#app').addEventListener('click',async e=>{
   if(b&&b.dataset.at){admTab=b.dataset.at;admMsg='';if(admTab==='bildirim'||admTab==='oyuncu')admLoad();render();return}
   if(b&&b.dataset.ann){await setCfg({ann:b.dataset.ann});return}
   if(b&&b.dataset.pr!=null){try{await db.doc('rooms/'+code).update({pr:+b.dataset.pr})}catch(e){}return}
-  if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:['pub','chat','mk'].includes(k)?v==='1':+v});return}
+  if(b&&b.dataset.cfg){const [k,v]=b.dataset.cfg.split(':');await setCfg({[k]:['pub','chat','mk','bk'].includes(k)?v==='1':+v});return}
   if(b&&b.dataset.ins){
     const [o,gi,en]=b.dataset.ins.split(':');
     if(en==='P')await insertPair(+o,+gi);

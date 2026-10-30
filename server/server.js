@@ -51,7 +51,7 @@ const cleanName=n=>String(n==null?'':n).replace(/[\u0000-\u001f\u007f<>"'`]/g,''
 const gamePath=c=>'rooms/'+c+'/game/main';
 const roomOf=p=>{const m=/^rooms\/([A-Z0-9]{5})(\/|$)/.exec(p);return m?m[1]:null};
 const membersOf=c=>[...store.keys()].filter(k=>parentOf(k)==='rooms/'+c+'/members').map(k=>({id:k.split('/').pop(),...store.get(k)}));
-function getCfg(){const d=store.get('settings/main')||{};return{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):2,ms:Math.max(300,Math.min(4000,+d.ms||1100)),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):45,ann:String(d.ann||''),pub:d.pub!==false,chat:d.chat!==false,mk:d.mk!==false}}
+function getCfg(){const d=store.get('settings/main')||{};return{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):2,ms:Math.max(300,Math.min(4000,+d.ms||1100)),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):45,ann:String(d.ann||''),pub:d.pub!==false,chat:d.chat!==false,mk:d.mk!==false,bk:d.bk===true}}
 function bump(keys){const d=store.get('settings/stats')||{};keys.forEach(k=>d[k]=(d[k]||0)+1);store.set('settings/stats',d);dirty=true;notify('settings/stats')}
 const lastAct=new Map(); /* oda -> son hareket zamanı (bellekte) */
 const touch=c=>lastAct.set(c,now());
@@ -219,7 +219,7 @@ function hPut(conn,m){
   if(p==='settings/main'){
     if(!conn.admin)return deny(conn,m.id);
     const cur=getCfg();
-    put(p,{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):cur.bot,ms:d.ms!=null?Math.max(300,Math.min(4000,+d.ms|0)):cur.ms,ann:String(d.ann!=null?d.ann:cur.ann).replace(/[\u0000-\u001f]/g,'').slice(0,140),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):cur.tm,pub:d.pub!=null?!!d.pub:cur.pub,chat:d.chat!=null?!!d.chat:cur.chat,mk:d.mk!=null?!!d.mk:cur.mk});
+    put(p,{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):cur.bot,ms:d.ms!=null?Math.max(300,Math.min(4000,+d.ms|0)):cur.ms,ann:String(d.ann!=null?d.ann:cur.ann).replace(/[\u0000-\u001f]/g,'').slice(0,140),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):cur.tm,pub:d.pub!=null?!!d.pub:cur.pub,chat:d.chat!=null?!!d.chat:cur.chat,mk:d.mk!=null?!!d.mk:cur.mk,bk:d.bk!=null?!!d.bk:cur.bk});
     for(const c of new Set([...timers.keys()]))kick(c);
     return reply(conn,m.id,{ok:true});
   }
@@ -227,6 +227,7 @@ function hPut(conn,m){
   const c=roomOf(p);if(!c)return deny(conn,m.id);
   if(p==='rooms/'+c){
     if(store.has(p))return deny(conn,m.id,'exists');
+    if(getCfg().bk&&!conn.admin)return deny(conn,m.id,'off','Bakım: kısa süre sonra güncelleme var, şu an yeni masa kurulamıyor. Biraz sonra dene.');
     if(!getCfg().mk&&!conn.admin)return deny(conn,m.id,'off','Şu an yeni masa kurulamıyor (bakım). Biraz sonra dene.');
     if(!allow('room:'+conn.uid,12,600e3))return deny(conn,m.id,'rate','Çok fazla oda kurdun, biraz bekle.');
     const rd={code:c,host:conn.uid,hostName:cleanName(d.hostName),R:d.R===13?13:9,bots:0,st:'lobby',t:now()};
@@ -437,6 +438,8 @@ function hStart(conn,m,next){
     return reply(conn,m.id,{ok:nextHand(c,g.gid)});
   }
   if(r.host!==conn.uid)return deny(conn,m.id,'denied','Oyunu sadece masayı kuran başlatır.');
+  /* bakım modu: süren oyunlar devam eder (el geçişi serbest), yeni oyun başlamaz */
+  if(getCfg().bk&&!conn.admin)return deny(conn,m.id,'off','Bakım: kısa süre sonra güncelleme var, şu an yeni oyun başlatılamıyor. Biraz sonra dene.');
   if(g&&g.ph!=='end')return deny(conn,m.id,'playing','Oyun zaten sürüyor.');
   const ms=membersOf(c).sort((a,b)=>a.t-b.t).slice(0,4),nb=Math.max(0,Math.min(r.bots||0,4-ms.length));
   if(ms.length+nb<4)return deny(conn,m.id,'few','Başlamak için 4 kişi ya da bot gerekli.');
