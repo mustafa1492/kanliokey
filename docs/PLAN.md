@@ -136,6 +136,7 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Profil sayfasının içi dolsun: toplam maç, galibiyet, mağlubiyet, galibiyet oranı, seviye. İstatistikler tekli ve eşli diye ayrı tutulur (Mustafa): tekli: oynanan oyun, galibiyet = birinci olmak, mağlubiyet = sonuncu olmak, oran; eşli: oynanan, kazanılan, kaybedilen, oran. Seviye: tecrübe puanı sistemi onaylandı (Mustafa: mantıklı), unvan adları sonra birlikte gözden geçirilecek. Tecrübe puanı (bitirilen oyun +10, tekli 1. +30 / 2. +15 / 3. +5, eşli kazanan +25, okeyle ya da tek başına bitirme +5, yarıda bırakma 0; botlu oyunda yarım TP önerildi) ve unvanlar: Çaycı 0, Çırak 100, Müdavim 300, Taşçı 700, Usta 1500, Kahve Ağası 3000, Kanlı Usta 6000, Efsane 12000.
 - [ ] İlk kayıt olan 20 kullanıcıya özel rozet. Mustafa rozet tasarımını seçenekler arasından seçecek.
 - [ ] Istaka düğmeleri: "Per aç" yerine "Seri aç" ve "Çift aç"; ayrıca "Seri diz" ve "Çift diz" (ıstakayı serilere ya da çiftlere göre dizer).
+- [ ] Süre kaçıran oyuncu: arka arkaya 3 kez süresi dolan masadan çıkar, yerine bot geçer, dönünce koltuğunu geri alır; sayı panelden (2/3/5). Kural KURALLAR.md "Sıra süresi"nde.
 - [ ] Sırala için geri al: ıstakayı elle düzenledikten sonra yanlışlıkla Sırala'ya basan, "Geri al" ile önceki dizilişine döner.
 
 ## İlk izlenim (cepte, Mustafa onaylayınca)

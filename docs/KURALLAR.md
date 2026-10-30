@@ -107,6 +107,7 @@ Tek doğru kaynak. Bu dosyadaki her kural Mustafa'nın anlattığı gibidir. Alt
 
 ## Sıra süresi
 - Sıra süresi dolunca oyuncu için taş otomatik çekilir ve en kötü taş atılır (Mustafa: doğru). Yandan alınmış taş varsa önce geri konur.
+- Arka arkaya 3 kez süresi dolan oyuncu masadan çıkarılır, yerine bot geçer (Mustafa onayladı; henüz oyunda yok, PLAN.md). Toplam değil arka arkaya sayılır: oyuncu kendisi bir hamle yaparsa sayaç sıfırlanır. Bot oyuncunun elini ve cezalarını aynen devralır, masaya "X 3 kez süreyi kaçırdı, yerine bot oynuyor" uyarısı çıkar. Oyuncu oda koduyla dönünce koltuğunu bottan geri alır. Sayı yönetim panelinden değiştirilebilir (2 / 3 / 5, varsayılan 3).
 
 ## Botlar
 - Botlar sadece per açar, çift açmaz (Mustafa: "hayır").
