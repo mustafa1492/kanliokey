@@ -25,6 +25,7 @@ Mustafa'nın yöresel 4 kişilik "kanlı okey" oyunu. Canlı adres: https://kanl
 - t31 sunucu ister: `PORT=8791 ADMIN_PASSWORD=test1234 DATA_FILE=/tmp/ko/state.json node server/server.js &` sonra `cd test && python3 ui/t31.py`. Sunucuyu `pkill -f "^node server/server.js"` ile kapat.
 - Python e2e (çalışan sunucuyla): test/e2e.py, claim_e2e.py, chat_e2e.py, admin.py (argüman port), reconnect.py / pwa.py (argüman DATA dosya yolu!).
 
-## Durum (v57, 30 Ekim 2026)
-Son sürümler: v55 masadaki per taşları büyük ve okunaklı, yan oyuncular uzun sütun. v56 işlenen taş yatay, deste bitince yandan alınmaz, son hamle şeridi, "bitiyor!" rozeti, hata/kural bildirimi, yönetici hamle kaydı ve oyuncu listesi, herkese açık masalar (Masa seç, bot yerine otur), oda bot seviyesi. v57 iOS 26 Safari alt çubuk boşluğu, sekme logosu, sekmeli yönetim paneli, eşli oyunda "Eşin kim?" seçimi.
-Açık konular: herkese açık masalarda küfür/hile önlemi ve engelleme yok; Aşama 5.5 rehber; PLAN.md'deki bazı eski işaretlenmemiş maddeler aslında yapıldı, temizlenmeli.
+## Durum (v58, 31 Ekim 2026, canlıda)
+Son sürümler: v56 işlenen taş yatay, son hamle şeridi, herkese açık masalar, bildirimler. v57 iOS 26 Safari alt çubuk, sekmeli yönetim paneli, eşli oyunda "Eşin kim?". v58 katlamalıda yandan sayılır (17 → 17+y1 → 17+y2 → 18), kurallar oyunun içinde açılır, .dockerignore düzeltmesi (v57 Render'da bu yüzden derlenmiyordu; Render servisi Docker ile derleniyor).
+Sıradaki iş: docs/PLAN.md "Mustafa'nın istekleri" listesi. İlk madde ACİL: iPhone Safari'de bütün oyuncular masanın üstünde görünüyor.
+Açık konular: herkese açık masalarda küfür/hile önlemi ve engelleme yok; Aşama 5.5 rehber.
