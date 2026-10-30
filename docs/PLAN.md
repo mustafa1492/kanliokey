@@ -131,6 +131,11 @@ Not: Bunu UX aşamasından önceye aldım. Sebep: sürükle-bırak, animasyon, s
 - [ ] Hesap: misafir girişi (şimdiki gibi) + en basit kayıt: kullanıcı adı ve şifre, doğrulama yok. Profil (ad, karakter, oyun geçmişi) hesaba bağlanır, başka telefondan girince aynen gelir. Şifre sunucuda tuzlu hash ile saklanır.
 - [ ] Mustafa'ya özel GM profili: profilde "GM" rozeti, oyun içinde sadece ona özel ayrıcalıklar (liste Mustafa'ya sunuldu, seçecek).
 - [ ] Menü ikiye ayrılsın: "Genel ayarlar" (ses, titreşim, bildirim, ekran, profil, hesap) ve "Oyun ayarları" (ıstaka, ipuçları, zorluk, masa görünümü, büyük taş vb.), içleri ayrı ayrı doldurulacak.
+- [ ] ACİL: Safari'de (telefon) bütün oyuncular masanın üstünde görünüyor, yerleşim kaçmış. Sağdaki sağ kenara, soldaki sol kenara dönmeli (yukarıdaki masa düzeni maddesiyle birlikte, gerçek iPhone ölçüleriyle denenecek).
+- [ ] Profil sayfasının içi dolsun: toplam maç, galibiyet, mağlubiyet, galibiyet oranı, seviye. Seviye kuralı (kaç maçta/puanda seviye atlanır, "galibiyet" ne sayılır: birinci olmak mı, sonuncu olmamak mı) Mustafa'ya sorulacak.
+- [ ] İlk kayıt olan 20 kullanıcıya özel rozet. Mustafa rozet tasarımını seçenekler arasından seçecek.
+- [ ] Istaka düğmeleri: "Per aç" yerine "Seri aç" ve "Çift aç"; ayrıca "Seri diz" ve "Çift diz" (ıstakayı serilere ya da çiftlere göre dizer).
+- [ ] Sırala için geri al: ıstakayı elle düzenledikten sonra yanlışlıkla Sırala'ya basan, "Geri al" ile önceki dizilişine döner.
 
 ## İlk izlenim (cepte, Mustafa onaylayınca)
 - [x] Bekleme ekranı: sunucu uyanırken boş sayfa yerine "Masa hazırlanıyor" (taşlar karılıyor) açılışı
