@@ -1084,7 +1084,9 @@ body.gmode .pers .mini{gap:1px;padding:2px}
 @media (max-width:999px) and (orientation:portrait), (orientation:landscape) and (max-height:620px){
  body.gmode .felt3d{grid-template-areas:"left top right" "left mid right" "me me me";grid-template-columns:minmax(0,1fr) minmax(0,1.45fr) minmax(0,1fr);grid-template-rows:auto minmax(96px,1fr) auto}
  body.gmode .a-left,body.gmode .a-right{align-self:stretch;justify-self:stretch;min-width:0}
- body.gmode .a-left .seat,body.gmode .a-right .seat{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:2px 0}
+ body.gmode .a-left .seat,body.gmode .a-right .seat{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:4px;padding:2px 0;height:100%;box-sizing:border-box}
+ /* her oyuncu kendi kenarında (Mustafa): yanlar masanın sol/sağ kenarında dikey ortada, karşıdaki üstte */
+ body.gmode .a-left,body.gmode .a-right{display:flex;flex-direction:column;justify-content:center}
  body.gmode .a-left .plate,body.gmode .a-right .plate{align-self:center;max-width:100%}
  body.gmode .a-left .orack,body.gmode .a-right .orack{align-self:center;margin:0}
  body.gmode .a-left .dpile,body.gmode .a-right .dpile{align-self:center;margin:0;padding:0;border:0}
