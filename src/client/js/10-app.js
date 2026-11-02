@@ -244,6 +244,11 @@ function enterRoom(c) {
           j = JSON.stringify(d);
         if (j === gj) return;
         gj = j;
+        /* v66 (Mustafa): süresi dolup yerine bot geçtiyse ana ekrana dön; "Son masaya dön" ile koltuğuna geri gelir */
+        if (d && d.away && !d.seats.includes(uid) && Object.values(d.away).some(x => x && x.u === uid)) {
+          leaveLocal('Süren arka arkaya doldu, yerine bot oynuyor. "Son masaya dön" ile koltuğuna geri dönebilirsin.', true);
+          return;
+        }
         const pv = S;
         S = d;
         try {

@@ -1500,3 +1500,40 @@ a.wa::before {
   border-color: #f2c94c88;
   color: #f2c94c;
 }
+.sacc {
+  border: 1px solid #3a2617;
+  border-radius: 12px;
+  background: #ffffff06;
+  margin: 8px 0;
+}
+.sacc > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  padding: 0 14px;
+  font: 700 15px/1.2 var(--body);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.sacc > summary::-webkit-details-marker {
+  display: none;
+}
+.sacc > summary::after {
+  content: '›';
+  font-size: 22px;
+  color: #e8b93a;
+  transition: transform 0.15s;
+}
+.sacc[open] > summary::after {
+  transform: rotate(90deg);
+}
+.sacc[open] > summary {
+  color: #e8b93a;
+}
+.saccb {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px 12px;
+}

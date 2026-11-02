@@ -11,7 +11,7 @@ async function loadProf() {
     if (r && r.ok) PROF = r.profile;
   } catch (e) {}
   const v = document.getElementById('setv');
-  if (v && setOpen && setTab === 'genel') v.innerHTML = setH();
+  if (v && setOpen && setTab === 'hesap') v.innerHTML = setH();
 }
 function profCardH(p) {
   const bar = p.next ? Math.min(100, Math.round(((p.tp - (LVLS[p.lv - 1] || 0)) / (p.next - (LVLS[p.lv - 1] || 0))) * 100)) : 100;
@@ -59,15 +59,19 @@ async function accAct(kind) {
   render();
 }
 /* ayarlar sayfası: çizimden bağımsız katman. v63: iki sekme (Mustafa): Oyun ayarları ve Genel ayarlar */
-let setTab = 'oyun';
+let setTab = 'genel';
+/* v66 (Mustafa): iki sekme: Genel ayarlar (hesapla ilgisi olmayan her şey, katlanabilir bölümler) ve Hesap ayarları */
+let secOpen = new Set(['Zorluk']);
+const toAcc = h =>
+  h.replace(/<section><h4>([^<]+)<\/h4>([\s\S]*?)<\/section>/g, (m, t, b) => `<details class="sacc" data-sec="${t}" ${secOpen.has(t) ? 'open' : ''}><summary>${t}</summary><div class="saccb">${b}</div></details>`);
 function setH() {
   const sw = (k, t, d, v) =>
     `<button class="sw" data-sw="${k}" aria-pressed="${!!v}"><span><b>${t}</b>${d ? `<small>${d}</small>` : ''}</span><i aria-hidden="true"></i></button>`;
   const seg = (k, t, items) =>
     `<div class="srow"><b>${t}</b><div class="sseg" role="radiogroup">${items.map(([v, l]) => `<button data-sv="${k}:${v}" role="radio" aria-checked="${String(SET[k]) === String(v)}" class="${String(SET[k]) === String(v) ? 'on' : ''}">${l}</button>`).join('')}</div></div>`;
   const tabs = `<nav class="stabs" role="tablist">${[
-    ['oyun', 'Oyun ayarları'],
-    ['genel', 'Genel ayarlar']
+    ['genel', 'Genel ayarlar'],
+    ['hesap', 'Hesap ayarları']
   ]
     .map(([k, l]) => `<button role="tab" data-stab="${k}" aria-selected="${setTab === k}" class="${setTab === k ? 'on' : ''}">${l}</button>`)
     .join('')}</nav>`;
@@ -137,8 +141,12 @@ ${PROF && PROF.user ? `<div class="srow"><b>Adın</b><span>${esc(PROF.user)} <sm
 <small class="snote">Ad ve karakter bir sonraki masada geçerli olur.</small>
 </section>
 <section class="sabout"><a href="${RULES_URL}">Kurallar</a><small>Sürüm ${esc(APP_BUILD)}</small></section>`;
-  return `<div class="ssheet" role="dialog" aria-modal="true" aria-label="${setTab === 'oyun' ? 'Oyun ayarları' : 'Genel ayarlar'}"><div class="shd"><b>Ayarlar</b><button id="setX">Kapat</button></div>${tabs}<div class="sbody">
-${setTab === 'oyun' ? oyun : genel}
+  const secs = h => h.match(/<section>[\s\S]*?<\/section>/g) || [];
+  const gs = secs(genel).filter(x => !/<h4>Hesap ve profil/.test(x));
+  const genelH = toAcc(secs(oyun).join('') + gs.filter(x => /<h4>(Ses ve titreşim|Ekran)</.test(x)).join('')) + (genel.match(/<section class="sabout">[\s\S]*?<\/section>/) || [''])[0];
+  const hesapH = accH() + gs.filter(x => /<h4>(Profil|Oyun geçmişim)</.test(x)).join('');
+  return `<div class="ssheet" role="dialog" aria-modal="true" aria-label="${setTab === 'hesap' ? 'Hesap ayarları' : 'Genel ayarlar'}"><div class="shd"><b>Ayarlar</b><button id="setX">Kapat</button></div>${tabs}<div class="sbody">
+${setTab === 'hesap' ? hesapH : genelH}
 </div></div>`;
 }
 function openSet(on) {
@@ -152,9 +160,19 @@ function openSet(on) {
       document.body.appendChild(el);
       el.addEventListener('click', setClick);
       el.addEventListener('change', setChange);
+      el.addEventListener(
+        'toggle',
+        e => {
+          const d = e.target;
+          if (!d.dataset || !d.dataset.sec) return;
+          if (d.open) secOpen.add(d.dataset.sec);
+          else secOpen.delete(d.dataset.sec);
+        },
+        true
+      );
     }
     el.innerHTML = setH();
-    if (setTab === 'genel') loadProf();
+    if (setTab === 'hesap') loadProf();
     document.body.classList.add('set-open');
     document.body.classList.remove('menu-open');
   } else {
@@ -188,7 +206,7 @@ function setClick(e) {
   if (b.dataset.stab) {
     setTab = b.dataset.stab;
     document.getElementById('setv').innerHTML = setH();
-    if (setTab === 'genel') loadProf();
+    if (setTab === 'hesap') loadProf();
     return;
   }
   if (b.dataset.acc) {
@@ -258,7 +276,7 @@ if (typeof document !== 'undefined' && typeof document.addEventListener === 'fun
     const t = e.target.closest && e.target.closest('#setT,#setO,#setG');
     if (t) {
       e.preventDefault();
-      setTab = t.id === 'setG' || (t.id === 'setT' && !document.body.classList.contains('gmode')) ? 'genel' : 'oyun';
+      setTab = t.id === 'setG' ? 'hesap' : 'genel';
       openSet(true);
     }
   });

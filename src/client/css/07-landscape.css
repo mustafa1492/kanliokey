@@ -50,8 +50,10 @@
   body.gmode .top {
     position: fixed;
     z-index: 30;
-    top: max(4px, env(safe-area-inset-top, 0px));
-    right: max(8px, env(safe-area-inset-right, 0px));
+    top: calc(max(4px, env(safe-area-inset-top, 0px)) + 8px);
+    right: calc(max(8px, env(safe-area-inset-right, 0px)) + 8px);
+    height: 30px;
+    align-items: center;
     min-height: 0;
     padding: 0;
     background: none;
@@ -60,7 +62,13 @@
     display: none;
   }
   body.gmode .top .chips {
-    gap: 4px;
+    gap: 6px;
+    align-items: center;
+  }
+  body.gmode .top .chip,
+  body.gmode .top .mbtn {
+    min-height: 30px;
+    padding: 4px 12px;
   }
   body.gmode #app {
     grid-template-columns: minmax(0, 1fr);
@@ -87,12 +95,31 @@
   }
   /* durum şeridi */
   body.gmode .gstat {
-    padding: 1px 6px;
-    padding-right: 250px;
+    padding: 4px 6px 5px;
+    padding-right: 260px;
     border-radius: 10px;
   }
   body.gmode .gstat .status {
+    min-height: 30px;
+    max-height: 30px;
+  }
+  body.gmode .gstat .status button {
     min-height: 28px;
+    padding: 2px 10px;
+  }
+  body.gmode .gstat .rxbtn {
+    width: 32px;
+    height: 30px;
+  }
+  body.gmode .gstat .tmr {
+    height: 4px;
+    margin-top: 4px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
+    position: relative;
+    left: auto;
+    right: auto;
   }
   body.gmode .gstat .status b {
     font-size: 13px;
@@ -110,11 +137,12 @@
     height: 100%;
     min-height: 0 !important;
     display: grid;
-    grid-template-columns: 64px minmax(0, 1fr) 64px minmax(0, 1fr) 64px;
-    grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 66px minmax(0, 1fr) 76px minmax(0, 1fr) 66px;
+    grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr) auto;
     grid-template-areas:
-      'tl top top top tr'
+      'tl qT top qR tr'
       'lp qT mid qR rp'
+      'lp qL mid qM rp'
       'bl qL mid qM br';
     padding: 4px;
     border-width: 5px;
@@ -126,7 +154,7 @@
   body.gmode .a-mid::after {
     display: none !important;
   }
-  body.gmode .felt3d .area,
+  body.gmode .felt3d .area:not(.a-mid),
   body.gmode .felt3d .seat {
     display: contents;
   }
@@ -137,7 +165,30 @@
   body.gmode .a-top .plate {
     grid-area: top;
     justify-self: center;
-    align-self: center;
+    align-self: start;
+    flex-direction: column;
+    text-align: center;
+    padding: 3px 2px;
+    gap: 1px;
+    border-radius: 12px;
+    max-width: 74px;
+    overflow: hidden;
+  }
+  body.gmode .a-top .pn {
+    text-align: center;
+  }
+  body.gmode .a-top .pn b {
+    max-width: 70px;
+    font-size: 11px;
+  }
+  body.gmode .a-top .pn small {
+    font-size: 9px;
+  }
+  body.gmode .a-top .plate .av,
+  body.gmode .a-left .plate .av,
+  body.gmode .a-right .plate .av {
+    width: 26px;
+    height: 26px;
   }
   body.gmode .a-left .plate {
     grid-area: lp;
@@ -203,6 +254,32 @@
   body.gmode .felt3d .dpile .t.old {
     display: none;
   }
+  body.gmode .felt3d .dpile {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    padding: 2px;
+  }
+  body.gmode .felt3d .dpile .t {
+    --tw: 30px;
+    --th: 42px;
+    width: 30px;
+    height: 42px;
+    font-size: 20px;
+  }
+  body.gmode .a-left .dpile::before,
+  body.gmode .a-me .dpile::before {
+    font: 700 9px/1 var(--body);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #f5dca0;
+  }
+  body.gmode .a-left .dpile::before {
+    content: 'Soldan';
+  }
+  body.gmode .a-me .dpile::before {
+    content: 'Attığın';
+  }
   /* dörde bölünmüş orta: her çeyrek bir oyuncunun açtığı perler */
   body.gmode .a-top .pers {
     grid-area: qT;
@@ -263,9 +340,25 @@
     justify-content: center;
     gap: 6px;
     zoom: 0.62;
+    justify-content: flex-start;
+    padding-top: 30px;
   }
   body.gmode .a-mid .okeyrow {
     order: 2;
+    margin-top: 14px;
+  }
+  body.gmode .a-mid .pile {
+    display: grid;
+    place-items: center;
+  }
+  body.gmode .a-mid .pile::before,
+  body.gmode .a-mid .pile > .needle {
+    top: 50%;
+  }
+  body.gmode .a-mid .pile > .needle {
+    width: 84px;
+    height: 84px;
+    margin: -42px 0 0 -42px;
   }
   /* ıstaka kutusu: solda bilgi + dar açma düğmeleri, ortada ıstaka, sağda dar dizme düğmeleri */
   body.gmode .rackbox {
@@ -401,5 +494,32 @@
 @media (orientation: landscape) and (max-height: 380px) {
   body.gmode .a-mid {
     zoom: 0.54;
+  }
+}
+/* v66: kısa yatay ekranlarda (iPhone SE vb.) kenar kutuları ve köşe taşları küçülür, hiçbir şey binmesin */
+@media (orientation: landscape) and (max-height: 400px) {
+  body.gmode .felt3d .dpile .t {
+    width: 26px;
+    height: 36px;
+    font-size: 17px;
+  }
+  body.gmode .felt3d .dpile {
+    gap: 3px;
+  }
+  body.gmode .a-top .plate .av,
+  body.gmode .a-left .plate .av,
+  body.gmode .a-right .plate .av {
+    width: 22px;
+    height: 22px;
+  }
+  body.gmode .a-left .pn b,
+  body.gmode .a-right .pn b,
+  body.gmode .a-top .pn b {
+    font-size: 10px;
+  }
+  body.gmode .a-left .pn small,
+  body.gmode .a-right .pn small,
+  body.gmode .a-top .pn small {
+    font-size: 8.5px;
   }
 }
