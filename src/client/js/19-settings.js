@@ -44,6 +44,7 @@ async function accAct(kind) {
     if (r && r.ok && kind === 'reg') {
       PROF = r.profile;
       accMsg = '';
+      render();
     } else if (r && r.ok && r.token) {
       SRV.setToken(r.token);
       location.reload();
@@ -130,7 +131,7 @@ ${sw('wake', 'Ekranı açık tut', 'Oyun sırasında telefon ekranı kararmaz', 
 </section>
 <section><h4>Oyun geçmişim</h4>${histH()}</section>
 <section><h4>Profil</h4>
-<div class="srow"><b>Takma adın</b><input id="setN" maxlength="14" value="${esc(name)}" placeholder="Örn. Mustafa" autocomplete="nickname"></div>
+${PROF && PROF.user ? `<div class="srow"><b>Adın</b><span>${esc(PROF.user)} <small class="mut">(hesabının adı)</small></span></div>` : `<div class="srow"><b>Takma adın</b><input id="setN" maxlength="14" value="${esc(name)}" placeholder="Örn. Mustafa" autocomplete="nickname"></div>`}
 <div class="avgrid">${AVN.map((n, k) => `<button class="avo ${k === myAv ? 'on' : ''}" data-sav="${k}" role="radio" aria-checked="${k === myAv}">${avI(k)}<small>${n}</small></button>`).join('')}</div>
 <small class="snote">Ad ve karakter bir sonraki masada geçerli olur.</small>
 </section>

@@ -805,3 +805,8 @@ body.home .wrap {
 .instcard .row {
   gap: 8px;
 }
+.accname {
+  align-self: center;
+  font: 700 22px/1.2 var(--display);
+  letter-spacing: 0.02em;
+}

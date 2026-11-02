@@ -89,6 +89,8 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 16px 40px;
+  /* ana ekrana eklenmiş uygulamada sayfa telefonun durum çubuğunun (saat, pil) altına uzanır: üstte o kadar boşluk */
+  padding-top: max(16px, calc(env(safe-area-inset-top, 0px) + 8px));
 }
 .wrap {
   max-width: 720px;

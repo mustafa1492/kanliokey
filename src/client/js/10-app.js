@@ -156,6 +156,12 @@ function unsubAll() {
   unsubs = [];
 }
 function readName() {
+  /* v64: hesabı olan oyuncuya takma ad sorulmaz, kullanıcı adı kullanılır */
+  if (PROF && PROF.user) {
+    name = PROF.user.slice(0, 14);
+    lsSet('okeyName', name);
+    return;
+  }
   const el = $('#nm');
   name = ((el && el.value.trim()) || name || 'Oyuncu').slice(0, 14);
   lsSet('okeyName', name);
