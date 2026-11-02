@@ -1,7 +1,7 @@
 /* uyarılar (v49): ayrı katmanda; ✕ ile, dokunarak ya da yukarı kaydırarak kapanır; kalan süre alttaki çizgide */
 let toastEl = null,
   toastKey = '';
-const TINFO = /ceza (aldı|yazıldı|yazdı)|^Okeyi aldın|^Kod kopyalandı|^Süre doldu|^Koltuğa/;
+const TINFO = /ceza (aldı|yazıldı|yazdı)|^Okeyi aldın|^Kod kopyalandı|^Süre doldu|^Koltuğa| ısmarladı$/;
 const toastDur = m => (TINFO.test(m) ? 4500 : Math.min(9000, 4500 + m.length * 35));
 function toastSync() {
   if (typeof document === 'undefined' || typeof document.createElement !== 'function' || !document.body) return;

@@ -275,7 +275,10 @@ function hPut(conn,m){
     const av=+d.av,ri=d.re&&+d.re.i;
     let re=prev&&prev.re?prev.re:undefined;
     if(d.re&&ri>=0&&ri<20&&(ri|0)===ri){if(!allow('react:'+conn.uid,8,20e3))return deny(conn,m.id,'rate','Biraz yavaş.');re={i:ri,t:now()}}
-    const doc={name:cleanName(d.name),av:av>=0&&av<8&&(av|0)===av?av:(prev&&prev.av!=null?prev.av:-1),t:prev?prev.t:now()};if(re)doc.re=re;
+    /* v63 hediye: {k: hediye no 0-7, to: koltuk 0-3} */
+    let gf=prev&&prev.gf?prev.gf:undefined;const gk=d.gf&&+d.gf.k,gt=d.gf&&+d.gf.to;
+    if(d.gf&&gk>=0&&gk<8&&(gk|0)===gk&&gt>=0&&gt<4&&(gt|0)===gt){if(!allow('react:'+conn.uid,8,20e3))return deny(conn,m.id,'rate','Biraz yavaş.');gf={k:gk,to:gt,t:now()}}
+    const doc={name:cleanName(d.name),av:av>=0&&av<8&&(av|0)===av?av:(prev&&prev.av!=null?prev.av:-1),t:prev?prev.t:now()};if(re)doc.re=re;if(gf)doc.gf=gf;
     put(p,doc);touch(c);seen(conn.uid,doc.name,c);
     return reply(conn,m.id,{ok:true});
   }

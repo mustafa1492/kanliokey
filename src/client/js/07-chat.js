@@ -15,6 +15,72 @@ const RX = [
   'Kan kokusu var',
   'Okey bende 😏'
 ];
+/* v63 hediyeler (Mustafa): isim kutusuna dokun → hediye seç; gönderenden alana uçar, herkes görür */
+const GIFTS = [
+  ['🫖', 'çay'],
+  ['☕', 'Türk kahvesi'],
+  ['💋', 'öpücük'],
+  ['🌹', 'gül'],
+  ['🍬', 'lokum'],
+  ['🥯', 'simit'],
+  ['📿', 'tespih'],
+  ['🧿', 'nazar boncuğu']
+];
+let gfSeen = {},
+  gfLast = 0;
+async function sendGift(k, to) {
+  if (!code || !uid || Date.now() - gfLast < 1500) return;
+  gfLast = Date.now();
+  closeZoom();
+  const m = (L || []).find(x => x.id === uid) || {};
+  try {
+    await db
+      .doc('rooms/' + code + '/members/' + uid)
+      .set({ name: m.name || name, av: m.av != null ? m.av : myAv, t: m.t || Date.now(), re: m.re, gf: { k, to, t: Date.now() } });
+  } catch (e) {}
+}
+/* yönelme eki: Ali'ye, Mehmet'e, Ayla'ya, Bot 2'ye */
+function datif(n) {
+  n = String(n || '').trim();
+  const D = { 0: 'ıc', 1: 'ic', 2: 'iv', 3: 'üc', 4: 'öc', 5: 'ec', 6: 'ıv', 7: 'iv', 8: 'ic', 9: 'uc' };
+  let v = '',
+    endV = false;
+  const last = n.slice(-1);
+  if (/\d/.test(last)) {
+    v = D[last][0];
+    endV = D[last][1] === 'v';
+  } else {
+    const m = n.toLocaleLowerCase('tr').match(/[aeıioöuü]/g);
+    v = m ? m[m.length - 1] : 'e';
+    endV = /[aeıioöuü]/i.test(last);
+  }
+  const back = /[aıou]/.test(v);
+  return n + "'" + (endV ? 'y' : '') + (back ? 'a' : 'e');
+}
+function giftFly(from, to, k) {
+  const a = document.querySelector(`#scene .seat[data-seat="${from}"] .plate`),
+    b = document.querySelector(`#scene .seat[data-seat="${to}"] .plate`);
+  const g = GIFTS[k];
+  if (!g) return;
+  if (b) {
+    const r0 = (a || b).getBoundingClientRect(),
+      r1 = b.getBoundingClientRect(),
+      el = document.createElement('div');
+    el.className = 'gfly';
+    el.textContent = g[0];
+    el.style.left = Math.round(r0.left + r0.width / 2) + 'px';
+    el.style.top = Math.round(r0.top + r0.height / 2) + 'px';
+    el.style.setProperty('--dx', Math.round(r1.left + r1.width / 2 - (r0.left + r0.width / 2)) + 'px');
+    el.style.setProperty('--dy', Math.round(r1.top + r1.height / 2 - (r0.top + r0.height / 2)) + 'px');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+  const me = S.seats.indexOf(uid),
+    nm = i => (i === me ? 'Sen' : S.names[i]);
+  msg = `${g[0]} ${nm(from)}, ${to === me ? 'sana' : datif(S.names[to])} ${g[1]} ısmarladı`;
+  SFX.play('pick');
+  render();
+}
 let rxOpen = false,
   rxSeen = {},
   rxLast = 0;
@@ -32,6 +98,14 @@ async function sendRx(i) {
 function rxCheck() {
   if (!S || !S.seats || typeof document === 'undefined' || !document.body) return;
   for (const m of L || []) {
+    const f = m.gf;
+    if (f && f.t > (gfSeen[m.id] || 0)) {
+      gfSeen[m.id] = f.t;
+      const i = S.seats.indexOf(m.id);
+      if (i >= 0 && Date.now() - f.t < 8000) giftFly(i, f.to, f.k);
+    }
+  }
+  for (const m of L || []) {
     const r = m.re;
     if (!r || !(r.t > 0)) continue;
     const k = m.id;
@@ -39,6 +113,7 @@ function rxCheck() {
     rxSeen[k] = r.t;
     if (Date.now() - r.t > 6000) continue;
     const i = S.seats.indexOf(k);
+    if (i < 0) continue;
     if (i < 0 || !(r.i >= 0 && r.i < RX.length)) continue;
     rxBubble(i, RX[r.i]);
   }
@@ -211,9 +286,15 @@ function openZoom(i) {
           .join('')}</div>`
       : '<p class="mut">Henüz per açmadı.</p>'
   }
-<h5>Son attığı taş</h5>${dis.length ? `<div class="zdis"><div class="zd">${tile(dis[dis.length - 1], O)}</div></div>` : '<p class="mut">Henüz taş atmadı.</p>'}</div>`;
+<h5>Son attığı taş</h5>${dis.length ? `<div class="zdis"><div class="zd">${tile(dis[dis.length - 1], O)}</div></div>` : '<p class="mut">Henüz taş atmadı.</p>'}${
+    i !== me && me >= 0 && code
+      ? `<h5>Hediye gönder</h5><div class="gfrow">${GIFTS.map((g, k) => `<button class="gfb" data-gf="${k}" aria-label="${esc(S.names[i])} için ${g[1]}">${g[0]}<small>${g[1]}</small></button>`).join('')}</div>`
+      : ''
+  }</div>`;
   el.addEventListener('click', e => {
     if (e.target === el || e.target.closest('#zoomX')) closeZoom();
+    const gb = e.target.closest && e.target.closest('[data-gf]');
+    if (gb) sendGift(+gb.dataset.gf, i);
   });
   document.body.appendChild(el);
 }

@@ -27,6 +27,13 @@ const {client}=require('./wsclient.js');
   ok((await A.call({op:'set',path:'rooms/'+C+'/members/'+A.uid,data:{name:'Ali'}})).ok,'kuran masaya oturdu');
   ok(!(await Bc.call({op:'set',path:'rooms/'+C+'/members/'+A.uid,data:{name:'Sahte'}})).ok,'başkası adına oturulamaz');
   ok((await Bc.call({op:'set',path:'rooms/'+C+'/members/'+Bc.uid,data:{name:'Bora'}})).ok,'ikinci oyuncu oturdu');
+  /* v63 hediye: geçerli hediye kaydedilir, geçersiz numara yok sayılır, sonraki yazımda kaybolmaz */
+  await Bc.call({op:'set',path:'rooms/'+C+'/members/'+Bc.uid,data:{name:'Bora',gf:{k:2,to:0}}});
+  let mb=(await A.call({op:'get',path:'rooms/'+C+'/members/'+Bc.uid})).snap.data;
+  ok(mb.gf&&mb.gf.k===2&&mb.gf.to===0&&mb.gf.t>0,'hediye kaydedildi');
+  await Bc.call({op:'set',path:'rooms/'+C+'/members/'+Bc.uid,data:{name:'Bora',gf:{k:99,to:7}}});
+  mb=(await A.call({op:'get',path:'rooms/'+C+'/members/'+Bc.uid})).snap.data;
+  ok(mb.gf&&mb.gf.k===2,'geçersiz hediye yok sayıldı');
   ok(!(await Bc.call({op:'update',path:'rooms/'+C,data:{bots:2}})).ok,'kuran olmayan bot ekleyemez');
   ok((await A.call({op:'update',path:'rooms/'+C,data:{bots:2,st:'hile'}})).ok,'kuran bot ekledi');
   ok((await Bc.call({op:'get',path:'rooms/'+C})).snap.data.st==='lobby','oda durumu istemciden değiştirilemez');
