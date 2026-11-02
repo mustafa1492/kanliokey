@@ -32,7 +32,6 @@ Mustafa'nın yöresel 4 kişilik "kanlı okey" oyunu. Canlı adres: https://kanl
 - t31 sunucu ister: `PORT=8791 ADMIN_PASSWORD=test1234 DATA_FILE=/tmp/ko/state.json node server/server.js &` sonra `cd test && python3 ui/t31.py`. Sunucuyu `pkill -f "^node server/server.js"` ile kapat.
 - Python e2e (çalışan sunucuyla): test/e2e.py, claim_e2e.py, chat_e2e.py, admin.py (argüman port), reconnect.py / pwa.py (argüman DATA dosya yolu!).
 
-## Durum (v58, 31 Ekim 2026, canlıda)
-Son sürümler: v56 işlenen taş yatay, son hamle şeridi, herkese açık masalar, bildirimler. v57 iOS 26 Safari alt çubuk, sekmeli yönetim paneli, eşli oyunda "Eşin kim?". v58 katlamalıda yandan sayılır (17 → 17+y1 → 17+y2 → 18), kurallar oyunun içinde açılır, .dockerignore düzeltmesi (v57 Render'da bu yüzden derlenmiyordu; Render servisi Docker ile derleniyor).
-Sıradaki iş: docs/PLAN.md "Mustafa'nın istekleri" listesi. İlk madde ACİL: iPhone Safari'de bütün oyuncular masanın üstünde görünüyor.
-Açık konular: herkese açık masalarda küfür/hile önlemi ve engelleme yok; Aşama 5.5 rehber.
+## Durum (v64, 3 Kasım 2026)
+Son sürümler: v59 telefonda yan oyuncular kenarda, geçmişte sadece son taş. v60 bakım modu, kod bakımı (src/client/ bölündü). v61 ana ekrana ekle kartı. v62 kalıcı kayıt (Supabase). v63 YATAY OYUN (css/07-landscape), Seri/Çift aç, Seri/Çift diz, Geri, Geçmiş düğmesi, ayarlar iki sekme, hediyeler, süre kaçıranın yerine bot. v64 hesap + profil + seviye + GM.
+Ertelenenler: yeni ses paketi, ilk 20 kullanıcı rozeti, unvan adları. Yeni bot seviyesi denendi, fark çıkmadı (PLAN.md'de not). Aşama 5.5 rehber hâlâ açık.
