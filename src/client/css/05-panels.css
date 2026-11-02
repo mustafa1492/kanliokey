@@ -1333,3 +1333,19 @@ a.wa::before {
 #app.onper .a-me::after {
   opacity: 0;
 }
+.stabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px 14px 0;
+}
+.stabs button {
+  min-height: 40px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+.stabs button.on {
+  background: #e8b93a;
+  color: #1a1405;
+  border-color: #e8b93a;
+}

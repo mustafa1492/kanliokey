@@ -1,11 +1,17 @@
-/* ayarlar sayfası: çizimden bağımsız katman */
+/* ayarlar sayfası: çizimden bağımsız katman. v63: iki sekme (Mustafa): Oyun ayarları ve Genel ayarlar */
+let setTab = 'oyun';
 function setH() {
   const sw = (k, t, d, v) =>
     `<button class="sw" data-sw="${k}" aria-pressed="${!!v}"><span><b>${t}</b>${d ? `<small>${d}</small>` : ''}</span><i aria-hidden="true"></i></button>`;
   const seg = (k, t, items) =>
     `<div class="srow"><b>${t}</b><div class="sseg" role="radiogroup">${items.map(([v, l]) => `<button data-sv="${k}:${v}" role="radio" aria-checked="${String(SET[k]) === String(v)}" class="${String(SET[k]) === String(v) ? 'on' : ''}">${l}</button>`).join('')}</div></div>`;
-  return `<div class="ssheet" role="dialog" aria-modal="true" aria-label="Ayarlar"><div class="shd"><b>Ayarlar</b><button id="setX">Kapat</button></div><div class="sbody">
-<section><h4>Zorluk</h4>
+  const tabs = `<nav class="stabs" role="tablist">${[
+    ['oyun', 'Oyun ayarları'],
+    ['genel', 'Genel ayarlar']
+  ]
+    .map(([k, l]) => `<button role="tab" data-stab="${k}" aria-selected="${setTab === k}" class="${setTab === k ? 'on' : ''}">${l}</button>`)
+    .join('')}</nav>`;
+  const oyun = `<section><h4>Zorluk</h4>
 ${seg('lvl', 'Oyun modu', [
   ['kolay', 'Kolay'],
   ['normal', 'Normal'],
@@ -38,8 +44,8 @@ ${seg('fx', 'Efektler', [
 <small class="snote">Sade: uçan taşlar, duyurular, sarsıntı ve parıltılar kapanır. Yavaş telefonda akıcılık için.</small>
 ${sw('big', 'Büyük taşlar', 'Istaka 2 × 10 yuva olur, taşlar ve masadaki perler büyür', SET.big)}
 ${sw('cb', 'Renk körü işaretleri', 'Taşlardaki noktanın şekli renge göre değişir: kırmızı ●, sarı ▲, mavi ■, siyah ◆', SET.cb)}
-</section>
-<section><h4>Ses ve titreşim</h4>
+</section>`;
+  const genel = `<section><h4>Ses ve titreşim</h4>
 ${sw('snd', 'Ses', '', SFX.snd)}
 ${seg('vol', 'Ses seviyesi', [
   [0, 'Kısık'],
@@ -70,7 +76,9 @@ ${sw('wake', 'Ekranı açık tut', 'Oyun sırasında telefon ekranı kararmaz', 
 <div class="avgrid">${AVN.map((n, k) => `<button class="avo ${k === myAv ? 'on' : ''}" data-sav="${k}" role="radio" aria-checked="${k === myAv}">${avI(k)}<small>${n}</small></button>`).join('')}</div>
 <small class="snote">Ad ve karakter bir sonraki masada geçerli olur.</small>
 </section>
-<section class="sabout"><a href="${RULES_URL}">Kurallar</a><small>Sürüm ${esc(APP_BUILD)}</small></section>
+<section class="sabout"><a href="${RULES_URL}">Kurallar</a><small>Sürüm ${esc(APP_BUILD)}</small></section>`;
+  return `<div class="ssheet" role="dialog" aria-modal="true" aria-label="${setTab === 'oyun' ? 'Oyun ayarları' : 'Genel ayarlar'}"><div class="shd"><b>Ayarlar</b><button id="setX">Kapat</button></div>${tabs}<div class="sbody">
+${setTab === 'oyun' ? oyun : genel}
 </div></div>`;
 }
 function openSet(on) {
@@ -116,6 +124,11 @@ function setClick(e) {
   }
   const b = e.target.closest('button');
   if (!b) return;
+  if (b.dataset.stab) {
+    setTab = b.dataset.stab;
+    document.getElementById('setv').innerHTML = setH();
+    return;
+  }
   if (b.dataset.sw) {
     const k = b.dataset.sw;
     if (k === 'snd') {
@@ -160,9 +173,10 @@ function setClick(e) {
 }
 if (typeof document !== 'undefined' && typeof document.addEventListener === 'function') {
   document.addEventListener('click', e => {
-    const t = e.target.closest && e.target.closest('#setT,#setO');
+    const t = e.target.closest && e.target.closest('#setT,#setO,#setG');
     if (t) {
       e.preventDefault();
+      setTab = t.id === 'setG' || (t.id === 'setT' && !document.body.classList.contains('gmode')) ? 'genel' : 'oyun';
       openSet(true);
     }
   });
