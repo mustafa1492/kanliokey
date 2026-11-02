@@ -185,6 +185,11 @@ body[data-felt='bordo'] .felt3d {
   --felt-hi: #8f2a30;
   --felt-line: #a0484c;
 }
+/* bordoda koyu kırmızı damga kayboluyordu: açık altın, hafif */
+body[data-felt='bordo'] .stamp {
+  color: #f0cf86;
+  opacity: 0.17;
+}
 body[data-felt='lacivert'] .felt3d {
   --felt: #1b3558;
   --felt-deep: #0f2038;

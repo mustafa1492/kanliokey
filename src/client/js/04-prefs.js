@@ -4,7 +4,7 @@ const SETD = {
   auto: false,
   warn: true,
   dbl: false,
-  felt: 'yesil',
+  felt: 'bordo', /* v66 (Mustafa): varsayılan masa bordo */
   cb: false,
   fx: 'tam',
   vol: 2,
@@ -28,6 +28,14 @@ let SET = (() => {
     return { ...SETD };
   }
 })();
+/* v66: eski kayıtlarda yeşil varsayılandı; bir kereye mahsus bordoya geçilir (sonra seçilen renk korunur) */
+if (!SET.feltV) {
+  if (SET.felt === 'yesil') SET.felt = 'bordo';
+  SET.feltV = 2;
+  try {
+    localStorage.setItem('okeySet', JSON.stringify(SET));
+  } catch (e) {}
+}
 let setOpen = false;
 /* zorluk: kolay her şeyi kolaylaştırır; zor modda hiçbir ipucu yok */
 const LVL = {

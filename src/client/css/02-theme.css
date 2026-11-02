@@ -316,9 +316,15 @@ body.lobby .panel .slot.bot small {
   display: none;
 }
 .xtra .xh,
-.xtra .xtg,
 .xtra .xinfo {
   display: none;
+}
+/* v66: bilgisayarda menü satır içi; ayar düğmeleri de görünsün (önce gizliydi, oyunda ayarlara girilemiyordu) */
+.xtra .xtg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
 }
 .xtra {
   display: block;

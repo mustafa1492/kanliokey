@@ -848,6 +848,12 @@ $('#app').addEventListener('click', async e => {
     await admRep(b.dataset.rep);
     return;
   }
+  if (b && b.dataset.acc) {
+    accMode = b.dataset.acc;
+    accMsg = '';
+    render();
+    return;
+  }
   if (b && b.dataset.at) {
     admTab = b.dataset.at;
     admMsg = '';
@@ -912,6 +918,15 @@ $('#app').addEventListener('click', async e => {
         msg = 'Şifre yanlış.';
         render();
       }
+    } else if (id === 'accReg' || id === 'accLog') {
+      await accAct(id === 'accReg' ? 'reg' : 'log');
+    } else if (id === 'guestGo') {
+      lsSet('okeyGuest', '1');
+      render();
+    } else if (id === 'goAcc') {
+      lsSet('okeyGuest', '');
+      accMode = 'reg';
+      render();
     } else if (id === 'gmO') {
       isAdmin = true;
       admReal = false;
@@ -1051,3 +1066,12 @@ $('#app').addEventListener('click', async e => {
 try {
   document.body.insertAdjacentHTML('beforeend', AVSYM + '<div class="tpulse" aria-hidden="true"></div>');
 } catch (e) {}
+/* v66 (Mustafa): logoya dokununca ana sayfa (oyun sürüyorsa bırakılmaz, kodla geri girilir) */
+if (typeof document !== 'undefined' && typeof document.addEventListener === 'function')
+  document.addEventListener('click', e => {
+    if (!(e.target.closest && e.target.closest('.top h1.kwh'))) return;
+    const ab = document.getElementById('admback');
+    if (ab) ab.click();
+    else if (view !== 'home') leaveLocal('', true);
+    document.body.classList.remove('menu-open');
+  });

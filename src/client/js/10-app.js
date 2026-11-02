@@ -162,6 +162,10 @@ function readName() {
     lsSet('okeyName', name);
     return;
   }
+  if (SRV) {
+    name = guestName();
+    return;
+  }
   const el = $('#nm');
   name = ((el && el.value.trim()) || name || 'Oyuncu').slice(0, 14);
   lsSet('okeyName', name);

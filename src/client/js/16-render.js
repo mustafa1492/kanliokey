@@ -246,7 +246,10 @@ function render0() {
       document.activeElement.id === 'rn' ||
       document.activeElement.id === 'cd' ||
       document.activeElement.id === 'ap' ||
-      document.activeElement.id === 'an')
+      document.activeElement.id === 'an' ||
+      document.activeElement.id === 'accU' ||
+      document.activeElement.id === 'accP' ||
+      document.activeElement.id === 'gpu')
   )
     return;
   C.innerHTML = '';

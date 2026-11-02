@@ -56,6 +56,7 @@ async function accAct(kind) {
   accBusy = false;
   const v = document.getElementById('setv');
   if (v) v.innerHTML = setH();
+  render();
 }
 /* ayarlar sayfası: çizimden bağımsız katman. v63: iki sekme (Mustafa): Oyun ayarları ve Genel ayarlar */
 let setTab = 'oyun';

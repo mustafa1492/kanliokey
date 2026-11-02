@@ -810,3 +810,16 @@ body.home .wrap {
   font: 700 22px/1.2 var(--display);
   letter-spacing: 0.02em;
 }
+.top h1.kwh {
+  cursor: pointer;
+}
+.authcard {
+  display: grid;
+  gap: 8px;
+}
+.authh {
+  font: 700 22px/1.2 var(--display);
+}
+.authcard #guestGo {
+  justify-self: center;
+}

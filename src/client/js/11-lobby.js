@@ -1,17 +1,30 @@
+/* v66 (Mustafa): sunucu sürümünde ilk girişte hesap oluştur / giriş yap; takma ad sorulmaz, misafir otomatik ad alır */
+const guestName = () => 'Misafir ' + String(uid || '').slice(-3).toUpperCase();
+function authCardH() {
+  const reg = accMode === 'reg';
+  return `<div class="panel card2 authcard"><b class="authh">Kanlı Okey'e hoş geldin</b><small class="mut">Hesabınla her telefondan aynı profil, seviye ve istatistiklerle oynarsın.</small>
+<div class="stabs acctabs"><button data-acc="reg" class="${reg ? 'on' : ''}">Hesap oluştur</button><button data-acc="log" class="${reg ? '' : 'on'}">Giriş yap</button></div>
+<div class="accf"><input id="accU" maxlength="14" placeholder="Kullanıcı adı" autocomplete="username" autocapitalize="off"><input id="accP" type="password" maxlength="64" placeholder="Şifre (en az 4)" autocomplete="${reg ? 'new-password' : 'current-password'}"><button class="p big" id="${reg ? 'accReg' : 'accLog'}" ${accBusy ? 'disabled' : ''}>${reg ? 'Hesap oluştur' : 'Giriş yap'}</button></div>
+${accMsg ? `<p class="accmsg">${esc(accMsg)}</p>` : ''}
+<small class="snote">${reg ? 'Sadece kullanıcı adın, şifrenin şifrelenmiş hali ve oyun istatistiklerin saklanır. Şifreni unutursan yöneticiden sıfırlamasını iste.' : ''}</small>
+<button class="lnk" id="guestGo">Misafir olarak oyna</button></div>`;
+}
 function homeH() {
   const saved = lsGet('okeyRoom');
   const inst = SRV && !isStandalone() ? `<button class="lnk" id="inst">Telefona uygulama gibi ekle</button>` : '';
   return `${HOMEBG}<section class="hero2"><h2 class="wm">${KW.html('stack', 'kw-hero')}</h2>${QUOTES}</section>${instCardH()}
-<div class="panel card2">${
+${SRV && !PROF ? '<div class="panel card2"><p class="mut" style="margin:0">Bağlanıyor…</p></div>' : SRV && !PROF.user && !lsGet('okeyGuest') ? authCardH() : ''}${SRV && (!PROF || (!PROF.user && !lsGet('okeyGuest'))) ? '' : `<div class="panel card2">${
     PROF && PROF.user
       ? `<span class="flab">Hoş geldin</span><div class="nmrow"><button class="avbtn" id="avb" aria-expanded="${avOpen}" aria-label="Karakterini seç: ${AVN[myAv]}">${avI(myAv)}</button><b class="accname ${PROF.gm ? 'gmname' : ''}">${PROF.gm ? '<i class="gmb">GM</i> ' : ''}${esc(PROF.user)}</b></div>`
-      : `<label class="flab" for="nm">Takma adın</label><div class="nmrow"><button class="avbtn" id="avb" aria-expanded="${avOpen}" aria-label="Karakterini seç: ${AVN[myAv]}">${avI(myAv)}</button><input id="nm" placeholder="Örn. Mustafa" maxlength="14" value="${esc(name)}" autocomplete="nickname"></div>`
+      : SRV
+        ? `<span class="flab">Misafir olarak oynuyorsun</span><div class="nmrow"><button class="avbtn" id="avb" aria-expanded="${avOpen}" aria-label="Karakterini seç: ${AVN[myAv]}">${avI(myAv)}</button><b class="accname">${esc(guestName())}</b><button class="lnk" id="goAcc">Hesap oluştur</button></div>`
+        : `<label class="flab" for="nm">Takma adın</label><div class="nmrow"><button class="avbtn" id="avb" aria-expanded="${avOpen}" aria-label="Karakterini seç: ${AVN[myAv]}">${avI(myAv)}</button><input id="nm" placeholder="Örn. Mustafa" maxlength="14" value="${esc(name)}" autocomplete="nickname"></div>`
   }
 ${avOpen ? `<div class="avgrid" role="radiogroup" aria-label="Karakterin">${AVN.map((n, k) => `<button class="avo ${k === myAv ? 'on' : ''}" data-av="${k}" role="radio" aria-checked="${k === myAv}">${avI(k)}<small>${n}</small></button>`).join('')}</div>` : ''}
 <button class="p big" id="mk">Masa kur</button>
 <button class="quick" id="qb">⚡ Botlarla hızlı oyun <small>3 botla hemen başla</small></button>
 <div class="or"><span>ya da arkadaşının masasına katıl</span></div>
-<div class="row join"><input id="cd" placeholder="KOD" maxlength="5" value="${esc(INVITE)}" autocapitalize="characters" autocomplete="off" aria-label="Oda kodu"><button class="p" id="jn">Katıl</button></div></div>
+<div class="row join"><input id="cd" placeholder="KOD" maxlength="5" value="${esc(INVITE)}" autocapitalize="characters" autocomplete="off" aria-label="Oda kodu"><button class="p" id="jn">Katıl</button></div></div>`}
 ${claimC ? `<div class="panel claim"><b>Oda ${esc(claimC.code)}: oyun sürüyor</b><small>Oyundan çıktıysan kendi yerine dönebilirsin. Elin ve cezaların aynen duruyor.</small><div class="row">${claimC.seats.map(x => `<button class="p" data-claim="${x.i}">${esc(x.n)} olarak dön</button>`).join('')}<button id="claimX">Vazgeç</button></div></div>` : ''}
 ${saved ? `<button id="resume" class="resume">Son masaya dön · <b>${esc(saved)}</b></button>` : ''}
 ${tablesH()}
