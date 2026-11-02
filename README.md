@@ -46,6 +46,7 @@ Alan adı alınınca Render panelinden **Custom Domain** ile bağlanır.
 | `PORT` | 8080 | Sunucu portu |
 | `ADMIN_PASSWORD` | (boş) | Yönetici şifresi. Sadece Render panelinde yazılır, buraya yazılmaz (depo herkese açık). Boşsa yönetici girişi kapalı |
 | `DATA_FILE` | `data/state.json` | Odaların ve oyunların kaydedildiği dosya |
+| `KO_DB_TOKEN` | (boş) | Supabase kalıcı kayıt anahtarı (v62). Varsa sunucunun bütün durumu Supabase'de de tutulur, uyku ve güncellemede silinmez. Sadece Render panelinde yazılır. Boşsa durum sadece diskte |
 | `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | (otomatik) | "Sıra sende" bildirimi anahtarı. Boşsa sunucu kendisi üretir ve kaydeder; Render'da disk kalıcı olmadığından yeniden başlayınca değişir ve oyuncuların bildirimi yeniden açması gerekir. Kalıcı olsun diye `node -e "console.log(require('./server/push.js').newKeys())"` çıktısındaki `pub` ve `d` değerlerini buraya yaz |
 | `VAPID_SUBJECT` | mailto:kanliokey@example.com | Bildirim sunucularına verilen iletişim adresi |
 

@@ -20,26 +20,53 @@ const log=(...a)=>{if(!QUIET)console.log(new Date().toISOString(),...a)};
 /* ---------- kalıcı durum ---------- */
 const store=new Map();   /* yol -> belge (rooms/KOD, rooms/KOD/members/UID, rooms/KOD/game/main, settings/main, settings/stats) */
 const tokens=new Map();  /* gizli anahtar -> {uid,t} : oyuncu kimliği, cihazda saklanır */
-let dirty=false;
+let dirty=false,localAt=0;
+const REMOTE=require('./remote.js');
+let remoteReady=!REMOTE.on,remoteSnap=null,remoteBusy=false;
+function apply(j){
+  store.clear();tokens.clear();
+  for(const [k,v] of j.store||[])store.set(k,v);
+  for(const [k,v] of j.tokens||[])tokens.set(k,v);
+}
 function load(){
   try{
     const j=JSON.parse(fs.readFileSync(DATA,'utf8'));
-    for(const [k,v] of j.store||[])store.set(k,v);
-    for(const [k,v] of j.tokens||[])tokens.set(k,v);
+    apply(j);localAt=+j.at||0;
     log('durum yüklendi',store.size,'belge');
   }catch(e){if(e.code!=='ENOENT')log('durum okunamadı',e.message)}
 }
 function save(){
   if(!dirty)return;dirty=false;
+  const snap=JSON.stringify({v:1,at:Date.now(),store:[...store],tokens:[...tokens]});
+  if(REMOTE.on)remoteSnap=snap;
   try{
     fs.mkdirSync(path.dirname(DATA),{recursive:true});
     const tmp=DATA+'.tmp';
-    fs.writeFileSync(tmp,JSON.stringify({v:1,at:Date.now(),store:[...store],tokens:[...tokens]}));
+    fs.writeFileSync(tmp,snap);
     fs.renameSync(tmp,DATA);
   }catch(e){log('kayıt hatası',e.message);dirty=true}
 }
+/* Supabase'e yazma: en fazla 10 sn'de bir, son durum gider; açılışta okuma başarılı olmadan yazılmaz (boş durum kaydı ezmesin) */
+async function pushRemote(ms){
+  if(!REMOTE.on||!remoteReady||!remoteSnap||remoteBusy)return;
+  const snap=remoteSnap;remoteSnap=null;remoteBusy=true;
+  try{await REMOTE.save(snap,ms)}catch(e){log('uzak kayıt hatası',e.message);if(!remoteSnap)remoteSnap=snap}
+  remoteBusy=false;
+}
+async function loadRemote(){
+  for(let i=0;i<3;i++){
+    try{
+      const j=await REMOTE.load();remoteReady=true;
+      if(j&&j.store&&(+j.at||0)>localAt){apply(j);localAt=+j.at||0;log('durum Supabase\'den yüklendi',store.size,'belge')}
+      else log('Supabase bağlı, kayıtlı durum yok ya da yerel daha yeni');
+      return;
+    }catch(e){log('Supabase okunamadı ('+(i+1)+'/3)',e.message)}
+  }
+  log('UYARI: Supabase okunamadı, yerel durumla açılıyor; uzak kayıt kapalı (kaydı ezmemek için)');
+}
 load();
 const saveTimer=setInterval(save,2000);
+const remoteTimer=setInterval(()=>pushRemote(),10000);
 const clone=o=>o==null?o:JSON.parse(JSON.stringify(o));
 const now=()=>Date.now();
 
@@ -665,12 +692,18 @@ const sweep=setInterval(()=>{
   ENG.resetCaches();
 },10*60e3);
 /* açılışta bekleyen oyunlar için son hareketi şimdi say */
-for(const k of store.keys()){const m=/^rooms\/([A-Z0-9]{5})$/.exec(k);if(m)lastAct.set(m[1],now())}
+const markRooms=()=>{for(const k of store.keys()){const m=/^rooms\/([A-Z0-9]{5})$/.exec(k);if(m)lastAct.set(m[1],now())}};
+markRooms();
 
-function shutdown(){log('kapanıyor');dirty=true;save();process.exit(0)}
+/* kapanış (Render güncellemede ve uykuya geçerken SIGTERM gönderir): son durumu diske ve Supabase'e yaz */
+async function shutdown(){log('kapanıyor');dirty=true;save();if(REMOTE.on&&remoteReady){remoteBusy=false;await pushRemote(8000)}process.exit(0)}
 process.on('SIGTERM',shutdown);process.on('SIGINT',shutdown);
 if(require.main===module){
   if(!ADMIN_PW)log('UYARI: ADMIN_PASSWORD yok, yönetici girişi kapalı');
-  server.listen(PORT,()=>log('Kanlı Okey sunucusu çalışıyor: http://localhost:'+PORT));
+  if(!REMOTE.on)log('UYARI: KO_DB_TOKEN yok, durum sadece diskte (Render ücretsiz planda uykuda ve güncellemede silinir)');
+  (REMOTE.on?loadRemote():Promise.resolve()).then(()=>{
+    markRooms();
+    server.listen(PORT,()=>log('Kanlı Okey sunucusu çalışıyor: http://localhost:'+PORT));
+  });
 }
-module.exports={server,store,setPushSend(f){PUSH_SEND=f},stop(){dirty=true;save();clearInterval(saveTimer);clearInterval(hb);clearInterval(sweep);for(const t of timers.values())clearTimeout(t);wss.close();server.close()}};
+module.exports={server,store,setPushSend(f){PUSH_SEND=f},stop(){dirty=true;save();clearInterval(saveTimer);clearInterval(remoteTimer);clearInterval(hb);clearInterval(sweep);for(const t of timers.values())clearTimeout(t);wss.close();server.close()}};
