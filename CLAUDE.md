@@ -5,7 +5,7 @@ Mustafa'nın yöresel 4 kişilik "kanlı okey" oyunu. Canlı adres: https://kanl
 ## Mustafa ile çalışma kuralları (çok önemli)
 - **Kural uydurma.** Oyun kurallarını sadece Mustafa söyler. Emin olmadığın her kural için tahmin etme, sor. Söylediği kuralı birebir uygula. Oyunun daha çok kuralı var, zamanla anlatacak.
 - **Toplu güncelleme:** Bir değişiklik oyunu, kurallar sitesini (src/kurallar.html), docs/KURALLAR.md ve docs/PLAN.md'yi birlikte günceller. PLAN.md'ye her sürüm için "- [x] vNN: ..." satırı eklenir.
-- **Yükleme izni:** Mustafa "yükle" demeden main'e push etme. Render main'e her push'ta otomatik deploy eder ve **deploy süren bütün oyunları siler** (disk kalıcı değil). Oyunu etkilemeyen değişiklikte (doküman, test) commit mesajına `[skip render]` ekle.
+- **Yükleme izni:** Mustafa "yükle" demeden main'e push etme. Render main'e her push'ta otomatik deploy eder ve **deploy süren bütün oyunları siler** (disk kalıcı değil). Oyunu etkilemeyen değişiklikte (doküman, test) commit mesajına `[skip render]` ekle. DİKKAT: Render gönderimin SON commit'ine bakar; son commit `[skip render]` ise bütün gönderim (içindeki oyun değişiklikleri dahil) deploy edilmez. Oyunu yüklerken son commit etiketsiz olmalı.
 - Cevaplar kısa ve Türkçe. Mustafa iPhone kullanıyor (Safari ve Chrome), ekran görüntüsüyle hata gösterir.
 - Unutulmayacak iş: **Aşama 5.5 "oyunu öğreten rehber"** (PLAN.md).
 - Cezalarla ilgili bir iş yapılınca Mustafa'ya hatırlat: oyundan çıkan oyuncunun cezası henüz yok (şimdilik ceza yok kararı, PLAN.md "Sürekli işler").
