@@ -97,17 +97,27 @@ function pickG(a, O) {
   if (!ch.length || ch.length === a.groups.length) return a;
   return { ...a, groups: ch, pts: stTot(ch, O), rem: stRem(ch, O), part: true };
 }
-const openNow = () => {
+/* açma: mode 'p' = Seri aç, 'c' = Çift aç (v63); boşsa ıstakadaki dizilişe göre */
+const openNow = mode => {
   if (!S) return false;
   const me = S.seats.indexOf(uid);
   if (me < 0) return false;
   B = S.B;
-  const opened = S.opn['s' + me] > 0;
-  const groups = stage.length
-    ? stage
-    : pickG(autoOpen(order, S.okey, S.must, opened ? (S.opm || {})['s' + me] : ''), S.okey).groups;
+  const opened = S.opn['s' + me] > 0,
+    om = opened ? (S.opm || {})['s' + me] : '';
+  if (mode && stage.length && stage.every(g => g.length === 2) !== (mode === 'c')) {
+    msg = mode === 'c' ? 'Seçtiğin gruplar çift değil: "Seri aç"ı kullan.' : 'Seçtiğin gruplar çift: "Çift aç"ı kullan.';
+    render();
+    return false;
+  }
+  const groups = stage.length ? stage : pickG(autoOpen(order, S.okey, S.must, mode || om), S.okey).groups;
   if (!groups.length) {
-    msg = 'Rafta açılabilecek bir per ya da çift bulunamadı. Taşları yan yana dizip tekrar dene.';
+    msg =
+      mode === 'c'
+        ? 'Istakada açılacak çift yok. Çiftleri yan yana diz ("Çift diz" yardımcı olur).'
+        : mode === 'p'
+          ? 'Istakada açılacak seri yok. Perleri yan yana diz ("Seri diz" yardımcı olur).'
+          : 'Rafta açılabilecek bir per ya da çift bulunamadı. Taşları yan yana dizip tekrar dene.';
     render();
     return false;
   }

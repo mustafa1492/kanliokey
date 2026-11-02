@@ -14,7 +14,7 @@ ${seg('lvl', 'Oyun modu', [
 <small class="snote">${SET.lvl === 'kolay' ? 'Kolay: bütün ipuçları açık, hangi taş gelirse açacağın görünür, okeyi ya da ıstakandaki bir perin parçasını atarken uyarır, bitirebileceğin taşı gösterir.' : SET.lvl === 'zor' ? 'Zor: hiçbir ipucu ve uyarı yok, işler taş uyarısı da kapalı.' : 'Normal: açma, yandan taş ve işleme ipuçları açık; hangi taş gelirse açacağın görünmez.'}</small>
 </section>
 <section><h4>Istaka</h4>
-${sw('smart', 'Akıllı sıralama', '"Sırala" taşları en yüksek açılışa göre dizer: açılacak perler yan yana, kalanlar renge göre', SET.smart)}
+${sw('smart', 'Akıllı sıralama', 'Taş gelince otomatik dizmede en yüksek açılış önce: açılacak perler yan yana, kalanlar renge göre', SET.smart)}
 ${sw('auto', 'Taş gelince otomatik diz', 'Her yeni taşta ıstaka kendiliğinden en yüksek açılışa göre dizilir', SET.auto)}
 ${sw('dbl', 'İki kez dokunarak at', 'Sıran gelince taşa art arda iki kez dokununca taş atılır', SET.dbl)}
 ${sw('warn', 'İşler taş uyarısı', 'İşler taşı atmadan önce "500 ceza" uyarısı çıkar, ikinci denemede atılır', SET.warn)}

@@ -15,3 +15,6 @@ const col=p=>({get:async()=>colSnap(p),onSnapshot(n){const f=()=>n(colSnap(p));s
 window.__store=store;
 window.claude={use:async n=>n==='db'?{doc,collection:col}:n==='user'?{id:async()=>'u1',isOwner:async()=>true}:null};
 })();
+
+/* v63: testler dikey ekranda çalışır; "telefonu yan çevir" uyarısı kapalı başlasın */
+try{sessionStorage.setItem("okeyRotOk","1")}catch(e){}

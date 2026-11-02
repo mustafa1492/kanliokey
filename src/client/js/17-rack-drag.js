@@ -135,6 +135,32 @@ function smartOrder(h, O, mode) {
   }
   return out;
 }
+/* Seri diz / Çift diz (v63): ıstakayı serilere ya da çiftlere göre dizer; Geri önceki dizilişe döner */
+let orderUndo = [];
+function sortMode(mode) {
+  const h = order.filter(x => x != null);
+  if (!h.length) return;
+  orderUndo.push({ gid: S.gid, o: order.slice() });
+  if (orderUndo.length > 10) orderUndo.shift();
+  B = S.B;
+  try {
+    order = smartOrder(h, S.okey, mode);
+  } catch (e) {
+    orderUndo.pop();
+  }
+}
+function undoSort() {
+  let u = orderUndo.pop();
+  while (u && u.gid !== S.gid) u = orderUndo.pop();
+  if (!u) {
+    msg = 'Geri alınacak diziliş yok.';
+    return;
+  }
+  const h = new Set(order.filter(x => x != null)),
+    o = u.o.map(x => (x != null && h.has(x) ? x : null));
+  for (const x of h) if (!o.includes(x)) o[o.indexOf(null) >= 0 ? o.indexOf(null) : o.length] = x;
+  order = o;
+}
 function sortRack() {
   if (SET.smart) {
     const me = S.seats.indexOf(uid),
@@ -949,6 +975,20 @@ $('#app').addEventListener('click', async e => {
     } else if (id === 'fin') await finish();
     else if (id === 'back') await putBack();
     else if (id === 'open') await openNow();
+    else if (id === 'openP') await openNow('p');
+    else if (id === 'openC') await openNow('c');
+    else if (id === 'sortP' || id === 'sortC') {
+      sortMode(id === 'sortP' ? 'p' : 'c');
+      render();
+    } else if (id === 'rotOk') {
+      document.body.classList.add('rotok');
+      try {
+        sessionStorage.setItem('okeyRotOk', '1');
+      } catch (e) {}
+    } else if (id === 'undoS') {
+      undoSort();
+      render();
+    }
     else if (id === 'clr') {
       stage = [];
       msg = '';

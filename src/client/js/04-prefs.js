@@ -264,3 +264,7 @@ if (typeof window !== 'undefined' && window.addEventListener)
       render();
     } catch (e) {}
   });
+/* v63: dikey uyarısı bu oturumda kapatıldıysa tekrar çıkmasın */
+try {
+  if (sessionStorage.getItem('okeyRotOk')) document.body.classList.add('rotok');
+} catch (e) {}

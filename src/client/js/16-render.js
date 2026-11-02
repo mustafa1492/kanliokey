@@ -490,6 +490,28 @@ ${i === me ? '' : orack(r, cnt)}
       canOk = have && mustIn && !auto.bad && !(!opened && S.trn < 4) && (opened || pts >= need);
     }
     const openKind = stage.length ? (stage.every(g => g.length === 2) ? 'c' : 'p') : auto.kind;
+    /* v63: Seri aç / Çift aç ayrı; açılabiliyorsa parlak */
+    const om0 = opened ? (S.opm || {})['s' + me] || '' : '';
+    const canMode = k => {
+      if (!md || (om0 && om0 !== k)) return false;
+      if (stage.length) return canOk && openKind === k;
+      const a = pickG(autoOpen(order, O, S.must, k), O);
+      const pts = a.pts * 3 + (a.rem || 0),
+        mustIn = S.must < 0 || a.groups.some(g => g.includes(S.must));
+      return a.groups.length > 0 && mustIn && !a.bad && !(!opened && S.trn < 4) && (opened || pts >= need);
+    };
+    const canP = canMode('p'),
+      canC = canMode('c');
+    let finNow = false;
+    if (md && sel.length === 1 && opened && S.ot !== me) {
+      try {
+        finNow = canEnd(
+          S,
+          me,
+          myH.filter(y => y !== sel[0])
+        );
+      } catch (e) {}
+    }
     const sgroups =
       md && stage.length
         ? `<div class="sgroups">${stage.map((g, gi) => `<div class="g">${g.map(x => tile(x, O)).join('')}<button class="un" data-un="${gi}" aria-label="Bu grubu ıstakaya geri koy">✕</button></div>`).join('')}<button id="clr">Hepsini geri al</button></div>`
@@ -519,7 +541,7 @@ ${i === me ? '' : orack(r, cnt)}
       tag = '<span class="tag wait">Bekle</span>';
       st = esc(S.names[S.turn]) + ' oynuyor…';
     }
-    h += `<div class="panel gstat"><div class="status">${tag}<b>${st}</b><button class="rxbtn" id="rxB" aria-label="Sohbet${chatUnread() ? ', ' + chatUnread() + ' yeni mesaj' : ''}">💬${chatUnread() ? `<i class="chn">${Math.min(9, chatUnread())}</i>` : ''}</button><button class="penbtn" id="pen" aria-expanded="${showPen}">Cezalar</button></div>${timerH(mine)}${lmvH()}${showPen ? penPanel() : ''}`;
+    h += `<div class="panel gstat"><div class="status">${tag}<b>${st}</b><button class="rxbtn" id="rxB" aria-label="Sohbet${chatUnread() ? ', ' + chatUnread() + ' yeni mesaj' : ''}">💬${chatUnread() ? `<i class="chn">${Math.min(9, chatUnread())}</i>` : ''}</button>${lmvBtn()}<button class="penbtn" id="pen" aria-expanded="${showPen}">Cezalar</button></div>${timerH(mine)}${lmvH()}${showPen ? penPanel() : ''}`;
     h += '</div><!--SEC-->';
     /* masa */
     A.classList.add('gm');
@@ -549,7 +571,7 @@ ${i === me ? '' : orack(r, cnt)}
           hl =
             hpr >= ah.best
               ? `<span class="hok">✓ Açabilirsin</span>`
-              : `<span class="hok">En iyi açılış ${fmtP(ah.best)}</span>${SET.smart ? ' · Sırala' : ''}`;
+              : `<span class="hok">En iyi açılış ${fmtP(ah.best)}</span>${SET.smart ? ' · Seri diz' : ''}`;
         else if (SET.lvl === 'kolay' && ah.need && ah.need.length)
           hl = `<span class="hneed">Açmak için:</span> ${ah.need.map(x => `<i class="hn c${tv(x, O).c}">${tv(x, O).n}</i>`).join('')}`;
         else if (ah.need) hl = `En iyi ${fmtP(ah.best)} / ${needS}`;
@@ -586,9 +608,10 @@ ${i === me ? '' : orack(r, cnt)}
           )
         : null;
     h += `<div><div class="rlabel"><span class="lab hlab">${hl}</span><button class="fcs" id="fcs" aria-pressed="${!!SET.focus}" aria-label="Istakaya odaklan (taşları büyüt)" title="Odak">${SET.focus ? '⤡' : '⤢'}</button><span class="pbadge ${ptsOk ? 'go' : ''}" role="status">${md && auto.bad ? '<b>6+ taşlık per olmaz: ikiye ayır</b>' : opened ? `Açtığın <b>${S.opn['s' + me]}</b>` : `${arr.part ? 'Seçilen' : 'Dizilen'} <b>${hp}</b>${arr.rem ? `<small class="yan"> +yandan ${arr.rem}</small>` : ''} / ${needS}`}</span></div><div class="rack" id="rack" style="--pe:${Math.max(0, Date.now() - fresh.t)}ms">${order.map((id, i) => `<div class="rs" data-s="${i}">${id != null && !staged.includes(id) ? (isl && isl.has(id) ? tile(id, O, (sel.includes(id) ? 'sel ' : '') + (agSet.has(id) ? 'ag ' : agOff.has(id) ? 'ag2 ' : '') + (fresh.id === id && Date.now() - fresh.t < 700 ? 'pop ' : '') + (newT.id === id && newT.gid === S.gid && newT.trn === S.trn && mine && S.ph === 'discard' ? 'nw ' : '') + (finS && finS.has(id) ? 'fin' : '')).replace(/<\/div>$/, '<b class="isb" aria-label="işlenebilir">+</b></div>') : tile(id, O, (sel.includes(id) ? 'sel ' : '') + (agSet.has(id) ? 'ag ' : agOff.has(id) ? 'ag2 ' : '') + (fresh.id === id && Date.now() - fresh.t < 700 ? 'pop ' : '') + (newT.id === id && newT.gid === S.gid && newT.trn === S.trn && mine && S.ph === 'discard' ? 'nw ' : '') + (finS && finS.has(id) ? 'fin' : ''))) : ''}</div>`).join('')}</div></div>
-${sgroups}<div class="acts3"><button class="p ${canOk ? '' : 'dim'}" id="open" ${md ? '' : 'disabled'}>${openKind === 'c' ? 'Çift aç' : 'Per aç'}</button><button class="p" id="dis" ${md && sel.length === 1 ? '' : 'disabled'}>At</button><button id="fin" ${md && sel.length === 1 ? '' : 'disabled'}>Bitir</button><button id="sort">Sırala</button></div>
+${sgroups}<div class="acts4"><div class="ag ao"><button class="p ${canP ? '' : 'dim'}" id="openP" ${md && om0 !== 'c' ? '' : 'disabled'}>Seri aç</button><button class="p ${canC ? '' : 'dim'}" id="openC" ${md && om0 !== 'p' ? '' : 'disabled'}>Çift aç</button><button class="p atb ${finNow ? 'fin' : ''}" id="${finNow ? 'fin' : 'dis'}" ${md && sel.length === 1 ? '' : 'disabled'}>${finNow ? 'Bitir' : 'At'}</button></div><div class="ag as"><button id="sortP">Seri diz</button><button id="sortC">Çift diz</button><button id="undoS" ${orderUndo.some(u => u.gid === S.gid) ? '' : 'disabled'}>↶ Geri</button></div></div>
 ${md && S.must >= 0 ? '<div class="acts"><button id="back">Taşı geri koy</button></div>' : ''}
-<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}">Kurallar</a>${SRV && !isStandalone() ? '<button id="inst">Telefona ekle</button>' : ''}${SRV ? '<button id="repO">🐞 Bildir</button>' : ''}${SRV && CFG.pub && ROOM && ROOM.host === uid ? `<button class="tg" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık</button>` : ''}${newVer ? '<button class="p" id="reload">Yeni sürüm: yenile</button>' : ''}</div><small class="mut xinfo">${code ? 'Oda <b>' + esc(code) + '</b>' : ''}${S.dl != null ? ' · Dağıtan: ' + esc(S.names[S.dl]) : ''} · El ${S.round + 1}/${S.R}</small><details class="hint" ${hintOpen ? 'open' : ''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar ıstakanın altındaki "Per aç" ile açılır. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Per aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
+<div class="rotq" role="dialog" aria-label="Telefonu yan çevir"><span class="ri" aria-hidden="true">📱</span><b>Telefonu yan çevir</b><small>Kanlı Okey yatay oynanır: masa, ıstaka ve düğmeler ekrana tam sığar.</small><button id="rotOk">Dikey devam et</button></div>
+<div class="xtra" role="dialog" aria-modal="true" aria-label="Menü"><div class="xsheet"><div class="xh"><b>Menü</b><button id="menuX">Kapat</button></div><div class="xtg"><button class="setc" id="setO">⚙ Ayarlar</button><button class="tg" data-tg="snd" aria-pressed="${SFX.snd}">Ses</button><a href="${RULES_URL}">Kurallar</a>${SRV && !isStandalone() ? '<button id="inst">Telefona ekle</button>' : ''}${SRV ? '<button id="repO">🐞 Bildir</button>' : ''}${SRV && CFG.pub && ROOM && ROOM.host === uid ? `<button class="tg" id="pubT" aria-pressed="${!!ROOM.pub}">Herkese açık</button>` : ''}${newVer ? '<button class="p" id="reload">Yeni sürüm: yenile</button>' : ''}</div><small class="mut xinfo">${code ? 'Oda <b>' + esc(code) + '</b>' : ''}${S.dl != null ? ' · Dağıtan: ' + esc(S.names[S.dl]) : ''} · El ${S.round + 1}/${S.R}</small><details class="hint" ${hintOpen ? 'open' : ''}><summary>Nasıl kullanılır?</summary>Taşa dokunarak seç, basılı tutup istediğin yuvaya sürükle. Taşı masaya bırakırsan atılır, açılmış bir pere bırakırsan işlenir (okeyin üstüne bırakırsan değiştirir). Sıran gelince desteyi ya da soldaki taşı da ıstakana sürükleyip istediğin yuvaya bırakabilirsin. Per ya da çiftlerini yan yana diz, ayrı perlerin arasına boşluk bırak: yeşil çerçeveli taşlar "Seri aç" (perler) ya da "Çift aç" (çiftler) ile açılır. "Seri diz" ve "Çift diz" ıstakayı senin için dizer, "Geri" önceki dizilişe döner. Hepsini açmak istemiyorsan açmak istediğin perlerden birer taşa dokun, "Seri aç" sadece onları açar. Puan: taşların toplamı 3'e bölünür, artan "yandan" diye görünür. Seri en fazla 5 taş olur; 6 ya da 7 taşlık seriyi 3+3 ya da 3+4 diye ikiye ayırıp araya boşluk bırak. Per ve çift aynı anda açılmaz. Son taşı atınca el biter (açtığın tur hariç). Çift açtıysan elinde tek taş kalıp onu atınca biter.</details><div class="row" style="margin-top:2px"><button id="home">Ana ekran</button><small class="mut">Oyun devam eder, kodla geri girebilirsin.</small></div></div></div></div>`;
     h += '<!--SEC-->';
     /* uyarı: ekranın üstünde kısa süre görünür */
     if (msg !== lastMsg) {

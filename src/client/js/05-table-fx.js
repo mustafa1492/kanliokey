@@ -144,11 +144,11 @@ function mvDiff(a, b) {
   if (MVL.length > 60) MVL = MVL.slice(-60);
   if (mvOpen) mvList();
 }
+/* v63 (Mustafa): masadaki anlık son hamle şeridi kalktı; durum satırında "Geçmiş" düğmesi hamle geçmişini açar */
 function lmvH() {
-  const L = MVL.slice(-1)[0];
-  if (!L) return '';
-  return `<button class="lmv sc${L.i >= 0 && L.i < 4 ? L.i : 0}" id="lmv" aria-label="Son hamleler"><span class="dot"></span><span class="lmt">${L.h}</span><span class="lmc">${MVL.length > 1 ? 'geçmiş ›' : ''}</span></button>`;
+  return '';
 }
+const lmvBtn = () => `<button class="penbtn" id="lmv" aria-label="Hamle geçmişi">Geçmiş</button>`;
 /* geçmişte her oyuncunun sadece son attığı taş görünür (Mustafa); eski atışlar taşsız yazılır */
 function mvList() {
   const l = document.getElementById('mvl');

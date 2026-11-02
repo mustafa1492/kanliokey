@@ -43,7 +43,7 @@ async def main():
         await pg.wait_for_timeout(2500)
         lm=await pg.evaluate("(document.getElementById('lmv')||{}).textContent||''")
         print('strip:',lm)
-        check('son hamle şeridi görünüyor',len(lm)>3)
+        check('Geçmiş düğmesi görünüyor (v63: şerit kalktı)',lm.strip()=='Geçmiş')
         await pg.screenshot(path=f't30_{W}x{H}.png')
         await pg.click('#lmv'); await pg.wait_for_timeout(300)
         n=await pg.evaluate("document.querySelectorAll('#mvl .mvr').length")

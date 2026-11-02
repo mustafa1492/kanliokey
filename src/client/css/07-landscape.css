@@ -1,0 +1,296 @@
+/* ===== v63: düğmeler (her yönde): Seri aç / Çift aç / At, Seri diz / Çift diz / Geri ===== */
+.acts4 {
+  display: grid;
+  gap: 6px;
+}
+.acts4 .ag {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.acts4 button {
+  min-height: 42px;
+  padding: 6px 4px;
+  font-size: 15px;
+  width: 100%;
+}
+.acts4 .as button {
+  min-height: 36px;
+  font-size: 14px;
+}
+@media (orientation: portrait) {
+  body.gmode .acts4 {
+    gap: 4px;
+  }
+  body.gmode .acts4 .ag {
+    gap: 4px;
+  }
+  body.gmode .acts4 button {
+    min-height: 34px;
+    font-size: 14px;
+    padding: 2px 4px;
+  }
+  body.gmode .acts4 .as button {
+    min-height: 27px;
+    font-size: 13px;
+  }
+}
+.acts4 .atb.fin {
+  background: linear-gradient(180deg, #e8b93a, #b88a1c);
+  color: #1a1405;
+}
+
+/* ===== v63: YATAY OYUN (Mustafa): üstte ince şerit, ortada geniş masa, altta ıstaka; düğmeler ıstakanın iki yanında ===== */
+@media (orientation: landscape) and (max-height: 620px) {
+  body.gmode .wrap {
+    gap: 0;
+  }
+  /* üst başlık: logo gizli, el bilgisi ve menü sağ üstte durum şeridinin içinde */
+  body.gmode .top {
+    position: fixed;
+    z-index: 30;
+    top: max(4px, env(safe-area-inset-top, 0px));
+    right: max(8px, env(safe-area-inset-right, 0px));
+    min-height: 0;
+    padding: 0;
+    background: none;
+  }
+  body.gmode .top h1.kwh {
+    display: none;
+  }
+  body.gmode .top .chips {
+    gap: 4px;
+  }
+  body.gmode #app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 4px;
+    height: calc(100dvh - max(8px, env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px)));
+  }
+  body.gmode #app > .sec:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  body.gmode #app > .sec:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  body.gmode #app > .sec:nth-child(3) {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  body.gmode #app > .sec:nth-child(4) {
+    grid-column: 1;
+    grid-row: 4;
+    justify-content: flex-start;
+  }
+  /* durum şeridi: tek satır, sağda menü için yer */
+  body.gmode .gstat {
+    padding: 2px 6px;
+    padding-right: 250px;
+    border-radius: 12px;
+  }
+  body.gmode .gstat .status {
+    min-height: 30px;
+  }
+  body.gmode .gstat .status b {
+    font-size: 14px;
+  }
+  body.gmode .gstat .lmv {
+    display: none;
+  }
+  /* masa: geniş ve alçak; yan oyuncular kenarlarda, karşıdaki üstte, sen altta */
+  body.gmode .scene,
+  body.gmode .board {
+    height: 100%;
+    min-height: 0;
+  }
+  body.gmode .felt3d {
+    height: 100%;
+    min-height: 0 !important;
+    grid-template-areas:
+      'left top right'
+      'left mid right'
+      'left me right';
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    padding: 4px 8px;
+    border-width: 6px;
+    gap: 2px 8px;
+  }
+  body.gmode .felt3d .stamp {
+    opacity: 0.35;
+  }
+  body.gmode .a-left,
+  body.gmode .a-right {
+    align-self: stretch;
+    min-height: 0;
+    overflow: hidden;
+  }
+  body.gmode .a-left .seat,
+  body.gmode .a-right .seat {
+    height: 100%;
+    justify-content: flex-start;
+  }
+  body.gmode .a-top .seat,
+  body.gmode .a-me .seat {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2px 8px;
+  }
+  body.gmode .a-top .pers,
+  body.gmode .a-me .pers {
+    flex: 0 0 auto;
+    order: 5;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  body.gmode .a-me .pers {
+    order: -1;
+  }
+  body.gmode .a-left .orack,
+  body.gmode .a-right .orack,
+  body.gmode .a-top .orack {
+    display: none;
+  }
+  /* orta: deste ve gösterge yan yana, küçültülmüş (üstteki oyuncuya binmesin) */
+  body.gmode .a-mid {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    zoom: 0.72;
+  }
+  body.gmode .a-mid .okeyrow {
+    order: 2;
+  }
+  /* ıstaka kutusu: solda açma düğmeleri, ortada ıstaka, sağda dizme düğmeleri */
+  body.gmode .rackbox {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr) 112px;
+    grid-template-areas: 'ao rk as' 'ao sg as' 'ao bk as';
+    align-items: center;
+    gap: 2px 8px;
+    padding: 4px 8px 6px;
+  }
+  body.gmode .rackbox > div:first-child {
+    grid-area: rk;
+    min-width: 0;
+  }
+  body.gmode .rackbox > .sgroups {
+    grid-area: sg;
+  }
+  body.gmode .rackbox > .acts {
+    grid-area: bk;
+  }
+  body.gmode .rackbox .acts4 {
+    display: contents;
+  }
+  body.gmode .acts4 .ag {
+    grid-template-columns: 1fr;
+    align-self: stretch;
+    align-content: center;
+    gap: 5px;
+  }
+  body.gmode .acts4 .ao {
+    grid-area: ao;
+  }
+  body.gmode .acts4 .as {
+    grid-area: as;
+  }
+  body.gmode .acts4 button,
+  body.gmode .acts4 .as button {
+    min-height: 34px;
+    font-size: 14px;
+    padding: 4px 6px;
+  }
+  body.gmode .rlabel {
+    min-height: 0;
+    margin: 0;
+    font-size: 12px;
+  }
+  body.gmode .rlabel .lab {
+    font-size: 12px;
+  }
+  body.gmode .rlabel .pbadge {
+    padding: 1px 8px;
+    font-size: 12px;
+  }
+  body.gmode .rlabel .fcs {
+    display: none;
+  }
+  /* kendi isim kutun masada gösterilmez (bilgisi ıstakanın üstünde), ortadaki desteye yer kalır */
+  body.gmode .a-me .plate {
+    display: none;
+  }
+  body.gmode .a-me:has(.pers:empty) {
+    display: none;
+  }
+  body.gmode .rack,
+  body.focus.gmode .rack {
+    --tw: min(44px, calc((100vw - 300px) / 12.6), calc(100dvh * 0.082));
+    --rp: 5px;
+    --rg: 6px;
+    margin-top: 2px;
+  }
+  body.big.gmode .rack {
+    --tw: min(52px, calc((100vw - 300px) / 10.6), calc(100dvh * 0.105));
+  }
+}
+
+/* ===== v63: telefon dikey tutulunca oyunda "yan çevir" uyarısı (kapatılabilir) ===== */
+.rotq {
+  display: none;
+}
+@media (orientation: portrait) and (max-width: 600px) {
+  body.gmode:not(.rotok) .rotq {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px;
+    text-align: center;
+    background: #120b09f2;
+    color: #f3ead2;
+  }
+  .rotq .ri {
+    font-size: 56px;
+    animation: rotq 1.6s ease-in-out infinite;
+  }
+  .rotq b {
+    font: 700 20px/1.3 var(--display);
+    letter-spacing: 0.04em;
+  }
+  .rotq small {
+    color: #cdbb9f;
+    font-size: 14px;
+    max-width: 280px;
+  }
+}
+@keyframes rotq {
+  0%,
+  30% {
+    transform: rotate(0);
+  }
+  60%,
+  100% {
+    transform: rotate(-90deg);
+  }
+}
+@media (orientation: landscape) and (max-height: 380px) {
+  body.gmode .a-mid {
+    zoom: 0.62;
+  }
+}
