@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node tools/build.js",
     "start": "node tools/build.js && node server/server.js",
-    "test": "node tools/build.js && node test/engine.test.js && node test/sim.test.js && node test/server.test.js && node test/pair.test.js && node test/claim.test.js && node test/push.test.js && node test/chat.test.js && node test/tables.test.js && node test/stress.test.js && node test/remote.test.js"
+    "test": "node tools/build.js && node test/engine.test.js && node test/sim.test.js && node test/server.test.js && node test/pair.test.js && node test/claim.test.js && node test/push.test.js && node test/chat.test.js && node test/tables.test.js && node test/stress.test.js && node test/remote.test.js && node test/miss.test.js"
   },
   "engines": { "node": ">=18" },
   "dependencies": { "ws": "^8.18.0" }

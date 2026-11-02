@@ -110,7 +110,8 @@ const cfgSave = () =>
       pub: !!CFG.pub,
       chat: !!CFG.chat,
       mk: !!CFG.mk,
-      bk: !!CFG.bk
+      bk: !!CFG.bk,
+      mt: CFG.mt || 3
     });
 async function setCfg(p) {
   CFG = { ...CFG, ...p };
@@ -138,7 +139,8 @@ function watchCfg() {
             pub: d.pub !== false,
             chat: d.chat !== false,
             mk: d.mk !== false,
-            bk: d.bk === true
+            bk: d.bk === true,
+            mt: [2, 3, 5].includes(+d.mt) ? +d.mt : 3
           },
           j = JSON.stringify(n);
         if (j === cfgJ) return;
@@ -461,6 +463,14 @@ ${tog('mk', 'Yeni masa kurma', 'Kapatırsan kimse yeni masa kuramaz (güncelleme
       ],
       CFG.tm,
       'tm'
+    )}<small class="mut" style="display:block;margin-top:10px">Arka arkaya kaç kez süresi dolan oyuncunun yerine bot geçsin (döndüğünde koltuğunu geri alır)</small>${seg(
+      [
+        ['2 kez', 2],
+        ['3 kez', 3],
+        ['5 kez', 5]
+      ],
+      CFG.mt || 3,
+      'mt'
     )}<p class="mut" style="margin:10px 0 0;font-size:13px">Süre dolunca oyuncu için taş otomatik çekilir ve atılır. Kolay: basit oynar. Orta: yandan taş alır, işler, ara sıra hata yapar. Zor: okey değiştirir, atışları hesaplar.</p></div>`;
   else if (admTab === 'duyuru')
     body = `<div class="panel"><h2>Duyuru</h2><div class="row"><input id="an" maxlength="140" placeholder="Herkesin göreceği kısa mesaj" value="${esc(CFG.ann)}" aria-label="Duyuru" style="flex:1;min-width:0"><button class="p" id="anset">Yayınla</button></div>${CFG.ann ? '<div class="row" style="margin-top:8px"><button id="anclr">Duyuruyu kaldır</button></div>' : ''}<div class="row" style="margin-top:10px"><button data-ann="Birazdan güncelleme var, oyunlar sıfırlanacak. Elinizi bitirin.">Hazır: güncelleme uyarısı</button></div></div>`;
