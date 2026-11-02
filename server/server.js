@@ -94,18 +94,18 @@ function send(conn,o){if(conn.ws.readyState===1){try{conn.ws.send(JSON.stringify
 function isMember(c,uid){return store.has('rooms/'+c+'/members/'+uid)}
 function seatOf(c,uid){const g=store.get(gamePath(c));return g?g.seats.indexOf(uid):-1}
 function canReadDoc(conn,p){
-  if(p==='settings/vapid'||/^push\//.test(p))return false;
+  if(p==='settings/vapid'||/^(push|acct|acctu|stats)\//.test(p))return false;
   if(p==='settings/main')return true;
   if(p==='settings/stats')return conn.admin;
   const c=roomOf(p);if(!c)return conn.admin;
   if(p==='rooms/'+c)return true;
-  if(p==='rooms/'+c+'/log/main')return conn.admin;
+  if(p==='rooms/'+c+'/log/main')return conn.admin||isGM(conn.uid);
   if(parentOf(p)==='rooms/'+c+'/members')return true;
-  if(p===gamePath(c)||p==='rooms/'+c+'/chat/main')return conn.admin||isMember(c,conn.uid)||seatOf(c,conn.uid)>=0;
+  if(p===gamePath(c)||p==='rooms/'+c+'/chat/main')return conn.admin||isGM(conn.uid)||isMember(c,conn.uid)||seatOf(c,conn.uid)>=0;
   return false;
 }
 function canReadCol(conn,p){
-  if(p==='rooms'||p==='lobby')return conn.admin;
+  if(p==='rooms'||p==='lobby')return conn.admin||(p==='rooms'&&isGM(conn.uid));
   const c=roomOf(p);
   return !!c&&p==='rooms/'+c+'/members';
 }
@@ -114,6 +114,7 @@ function snapDoc(conn,p){
   let d=store.get(p);
   if(/\/game\/main$/.test(p)){
     d=conn.admin?clone(d):ENG.view(d,d.seats.indexOf(conn.uid));
+    d.gms=d.seats.map(u=>isGM(u)?1:0);
     if(d.tt&&conn.skew)d.tt+=conn.skew;
   }else d=clone(d);
   return{exists:true,data:d};
@@ -178,8 +179,80 @@ function logMoves(c,a,b,why){
   store.set(p,{m:[...(d.m||[]),...add].slice(-400)});dirty=true;
   const ds=docSubs.get(p);if(ds&&ds.size)notify(p);
 }
+/* ---------- hesaplar ve profil (v64) ----------
+   acct/<küçük ad> = {n, s(tuz), h(scrypt), uid, t, gm}; acctu/<uid> = {lc}; stats/<uid> = {o1,w1,l1, o2,w2,l2, tp}
+   Kayıt misafir kimliğine bağlanır (oyun geçmişi korunur); girişte o hesabın kimliğine yeni anahtar verilir. */
+const LEVELS=[['Çaycı',0],['Çırak',100],['Müdavim',300],['Taşçı',700],['Usta',1500],['Kahve Ağası',3000],['Kanlı Usta',6000],['Efsane',12000]];
+const lcName=u=>String(u||'').trim().toLocaleLowerCase('tr');
+const pwHash=(pw,salt)=>crypto.scryptSync(String(pw),salt,32).toString('hex');
+const acctOf=uid=>{const a=store.get('acctu/'+uid);return a?store.get('acct/'+a.lc):null};
+const isGM=uid=>{const a=acctOf(uid);return !!(a&&a.gm)};
+function levelOf(tp){let k=0;for(let i=0;i<LEVELS.length;i++)if(tp>=LEVELS[i][1])k=i;const nx=LEVELS[k+1];return{lv:k+1,ad:LEVELS[k][0],tp,next:nx?nx[1]:null}}
+function profileOf(uid){
+  const a=acctOf(uid),st=store.get('stats/'+uid)||{},tp=Math.round(st.tp||0);
+  const pc=(w,o)=>o?Math.round(w/o*100):0;
+  return{user:a?a.n:null,gm:!!(a&&a.gm),since:a?a.t:null,tekli:{o:st.o1||0,w:st.w1||0,l:st.l1||0,pct:pc(st.w1||0,st.o1||0)},esli:{o:st.o2||0,w:st.w2||0,l:st.l2||0,pct:pc(st.w2||0,st.o2||0)},...levelOf(tp)};
+}
+function addStats(uid,f){const p='stats/'+uid,d={...(store.get(p)||{})};f(d);store.set(p,d);dirty=true}
+/* botlu oyunda tecrübe puanı botların seviyesine göre (Mustafa: Zor %100, Orta %60, Kolay %30) */
+function tpFactor(c,g){if(!g.seats.some(u=>ENG.isBot(u)))return 1;const r=store.get('rooms/'+c),lv=r&&r.bl!=null?r.bl:getCfg().bot;return [0.3,0.6,1][lv]||1}
+function recordStats(c,g){
+  const f=tpFactor(c,g),hum=g.seats.map((u,i)=>[u,i]).filter(([u])=>!ENG.isBot(u));
+  /* el sonu: okeyle ya da tek başına bitiren +5 */
+  if(g.win>=0&&g.win<4&&g.wm&&!ENG.isBot(g.seats[g.win]))addStats(g.seats[g.win],d=>{d.tp=(d.tp||0)+5*((g.wm&1?1:0)+(g.wm&2?1:0))*f});
+  if(g.round+1<g.R)return;
+  const sc=i=>g.scores['s'+i]||0;
+  if(g.pair){
+    const team=i=>[i,(i+2)%4],ts=i=>sc(i)+sc((i+2)%4);
+    for(const [u,i] of hum){const won=ts(i)<ts((i+1)%4);addStats(u,d=>{d.o2=(d.o2||0)+1;if(won)d.w2=(d.w2||0)+1;else d.l2=(d.l2||0)+1;d.tp=(d.tp||0)+(10+(won?25:0))*f})}
+  }else{
+    const mx=Math.max(...[0,1,2,3].map(sc));
+    for(const [u,i] of hum){const rank=1+[0,1,2,3].filter(j=>sc(j)<sc(i)).length,last=sc(i)===mx&&rank>1;
+      addStats(u,d=>{d.o1=(d.o1||0)+1;if(rank===1)d.w1=(d.w1||0)+1;if(last)d.l1=(d.l1||0)+1;d.tp=(d.tp||0)+(10+(rank===1?30:rank===2?15:rank===3?5:0))*f})}
+  }
+}
+function hAcct(conn,m){
+  const op=m.op,user=String(m.user||'').trim(),pw=String(m.pw||''),lc=lcName(user);
+  if(op==='register'){
+    if(!/^[\p{L}\p{N}_]{3,14}$/u.test(user))return deny(conn,m.id,'bad','Kullanıcı adı 3-14 harf ya da rakam olmalı (boşluksuz).');
+    if(pw.length<4||pw.length>64)return deny(conn,m.id,'bad','Şifre en az 4 karakter olmalı.');
+    if(store.has('acctu/'+conn.uid))return deny(conn,m.id,'have','Bu cihazda zaten bir hesabın var.');
+    if(store.has('acct/'+lc))return deny(conn,m.id,'taken','Bu kullanıcı adı alınmış.');
+    if(!allow('reg:'+conn.ip,6,3600e3))return deny(conn,m.id,'rate','Çok fazla deneme, biraz bekle.');
+    const s=crypto.randomBytes(16).toString('hex');
+    put('acct/'+lc,{n:user,s,h:pwHash(pw,s),uid:conn.uid,t:now(),gm:false});put('acctu/'+conn.uid,{lc});
+    log('hesap açıldı',user);
+    return reply(conn,m.id,{ok:true,profile:profileOf(conn.uid)});
+  }
+  if(op==='login'){
+    if(!allow('login:'+conn.ip,10,600e3))return deny(conn,m.id,'rate','Çok fazla deneme, 10 dakika sonra dene.');
+    const a=store.get('acct/'+lc);
+    const ok=a&&crypto.timingSafeEqual(Buffer.from(pwHash(pw,a.s),'hex'),Buffer.from(a.h,'hex'));
+    if(!ok)return deny(conn,m.id,'wrong','Kullanıcı adı ya da şifre yanlış.');
+    const tok=crypto.randomBytes(24).toString('hex');tokens.set(tok,{uid:a.uid,t:now()});dirty=true;
+    return reply(conn,m.id,{ok:true,token:tok});
+  }
+  if(op==='profile'){
+    if(user&&lcName(user)!==(store.get('acctu/'+conn.uid)||{}).lc){
+      if(!conn.admin&&!isGM(conn.uid))return deny(conn,m.id,'denied');
+      const a=store.get('acct/'+lc);if(!a)return deny(conn,m.id,'not-found','Böyle bir hesap yok.');
+      return reply(conn,m.id,{ok:true,profile:profileOf(a.uid)});
+    }
+    return reply(conn,m.id,{ok:true,profile:profileOf(conn.uid)});
+  }
+  if(op==='acctAdmin'){
+    if(!conn.admin)return deny(conn,m.id);
+    if(m.k==='list'){const out=[];for(const [k,v] of store)if(k.startsWith('acct/'))out.push({n:v.n,gm:!!v.gm,t:v.t,...levelOf(Math.round((store.get('stats/'+v.uid)||{}).tp||0))});return reply(conn,m.id,{ok:true,list:out.sort((x,y)=>x.t-y.t)})}
+    const a=store.get('acct/'+lc);if(!a)return reply(conn,m.id,{ok:false,msg:'Böyle bir hesap yok.'});
+    if(m.k==='gm'){a.gm=!!m.on;put('acct/'+lc,a);return reply(conn,m.id,{ok:true,msg:a.n+(a.gm?' artık GM.':' artık GM değil.')})}
+    if(m.k==='reset'){if(pw.length<4)return reply(conn,m.id,{ok:false,msg:'Yeni şifre en az 4 karakter.'});a.s=crypto.randomBytes(16).toString('hex');a.h=pwHash(pw,a.s);put('acct/'+lc,a);return reply(conn,m.id,{ok:true,msg:a.n+' için şifre değişti.'})}
+    return reply(conn,m.id,{ok:false});
+  }
+  return deny(conn,m.id);
+}
 function onHandEnd(c,g){
   endAt.set(c,now());
+  try{recordStats(c,g)}catch(e){log('istatistik hatası',e&&e.message)}
   if(g.round+1>=g.R){
     const d=store.get('settings/stats')||{};
     d.hist=[{t:now(),p:g.seats.map((u,i)=>({n:g.names[i],s:g.scores['s'+i]||0,b:ENG.isBot(u)?1:0}))},...(d.hist||[])].slice(0,30);
@@ -229,7 +302,7 @@ function comeBackAll(uid){for(const k of [...store.keys()]){const m=/^rooms\/([A
 function kick(c){
   clearTimeout(timers.get(c));timers.delete(c);
   const g=store.get(gamePath(c));if(!g)return;
-  if(!humansOnline(g))return; /* masada kimse yoksa oyun bekler, biri dönünce sürer */
+  if(!humansOnline(g)||g.paused)return; /* masada kimse yoksa ya da GM duraklattıysa oyun bekler */
   const cfg=getCfg(),t=now(),key=stateKey(g);let delay,fn;
   if(g.ph==='end'){
     if(g.round+1>=g.R)return;
@@ -269,6 +342,7 @@ const deny=(conn,id,err,msg)=>reply(conn,id,{ok:false,err:err||'denied',msg:msg|
 function hPut(conn,m){
   const p=m.path,d=m.data&&typeof m.data==='object'?m.data:{};
   if(p==='settings/main'){
+    if(!conn.admin&&isGM(conn.uid)){const cur=store.get(p)||{};put(p,{...cur,ann:String(d.ann!=null?d.ann:(cur.ann||'')).replace(/[\u0000-\u001f]/g,'').slice(0,140)});return reply(conn,m.id,{ok:true})}
     if(!conn.admin)return deny(conn,m.id);
     const cur=getCfg();
     put(p,{bot:d.bot!=null?Math.max(0,Math.min(2,+d.bot|0)):cur.bot,ms:d.ms!=null?Math.max(300,Math.min(4000,+d.ms|0)):cur.ms,ann:String(d.ann!=null?d.ann:cur.ann).replace(/[\u0000-\u001f]/g,'').slice(0,140),tm:d.tm!=null?Math.max(0,Math.min(300,+d.tm|0)):cur.tm,pub:d.pub!=null?!!d.pub:cur.pub,chat:d.chat!=null?!!d.chat:cur.chat,mk:d.mk!=null?!!d.mk:cur.mk,bk:d.bk!=null?!!d.bk:cur.bk,mt:[2,3,5].includes(+d.mt)?+d.mt:cur.mt});
@@ -302,7 +376,7 @@ function hPut(conn,m){
     if(d.re&&ri>=0&&ri<20&&(ri|0)===ri){if(!allow('react:'+conn.uid,8,20e3))return deny(conn,m.id,'rate','Biraz yavaş.');re={i:ri,t:now()}}
     /* v63 hediye: {k: hediye no 0-7, to: koltuk 0-3} */
     let gf=prev&&prev.gf?prev.gf:undefined;const gk=d.gf&&+d.gf.k,gt=d.gf&&+d.gf.to;
-    if(d.gf&&gk>=0&&gk<8&&(gk|0)===gk&&gt>=0&&gt<4&&(gt|0)===gt){if(!allow('react:'+conn.uid,8,20e3))return deny(conn,m.id,'rate','Biraz yavaş.');gf={k:gk,to:gt,t:now()}}
+    if(d.gf&&gk>=0&&(gk<8||(gk<10&&isGM(conn.uid)))&&(gk|0)===gk&&gt>=0&&gt<4&&(gt|0)===gt){if(!allow('react:'+conn.uid,8,20e3))return deny(conn,m.id,'rate','Biraz yavaş.');gf={k:gk,to:gt,t:now()}}
     const doc={name:cleanName(d.name),av:av>=0&&av<8&&(av|0)===av?av:(prev&&prev.av!=null?prev.av:-1),t:prev?prev.t:now()};if(re)doc.re=re;if(gf)doc.gf=gf;
     put(p,doc);touch(c);seen(conn.uid,doc.name,c);
     return reply(conn,m.id,{ok:true});
@@ -468,7 +542,7 @@ function hTakeBot(conn,m){
   return reply(conn,m.id,{ok:true});
 }
 function hAdminList(conn,m){
-  if(!conn.admin)return deny(conn,m.id);
+  if(!conn.admin&&!(String(m.k)==='log'&&isGM(conn.uid)))return deny(conn,m.id); /* GM sadece hamle kaydını görür */
   const k=String(m.k||'');
   if(k==='players'){
     const d=store.get('settings/players')||{},rooms={};
@@ -507,6 +581,7 @@ function hStart(conn,m,next){
 function hAct(conn,m){
   const c=String(m.code||'');if(!CODE_RE.test(c))return deny(conn,m.id);
   const g=store.get(gamePath(c));if(!g)return deny(conn,m.id,'not-found','Oyun yok.');
+  if(g.paused)return reply(conn,m.id,{ok:false,msg:'Masa duraklatıldı, GM devam ettirince oynayabilirsin.'});
   let me=g.seats.indexOf(conn.uid);
   if(me<0&&g.away){comeBack(c,conn.uid);kick(c);return reply(conn,m.id,{ok:false,msg:'Koltuğuna döndün, tekrar dene.'})}
   if(me<0)return deny(conn,m.id,'denied','Bu masada oturmuyorsun.');
@@ -526,9 +601,15 @@ function hAdmin(conn,m){
   return reply(conn,m.id,{ok:true});
 }
 function hAdminAct(conn,m){
-  if(!conn.admin)return deny(conn,m.id);
+  if(!conn.admin&&!isGM(conn.uid))return deny(conn,m.id);
   const c=String(m.code||''),a=String(m.a||''),p=gamePath(c),g=store.get(p);
   if(!g)return reply(conn,m.id,{ok:false,msg:'Oyun yok.'});
+  /* v64 GM: masayı duraklat / devam ettir; duraklatınca süre ve botlar durur */
+  if(a==='pause'||a==='resume'){
+    const n=clone(g);if(a==='pause')n.paused=1;else{delete n.paused;n.tt=now()}
+    store.set(p,n);dirty=true;notify(p);clearTimeout(timers.get(c));timers.delete(c);if(a==='resume')kick(c);
+    return reply(conn,m.id,{ok:true,msg:a==='pause'?'Masa duraklatıldı.':'Masa devam ediyor.'});
+  }
   if(a==='skip'){
     if(g.ph==='end')return reply(conn,m.id,{ok:false,msg:'El bitmiş.'});
     const me=g.turn,h=[...g.hands['h'+me]],d=[...g.disc['d'+me]],r={turn:(me+1)%4,ph:'draw',must:-1,ik:[],ot:-1,trn:g.trn+1,tt:now()};
@@ -584,6 +665,7 @@ function handle(conn,m){
   if(op==='update'){if(!okPath(m.path))return deny(conn,id);return hUpdate(conn,m)}
   if(op==='delete'){if(!okPath(m.path))return deny(conn,id);return hDelete(conn,m)}
   if(op==='act')return hAct(conn,m);
+  if(op==='register'||op==='login'||op==='profile'||op==='acctAdmin')return hAcct(conn,m);
   if(op==='start')return hStart(conn,m,false);
   if(op==='next')return hStart(conn,m,true);
   if(op==='seats')return hSeats(conn,m);
@@ -738,4 +820,4 @@ if(require.main===module){
     server.listen(PORT,()=>log('Kanlı Okey sunucusu çalışıyor: http://localhost:'+PORT));
   });
 }
-module.exports={server,store,setPushSend(f){PUSH_SEND=f},stop(){dirty=true;save();clearInterval(saveTimer);clearInterval(remoteTimer);clearInterval(hb);clearInterval(sweep);for(const t of timers.values())clearTimeout(t);wss.close();server.close()}};
+module.exports={server,store,_t:{recordStats,profileOf},setPushSend(f){PUSH_SEND=f},stop(){dirty=true;save();clearInterval(saveTimer);clearInterval(remoteTimer);clearInterval(hb);clearInterval(sweep);for(const t of timers.values())clearTimeout(t);wss.close();server.close()}};

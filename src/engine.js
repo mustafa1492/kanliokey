@@ -143,7 +143,7 @@ function fin(s,f,okeyEnd){
   const m=f>=0?(okeyEnd?2:1)*(solo?2:1):1;
   for(let i=0;i<4;i++)d[i]=f>=0&&isMate(s,f,i)?0:m*(f===i?(B?-200:-100):s.opn['s'+i]>0?s.hands[hk(i)].reduce((a,x)=>a+(isJ(x,s.okey)?(B?500:250):val(x,s.okey)*(B?10:5)),0):(B?1000:500));
   const sc={...s.scores};d.forEach((x,i)=>sc['s'+i]=(sc['s'+i]||0)+x);
-  return{scores:sc,last:d.map((x,i)=>x+(ex['s'+i]||0)),win:f<0?99:f,ph:'end'};
+  return{scores:sc,last:d.map((x,i)=>x+(ex['s'+i]||0)),win:f<0?99:f,ph:'end',wm:f>=0?(okeyEnd?1:0)+(solo?2:0):0};
 }
 /* hamle çalıştırıcı: istemci de sunucu da buradan geçer.
    s: durum kopyası (değiştirilebilir), me: koltuk, a: hamle bilgisi. Dönen r: duruma birleştirilecek yama. */

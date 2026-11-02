@@ -1,3 +1,61 @@
+/* v64 hesap ve profil (Mustafa): misafir girişi kalır; kullanıcı adı + şifre ile en basit kayıt (doğrulama yok) */
+let ME_GM = false,
+  PROF = null,
+  accMode = 'reg',
+  accMsg = '',
+  accBusy = false;
+async function loadProf() {
+  if (!SRV) return;
+  try {
+    const r = await SRV.call({ op: 'profile' });
+    if (r && r.ok) PROF = r.profile;
+  } catch (e) {}
+  const v = document.getElementById('setv');
+  if (v && setOpen && setTab === 'genel') v.innerHTML = setH();
+}
+function profCardH(p) {
+  const bar = p.next ? Math.min(100, Math.round(((p.tp - (LVLS[p.lv - 1] || 0)) / (p.next - (LVLS[p.lv - 1] || 0))) * 100)) : 100;
+  const row = (t, s) =>
+    `<div class="pstat"><b>${t}</b><span><i>${s.o}</i><small>oyun</small></span><span><i>${s.w}</i><small>${t === 'Tekli' ? 'birinci' : 'kazandı'}</small></span><span><i>${s.l}</i><small>${t === 'Tekli' ? 'sonuncu' : 'kaybetti'}</small></span><span><i>%${s.pct}</i><small>oran</small></span></div>`;
+  return `<div class="pcard"><div class="phd"><b class="${p.gm ? 'gmname' : ''}">${esc(p.user || 'Misafir')}</b>${p.gm ? '<em class="gmb">GM</em>' : ''}<span class="plv">Seviye ${p.lv} · ${esc(p.ad)}</span></div>
+<div class="pbar" role="progressbar" aria-valuenow="${bar}" aria-valuemin="0" aria-valuemax="100"><i style="width:${bar}%"></i></div><small class="mut">${p.tp} tecrübe puanı${p.next ? ' · sonraki seviye ' + p.next : ''}</small>
+${row('Tekli', p.tekli)}${row('Eşli', p.esli)}</div>`;
+}
+const LVLS = [0, 100, 300, 700, 1500, 3000, 6000, 12000];
+function accH() {
+  if (!SRV) return '<section><h4>Hesap ve profil</h4><p class="snote">Hesap sadece internetteki sürümde var.</p></section>';
+  if (!PROF) return '<section><h4>Hesap ve profil</h4><p class="snote">Yükleniyor…</p></section>';
+  if (PROF.user)
+    return `<section><h4>Hesap ve profil</h4>${profCardH(PROF)}<div class="row" style="margin-top:8px"><button id="accOut">Çıkış yap</button></div><small class="snote">Başka telefondan aynı kullanıcı adı ve şifreyle girince profilin aynen gelir.</small></section>`;
+  const reg = accMode === 'reg';
+  return `<section><h4>Hesap ve profil</h4>${profCardH(PROF)}
+<div class="stabs acctabs"><button data-acc="reg" class="${reg ? 'on' : ''}">Hesap oluştur</button><button data-acc="log" class="${reg ? '' : 'on'}">Giriş yap</button></div>
+<div class="accf"><input id="accU" maxlength="14" placeholder="Kullanıcı adı" autocomplete="username" autocapitalize="off"><input id="accP" type="password" maxlength="64" placeholder="Şifre (en az 4)" autocomplete="${reg ? 'new-password' : 'current-password'}"><button class="p" id="${reg ? 'accReg' : 'accLog'}" ${accBusy ? 'disabled' : ''}>${reg ? 'Hesap oluştur' : 'Giriş yap'}</button></div>
+${accMsg ? `<p class="accmsg">${esc(accMsg)}</p>` : ''}
+<small class="snote">${reg ? 'Şu ana kadarki oyunların hesabına geçer. Sadece kullanıcı adın, şifrenin şifrelenmiş hali ve oyun istatistiklerin saklanır. Şifreni unutursan yöneticiden sıfırlamasını iste.' : 'Giriş yapınca bu telefondaki misafir istatistikleri hesaba eklenmez.'}</small></section>`;
+}
+async function accAct(kind) {
+  const u = (document.getElementById('accU') || {}).value || '',
+    p = (document.getElementById('accP') || {}).value || '';
+  accBusy = true;
+  accMsg = '';
+  try {
+    const r = await SRV.call({ op: kind === 'reg' ? 'register' : 'login', user: u, pw: p });
+    if (r && r.ok && kind === 'reg') {
+      PROF = r.profile;
+      accMsg = '';
+    } else if (r && r.ok && r.token) {
+      SRV.setToken(r.token);
+      location.reload();
+      return;
+    } else accMsg = (r && r.msg) || 'Olmadı, tekrar dene.';
+  } catch (e) {
+    accMsg = 'Bağlantı yok, tekrar dene.';
+  }
+  accBusy = false;
+  const v = document.getElementById('setv');
+  if (v) v.innerHTML = setH();
+}
 /* ayarlar sayfası: çizimden bağımsız katman. v63: iki sekme (Mustafa): Oyun ayarları ve Genel ayarlar */
 let setTab = 'oyun';
 function setH() {
@@ -45,7 +103,7 @@ ${seg('fx', 'Efektler', [
 ${sw('big', 'Büyük taşlar', 'Istaka 2 × 10 yuva olur, taşlar ve masadaki perler büyür', SET.big)}
 ${sw('cb', 'Renk körü işaretleri', 'Taşlardaki noktanın şekli renge göre değişir: kırmızı ●, sarı ▲, mavi ■, siyah ◆', SET.cb)}
 </section>`;
-  const genel = `<section><h4>Ses ve titreşim</h4>
+  const genel = `${accH()}<section><h4>Ses ve titreşim</h4>
 ${sw('snd', 'Ses', '', SFX.snd)}
 ${seg('vol', 'Ses seviyesi', [
   [0, 'Kısık'],
@@ -94,6 +152,7 @@ function openSet(on) {
       el.addEventListener('change', setChange);
     }
     el.innerHTML = setH();
+    if (setTab === 'genel') loadProf();
     document.body.classList.add('set-open');
     document.body.classList.remove('menu-open');
   } else {
@@ -127,6 +186,27 @@ function setClick(e) {
   if (b.dataset.stab) {
     setTab = b.dataset.stab;
     document.getElementById('setv').innerHTML = setH();
+    if (setTab === 'genel') loadProf();
+    return;
+  }
+  if (b.dataset.acc) {
+    accMode = b.dataset.acc;
+    accMsg = '';
+    document.getElementById('setv').innerHTML = setH();
+    return;
+  }
+  if (b.id === 'accReg' || b.id === 'accLog') {
+    accAct(b.id === 'accReg' ? 'reg' : 'log');
+    return;
+  }
+  if (b.id === 'accOut') {
+    if (!b.dataset.sure) {
+      b.dataset.sure = '1';
+      b.textContent = 'Emin misin? Tekrar bas';
+      return;
+    }
+    SRV.setToken('');
+    location.reload();
     return;
   }
   if (b.dataset.sw) {
@@ -224,6 +304,17 @@ try {
       db = d;
       uid = await u.id();
       watchCfg();
+      /* v64: hesap bilgisi (GM mi) açılışta bir kez */
+      if (SRV)
+        SRV.call({ op: 'profile' })
+          .then(r => {
+            if (r && r.ok) {
+              PROF = r.profile;
+              ME_GM = !!r.profile.gm;
+              render();
+            }
+          })
+          .catch(() => {});
       const sc = lsGet('okeyRoom');
       if (uid && sc) {
         try {

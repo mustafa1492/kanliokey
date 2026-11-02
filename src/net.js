@@ -82,5 +82,5 @@ async function connectServer(){
   /* ilk bağlantı olmadıysa kapanınca kendisi yeniden dener; biraz bekle */
   for(let w=0;!uid&&w<10000;w+=250)await new Promise(r=>setTimeout(r,250));
   if(!uid)return null;
-  return{db,get uid(){return uid},call,get live(){return live}};
+  return{db,get uid(){return uid},call,get live(){return live},setToken(t){ls.set(TK,t||'')}};
 }

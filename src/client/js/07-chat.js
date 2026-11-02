@@ -24,8 +24,10 @@ const GIFTS = [
   ['🍬', 'lokum'],
   ['🥯', 'simit'],
   ['📿', 'tespih'],
-  ['🧿', 'nazar boncuğu']
-];
+  ['🧿', 'nazar boncuğu'],
+  ['👑', 'kanlı taç'],
+  ['💎', 'elmas']
+]; /* son ikisi sadece GM'e açık (sunucu da denetler) */
 let gfSeen = {},
   gfLast = 0;
 async function sendGift(k, to) {
@@ -288,7 +290,7 @@ function openZoom(i) {
   }
 <h5>Son attığı taş</h5>${dis.length ? `<div class="zdis"><div class="zd">${tile(dis[dis.length - 1], O)}</div></div>` : '<p class="mut">Henüz taş atmadı.</p>'}${
     i !== me && me >= 0 && code
-      ? `<h5>Hediye gönder</h5><div class="gfrow">${GIFTS.map((g, k) => `<button class="gfb" data-gf="${k}" aria-label="${esc(S.names[i])} için ${g[1]}">${g[0]}<small>${g[1]}</small></button>`).join('')}</div>`
+      ? `<h5>Hediye gönder</h5><div class="gfrow">${GIFTS.map((g, k) => (k >= 8 && !ME_GM ? '' : `<button class="gfb ${k >= 8 ? 'gmg' : ''}" data-gf="${k}" aria-label="${esc(S.names[i])} için ${g[1]}">${g[0]}<small>${g[1]}</small></button>`)).join('')}</div>`
       : ''
   }</div>`;
   el.addEventListener('click', e => {

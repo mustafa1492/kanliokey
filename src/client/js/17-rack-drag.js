@@ -852,7 +852,12 @@ $('#app').addEventListener('click', async e => {
     admTab = b.dataset.at;
     admMsg = '';
     if (admTab === 'bildirim' || admTab === 'oyuncu') admLoad();
+    if (admTab === 'hesap') admLoadAcc();
     render();
+    return;
+  }
+  if (b && (b.dataset.acgm || b.dataset.acrs)) {
+    await admAccAct(b.dataset.acgm ? 'gm' : 'reset', b.dataset.acgm || b.dataset.acrs);
     return;
   }
   if (b && b.dataset.ann) {
@@ -893,6 +898,7 @@ $('#app').addEventListener('click', async e => {
         } catch (e) {}
         if (ok) {
           isAdmin = true;
+          admReal = true;
           await openAdmin();
         } else {
           msg = 'Şifre yanlış.';
@@ -900,14 +906,23 @@ $('#app').addEventListener('click', async e => {
         }
       } else if (v === '1234') {
         isAdmin = true;
+        admReal = true;
         await openAdmin();
       } else {
         msg = 'Şifre yanlış.';
         render();
       }
+    } else if (id === 'gmO') {
+      isAdmin = true;
+      admReal = false;
+      admTab = 'genel';
+      await openAdmin();
+    } else if (id === 'gpGo') {
+      await gmProfile();
     } else if (id === 'admback') {
       unsubAll();
       isAdmin = false;
+      admReal = false;
       view = 'home';
       admC = '';
       admMsg = '';

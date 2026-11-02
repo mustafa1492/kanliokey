@@ -1394,3 +1394,102 @@ a.wa::before {
     opacity: 0;
   }
 }
+.pcard {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #ffffff08;
+  border: 1px solid #3a2617;
+}
+.pcard .phd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.pcard .phd b {
+  font: 700 20px/1.2 var(--display);
+}
+.gmname {
+  color: #f2c94c;
+  text-shadow: 0 0 8px #f2c94c66;
+}
+.gmb {
+  font: 800 11px/1 var(--body);
+  font-style: normal;
+  letter-spacing: 0.08em;
+  padding: 3px 6px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #f6d36b, #c99a1c);
+  color: #2a1a00;
+}
+.plv {
+  color: #e8b93a;
+  font-size: 13px;
+}
+.pbar {
+  height: 8px;
+  border-radius: 4px;
+  background: #ffffff14;
+  overflow: hidden;
+}
+.pbar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #b3202a, #e8b93a);
+}
+.pstat {
+  display: grid;
+  grid-template-columns: 52px repeat(4, 1fr);
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+  border-top: 1px solid #ffffff14;
+}
+.pstat b {
+  font-size: 13px;
+  color: #cdbb9f;
+}
+.pstat span {
+  display: grid;
+  justify-items: center;
+}
+.pstat i {
+  font: 700 17px/1.1 var(--display);
+  font-style: normal;
+}
+.pstat small {
+  font-size: 10.5px;
+  color: #a8977e;
+}
+.acctabs {
+  padding: 10px 0 6px;
+}
+.accf {
+  display: grid;
+  gap: 6px;
+}
+.accmsg {
+  color: #ff9c8f;
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+.plate.gmplate {
+  border-color: #f2c94c !important;
+  box-shadow:
+    0 0 0 1px #f2c94c88,
+    0 0 12px #f2c94c55;
+}
+.plate .gmb {
+  font-size: 9px;
+  padding: 2px 4px;
+  vertical-align: 2px;
+}
+.gfb.gmg {
+  border-color: #f2c94c88;
+}
+.gmbtn {
+  border-color: #f2c94c88;
+  color: #f2c94c;
+}

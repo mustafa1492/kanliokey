@@ -44,6 +44,65 @@ let admRid = '',
   admPlAll = false,
   admSnap = false,
   admLogAt = 0;
+/* v64: admReal = şifreyle girmiş yönetici; GM hesabı paneli şifresiz ama sınırlı açar (sunucu da denetler) */
+let admReal = false,
+  gpUser = '',
+  gpProf = null;
+async function gmProfile() {
+  gpUser = String(($('#gpu') || {}).value || '').trim();
+  gpProf = null;
+  try {
+    const r = await SRV.call({ op: 'profile', user: gpUser });
+    if (r && r.ok) gpProf = r.profile;
+    else admMsg = (r && r.msg) || 'Bulunamadı.';
+  } catch (e) {
+    admMsg = 'Bağlantı yok.';
+  }
+  render();
+}
+/* v64 hesaplar: liste, GM yap/kaldır, şifre sıfırla */
+let admAcc = null;
+async function admLoadAcc() {
+  if (!SRV || !isAdmin) return;
+  try {
+    const a = await SRV.call({ op: 'acctAdmin', k: 'list' });
+    if (a && a.ok) admAcc = a.list || [];
+  } catch (e) {}
+  render();
+}
+async function admAccAct(k, user) {
+  let pw = '';
+  if (k === 'reset') {
+    pw = (document.getElementById('acpw-' + user) || {}).value || '';
+    if (pw.length < 4) {
+      admMsg = 'Yeni şifre en az 4 karakter olmalı.';
+      render();
+      return;
+    }
+  }
+  const cur = (admAcc || []).find(x => x.n === user);
+  try {
+    const r = await SRV.call({ op: 'acctAdmin', k, user, pw, on: k === 'gm' ? !(cur && cur.gm) : undefined });
+    admMsg = (r && r.msg) || '';
+  } catch (e) {
+    admMsg = 'Bağlantı yok.';
+  }
+  await admLoadAcc();
+}
+function admAccH() {
+  if (!SRV) return '<div class="panel"><p class="mut" style="margin:0">Hesaplar sadece sunucudaki oyunda var.</p></div>';
+  if (!admAcc) return '<div class="panel"><p class="mut" style="margin:0">Yükleniyor…</p></div>';
+  return `<div class="panel"><h2>Hesaplar <small class="mut">(${admAcc.length}, kayıt sırasıyla)</small></h2>${
+    admAcc.length
+      ? admAcc
+          .map(
+            (a, k) =>
+              `<div class="ar"><div><b class="${a.gm ? 'gmname' : ''}">${k + 1}. ${esc(a.n)}</b>${a.gm ? ' <em class="gmb">GM</em>' : ''}<small class="mut">Seviye ${a.lv} · ${esc(a.ad)} · ${a.tp} TP · ${agoT(a.t)}</small></div><div class="row" style="gap:6px;flex-wrap:wrap"><button data-acgm="${esc(a.n)}">${a.gm ? 'GM kaldır' : 'GM yap'}</button><input id="acpw-${esc(a.n)}" type="text" placeholder="Yeni şifre" style="width:110px"><button data-acrs="${esc(a.n)}">Şifreyi değiştir</button></div></div>`
+          )
+          .join('')
+      : '<p class="mut" style="margin:0">Henüz hesap yok.</p>'
+  }</div>`;
+}
 async function admLoad() {
   if (!SRV || !isAdmin) return;
   try {
@@ -325,12 +384,12 @@ function admRoomH() {
       ]
         .slice()
         .sort((a, b) => a - b)
-        .map(x => mt(x, O))
-        .join('')}</div></div>`;
+        .map(x => (x == null ? '' : mt(x, O)))
+        .join('')}${g.hands['h' + i].some(x => x == null) ? '<small class="mut">eli gizli</small>' : ''}</div></div>`;
     })
     .join('');
   return `<div class="panel"><h2>Oda ${esc(admRid)}</h2><p class="mut" style="margin:0 0 10px">El ${g.round + 1}/${g.R} · ${g.B ? 'büyük el' : 'normal el'} · deste ${g.deck.length} · ${g.ph === 'end' ? 'bitti' : g.ph === 'draw' ? 'çekme' : 'atma'}${g.ph !== 'end' && O.c >= 0 ? '' : ''}</p>${rows}
-${admSnap ? '' : '<div class="row" style="margin-top:12px"><button data-wa="skip">Sırayı atlat</button></div>'}${admMsg ? `<div class="note">${esc(admMsg)}</div>` : ''}</div>${SRV ? admLogH() : ''}${back}`;
+${admSnap ? '' : `<div class="row" style="margin-top:12px;gap:6px;flex-wrap:wrap"><button data-wa="skip">Sırayı atlat</button><button data-wa="${g.paused ? 'resume' : 'pause'}">${g.paused ? '▶ Devam ettir' : '⏸ Masayı duraklat'}</button></div>`}${admMsg ? `<div class="note">${esc(admMsg)}</div>` : ''}</div>${SRV ? admLogH() : ''}${back}`;
 }
 const agoT = t => {
   const m = Math.max(0, Math.round((Date.now() - (t || 0)) / 60000));
@@ -403,19 +462,25 @@ function adminH() {
     ['genel', 'Odalar', rs.length],
     ['bildirim', 'Bildirimler', nRep],
     ['oyuncu', 'Oyuncular', nOn],
+    ['hesap', 'Hesaplar', 0],
     ['bakim', 'Bakım', CFG.bk ? 1 : 0],
     ['ozellik', 'Özellikler', 0],
     ['ayar', 'Bot ve süre', 0],
     ['duyuru', 'Duyuru', CFG.ann ? 1 : 0],
     ['istat', 'İstatistik', 0]
   ];
+  if (!admReal) {
+    /* v64 GM paneli: masalar (izle, bota çevir, sıra atlat, duraklat), duyuru, oyuncu profili */
+    for (let k = TABS.length - 1; k >= 0; k--) if (!['genel', 'duyuru'].includes(TABS[k][0])) TABS.splice(k, 1);
+    TABS.push(['gprof', 'Profil bak', 0]);
+  }
   if (!TABS.some(t => t[0] === admTab)) admTab = 'genel';
   const tabs = `<nav class="atabs" role="tablist" aria-label="Yönetim bölümleri">${TABS.map(([k, l, n]) => `<button role="tab" class="${admTab === k ? 'on' : ''}" data-at="${k}" aria-selected="${admTab === k}">${l}${n ? `<i class="${k === 'bildirim' ? '' : 'n'}">${n}</i>` : ''}</button>`).join('')}</nav>`;
   let body = '';
   if (admTab === 'genel')
     body = `<div class="panel"><div class="res"><div><span>Toplam oda</span><b>${rs.length}</b></div><div><span>Oyunda</span><b>${pl}</b></div><div><span>Bekleyen</span><b>${rs.length - pl}</b></div></div></div>
-<div class="panel"><h2>Odalar</h2>${rs.length ? rs.map(r => `<div class="ar"><div><b>${esc(r.id)}</b> · ${r.st === 'playing' ? 'oyunda' + (r.rd != null ? ' · el ' + (r.rd + 1) + '/' + r.R : '') : 'bekliyor'}<small class="mut">Kuran: ${esc(r.hostName || '?')} · ${age(r.t || now)} önce${r.pl ? ' · ' + esc(r.pl.join(', ')) : ''}${r.pub ? ' · herkese açık' : ''}${r.bl != null ? ' · bot ' + BLN[r.bl] : ''}</small></div><div class="row"><button data-watch="${esc(r.id)}">İzle</button>${cb('del:' + r.id, 'Sil')}</div></div>`).join('') : '<p class="mut" style="margin:0">Hiç oda yok.</p>'}
-<div class="row" style="margin-top:12px">${cb('old', '24 saatten eskileri sil')}${cb('all', 'Hepsini sil')}${cb('legacy', 'Eski kayıtları temizle')}</div></div>`;
+<div class="panel"><h2>Odalar</h2>${rs.length ? rs.map(r => `<div class="ar"><div><b>${esc(r.id)}</b> · ${r.st === 'playing' ? 'oyunda' + (r.rd != null ? ' · el ' + (r.rd + 1) + '/' + r.R : '') : 'bekliyor'}<small class="mut">Kuran: ${esc(r.hostName || '?')} · ${age(r.t || now)} önce${r.pl ? ' · ' + esc(r.pl.join(', ')) : ''}${r.pub ? ' · herkese açık' : ''}${r.bl != null ? ' · bot ' + BLN[r.bl] : ''}</small></div><div class="row"><button data-watch="${esc(r.id)}">İzle</button>${admReal ? cb('del:' + r.id, 'Sil') : ''}</div></div>`).join('') : '<p class="mut" style="margin:0">Hiç oda yok.</p>'}
+${admReal ? `<div class="row" style="margin-top:12px">${cb('old', '24 saatten eskileri sil')}${cb('all', 'Hepsini sil')}${cb('legacy', 'Eski kayıtları temizle')}</div>` : ''}</div>`;
   else if (admTab === 'bildirim')
     body = SRV
       ? admRepH()
@@ -424,6 +489,9 @@ function adminH() {
     body = SRV
       ? admPlH() || '<div class="panel"><p class="mut" style="margin:0">Yükleniyor…</p></div>'
       : '<div class="panel"><p class="mut" style="margin:0">Oyuncu listesi sadece sunucudaki oyunda var.</p></div>';
+  else if (admTab === 'gprof')
+    body = `<div class="panel"><h2>Oyuncu profili</h2><div class="row"><input id="gpu" maxlength="14" placeholder="Kullanıcı adı" style="flex:1;min-width:0" value="${esc(gpUser)}"><button class="p" id="gpGo">Göster</button></div>${gpProf ? '<div style="margin-top:10px">' + profCardH(gpProf) + '</div>' : ''}</div>`;
+  else if (admTab === 'hesap') body = admAccH();
   else if (admTab === 'bakim') {
     const live = rs.filter(r => r.st === 'playing'),
       ready = !live.length;
